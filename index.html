@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UmaSCE Algorithm Demo</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-bar">
+            <h1>UmaSCE Algorithm Demo</h1>
+            <button id="language-toggle" class="button">Switch Language</button>
+        </header>
+
+        <div class="content">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Parameter Settings</h2>
+                </div>
+                <div class="card-content">
+                    <div class="input-group">
+                        <label for="type_static">Type (type_static)</label>
+                        <select id="type_static" class="input-field">
+                            <option value="0">Speed (0)</option>
+                            <option value="1">Stamina (1)</option>
+                            <option value="2">Power (2)</option>
+                            <option value="3">Willpower (3)</option>
+                            <option value="4">Wit (4)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="friendship_static">Friendship Static (friendship_static)</label>
+                        <input type="number" id="friendship_static" class="input-field" value="0" min="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="friendship_award">Friendship Award (friendship_award)</label>
+                        <input type="number" id="friendship_award" class="input-field" value="0" min="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="enthusiasm_award">Enthusiasm Award (enthusiasm_award)</label>
+                        <input type="number" id="enthusiasm_award" class="input-field" value="0" min="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="training_award">Training Award (training_award)</label>
+                        <input type="number" id="training_award" class="input-field" value="0" min="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="strike_point">Strike Point (strike_point)</label>
+                        <input type="number" id="strike_point" class="input-field" value="0" min="0">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="friendship_point">Friendship Point (friendship_point)</label>
+                        <input type="number" id="friendship_point" class="input-field" value="0" min="0">
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group half">
+                            <label for="speed_bonus">Speed Bonus (speed_bonus)</label>
+                            <input type="number" id="speed_bonus" class="input-field" value="0" min="0">
+                        </div>
+                        <div class="input-group half">
+                            <label for="stamina_bonus">Stamina Bonus (stamina_bonus)</label>
+                            <input type="number" id="stamina_bonus" class="input-field" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group half">
+                            <label for="power_bonus">Power Bonus (power_bonus)</label>
+                            <input type="number" id="power_bonus" class="input-field" value="0" min="0">
+                        </div>
+                        <div class="input-group half">
+                            <label for="willpower_bonus">Willpower Bonus (willpower_bonus)</label>
+                            <input type="number" id="willpower_bonus" class="input-field" value="0" min="0">
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group half">
+                            <label for="wit_bonus">Wit Bonus (wit_bonus)</label>
+                            <input type="number" id="wit_bonus" class="input-field" value="0" min="0">
+                        </div>
+                        <div class="input-group half">
+                            <label for="sp_bonus">SP Bonus (sp_bonus)</label>
+                            <input type="number" id="sp_bonus" class="input-field" value="0" min="0">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-actions">
+                    <button id="calculate-v1" class="button primary">Calculate V1</button>
+                    <button id="calculate-v2" class="button primary">Calculate V2</button>
+                    <button id="calculate-v3" class="button primary">Calculate V3</button>
+                    <button id="calculate-v4" class="button primary">Calculate V4</button>
+                    <button id="calculate-all" class="button accent">Calculate All</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Calculation Results</h2>
+                </div>
+                <div class="card-content">
+                    <div class="result-group">
+                        <div class="result-label">V1 Value (v1_ept):</div>
+                        <div id="v1-result" class="result-value">-</div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-label">V2 Value (v2_ept):</div>
+                        <div id="v2-result" class="result-value">-</div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-label">V3 Value (v3_ept):</div>
+                        <div id="v3-result" class="result-value">-</div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-label">V4 Main Value (v4main_ept):</div>
+                        <div id="v4main-result" class="result-value">-</div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-label">V4 Fold Value (v4fold_ept):</div>
+                        <div id="v4fold-result" class="result-value">-</div>
+                    </div>
+                    <div class="result-group">
+                        <div class="result-label">V4 SP Value (v4sp_ept):</div>
+                        <div id="v4sp-result" class="result-value">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Contributors</h2>
+                </div>
+                <div class="card-content">
+                    <div class="contributors-list">
+                        <a href="https://github.com/LaT-SKY" target="_blank" class="contributor-item">
+                            <img src="https://github.com/LaT-SKY.png" alt="LaT-SKY" class="contributor-avatar">
+                            <span class="contributor-name">LaT-SKY</span>
+                        </a>
+                        <a href="https://github.com/xingguangcuican6666" target="_blank" class="contributor-item">
+                            <img src="https://github.com/xingguangcuican6666.png" alt="xingguangcuican6666" class="contributor-avatar">
+                            <span class="contributor-name">xingguangcuican6666</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="https://github.com/OracleLoadstar/
+                    SCE-Track_insider_creationdemo
+                    " target="_blank">Demo Repository</a>
+                    <span class="footer-separator">|</span>
+                    <a href="https://github.com/OracleLoadstar/SupportCard_Evaluator_Track_Release" target="_blank">SCE Repository</a>
+                </div>
+                <div class="footer-powered-by">Powered by OracleLoadstar</div>
+                <div class="footer-copyright">&copy; 2025 OracleLoadstar. All rights reserved.</div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
