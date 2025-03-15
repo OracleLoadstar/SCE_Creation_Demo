@@ -100,7 +100,26 @@
                     <button id="calculate-v2" class="button primary">Calculate V2</button>
                     <button id="calculate-v3" class="button primary">Calculate V3</button>
                     <button id="calculate-v4" class="button primary">Calculate V4</button>
+                    <!-- <button id="calculate-v5" class="button primary">Calculate V5</button> -->
                     <button id="calculate-all" class="button accent">Calculate All</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Card Comparison</h2>
+                </div>
+                <div class="card-content">
+                    <div class="comparison-controls">
+                        <button id="add-card" class="button primary">Add Card</button>
+                        <button id="clear-cards" class="button">Clear All</button>
+                    </div>
+                    <div id="cards-container" class="cards-container">
+                        <!-- Cards will be added here dynamically -->
+                    </div>
+                    <div id="comparison-result" class="comparison-result">
+                        <!-- Comparison results will be shown here -->
+                    </div>
                 </div>
             </div>
 
@@ -133,6 +152,20 @@
                         <div class="result-label">V4 SP Value (v4sp_ept):</div>
                         <div id="v4sp-result" class="result-value">-</div>
                     </div>
+                    <!-- ����V5��ؽ��
+                    <div class="result-group">
+                        <div class="result-label">V5 Main Value (v5main_ept):</div>
+                        <div id="v5main-result" class="result-value">-</div> 
+                    </div>
+                    <div class="result-group">
+                        <div class="result-label">V5 Fold Value (v5fold_ept):</div>
+                        <div id="v5fold-result" class="result-value">-</div> 
+                    </div>
+                    <div class="result-group">
+                        <div class="result-label">V5 SP Value (v5sp_ept):</div>
+                        <div id="v5sp-result" class="result-value">-</div> 
+                    </div>
+                    -->
                 </div>
             </div>
 
@@ -169,6 +202,9 @@
         </footer>
     </div>
 
+    <!-- Change script order -->
+    <script src="lang.js"></script>
+    <script src="UmaSCE_V5.js"></script>  
     <script src="script.js"></script>
 </body>
 </html>

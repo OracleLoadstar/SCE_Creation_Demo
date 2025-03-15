@@ -1,4 +1,6 @@
 // UmaSCE Algorithm JavaScript Implementation
+// Remove imports and use window object
+// ...existing code...
 class UmaSCE_Main {
     constructor() {
         // Initialize properties
@@ -169,153 +171,43 @@ class UmaSCE_Main {
             v4sp_ept: this.v4sp_ept
         };
     }
+
+    // EvalV5 algorithm implementation
+    evalV5() {
+        const v5calc = new window.UmaV5Calculator(); // Use window object
+        const result = v5calc.calculate(this);
+        this.v5main_ept = result.v5main_ept;
+        this.v5fold_ept = result.v5fold_ept;
+        this.v5sp_ept = result.v5sp_ept;
+        return {
+            v5main_ept: this.v5main_ept,
+            v5fold_ept: this.v5fold_ept,
+            v5sp_ept: this.v5sp_ept
+        };
+    }
 }
 
-// Language files
-const languages = {
-    en: {
-        title: "UmaSCE Algorithm Demo",
-        parameterSettings: "Parameter Settings",
-        type: "Type",
-        friendshipStatic: "Friendship Static",
-        friendshipAward: "Friendship Award",
-        enthusiasmAward: "Enthusiasm Award",
-        trainingAward: "Training Award",
-        strikePoint: "Strike Point",
-        friendshipPoint: "Friendship Point",
-        speedBonus: "Speed Bonus",
-        staminaBonus: "Stamina Bonus",
-        powerBonus: "Power Bonus",
-        willpowerBonus: "Willpower Bonus",
-        witBonus: "Wit Bonus",
-        spBonus: "SP Bonus",
-        calculateV1: "Calculate V1",
-        calculateV2: "Calculate V2",
-        calculateV3: "Calculate V3",
-        calculateV4: "Calculate V4",
-        calculateAll: "Calculate All",
-        calculationResults: "Calculation Results",
-        v1Value: "V1 Value",
-        v2Value: "V2 Value",
-        v3Value: "V3 Value",
-        v4MainValue: "V4 Main Value",
-        v4FoldValue: "V4 Fold Value",
-        v4SpValue: "V4 SP Value",
-        evalV2InvalidType: "EvalV2: Invalid type_static value",
-        evalV3InvalidType: "EvalV3: Invalid type_static value",
-        evalV4InvalidType: "EvalV4: Invalid type_static value",
-        gnuv3Title: "Please Read the Following Agreement",
-        agree: "Agree",
-        disagree: "Disagree",
-        switchLanguage: "Switch Language",
-        typeOptions: {
-            speed: "Speed",
-            stamina: "Stamina",
-            power: "Power",
-            willpower: "Willpower",
-            wit: "Wit"
-        },
-        contributors: "Contributors",
-        gnuv3Text: 
-`GNU General Public License version 3
-
-Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
-Everyone is permitted to copy and distribute verbatim copies
-of this license document, but changing it is not allowed.
-
-Preamble
-
-The GNU General Public License is a free, protective license for software and other kinds of works. The licenses for most software and other practical works are designed to take away your freedom to share and change the works. By contrast, the GNU General Public License is intended to guarantee your freedom to share and change all versions of a program--to make sure it remains free software for all its users. We, the Free Software Foundation, use the GNU General Public License for most of our software; it applies also to any other work released this way by its authors. You can apply it to your programs, too.
-
-When we speak of free software, we are referring to freedom, not price. Our General Public Licenses are designed to make sure that you have the freedom to distribute copies of free software (and charge for them if you wish), that you receive source code or can get it if you want it, that you can change the software or use pieces of it in new free programs, and that you know you can do these things.
-
-To protect your rights, we need to prevent others from denying you these rights or asking you to surrender the rights. Therefore, you have certain responsibilities if you distribute copies of the software, or if you modify it: responsibilities to respect the freedom of everyone else.
-
-For example, if you distribute copies of such a program, whether gratis or for a fee, you must pass on to the recipients the same freedoms that you received. You must make sure that they, too, receive or can get the source code. And you must show them these terms so they know their rights.`,
-    },
-    zh: {
-        title: "UmaSCE \u7B97\u6CD5\u6F14\u793A",
-        parameterSettings: "\u53C2\u6570\u8BBE\u7F6E",
-        type: "\u7C7B\u578B",
-        friendshipStatic: "\u56fa\u6709\u53cb\u60c5",
-        friendshipAward: "\u53cb\u60c5\u52a0\u6210",
-        enthusiasmAward: "\u5e72\u52b2\u52a0\u6210",
-        trainingAward: "\u8bad\u7ec3\u52a0\u6210",
-        strikePoint: "\u5f97\u610f\u7387",
-        friendshipPoint: "\u521d\u671f\u7f81\u7eca",
-        speedBonus: "\u901F\u5EA6\u52A0\u6210",
-        staminaBonus: "\u8010\u529B\u52A0\u6210",
-        powerBonus: "\u529B\u91CF\u52A0\u6210",
-        willpowerBonus: "\u6839\u6027\u52a0\u6210",
-        witBonus: "\u667A\u529B\u52A0\u6210",
-        spBonus: "SP\u52A0\u6210",
-        calculateV1: "\u8BA1\u7B97 V1",
-        calculateV2: "\u8BA1\u7B97 V2",
-        calculateV3: "\u8BA1\u7B97 V3",
-        calculateV4: "\u8BA1\u7B97 V4",
-        calculateAll: "\u8BA1\u7B97\u6240\u6709",
-        calculationResults: "\u8BA1\u7B97\u7ED3\u679C",
-        v1Value: "V1 \u8BC4\u4F30\u503C",
-        v2Value: "V2 \u8BC4\u4F30\u503C",
-        v3Value: "V3 \u8BC4\u4F30\u503C",
-        v4MainValue: "V4 \u4E3B\u8BC4\u4F30\u503C",
-        v4FoldValue: "V4 \u6298\u53E0\u8BC4\u4F30\u503C",
-        v4SpValue: "V4 SP \u8BC4\u4F30\u503C",
-        evalV2InvalidType: "EvalV2: \u65E0\u6CD5\u8BC6\u522B\u7684type_static\u503C",
-        evalV3InvalidType: "EvalV3: \u65E0\u6CD5\u8BC6\u522B\u7684type_static\u503C",
-        evalV4InvalidType: "EvalV4: \u65E0\u6CD5\u8BC6\u522B\u7684type_static\u503C",
-        gnuv3Title: "\u8BF7\u9605\u8BFB\u4EE5\u4E0B\u534F\u8BAE",
-        agree: "\u540C\u610F",
-        disagree: "\u4E0D\u540C\u610F",
-        switchLanguage: "\u5207\u6362\u8BED\u8A00",
-        typeOptions: {
-            speed: "\u901f\u5ea6 (0)",
-            stamina: "\u8010\u529b (1)",
-            power: "\u529b\u91cf (2)",
-            willpower: "\u6839\u6027 (3)",
-            wit: "\u667A\u529B (4)"
-        },
-        contributors: "\u8d21\u732e\u8005",
-        gnuv3Text: 
-`GNU通用公共许可证第3版
-
-版权所有 (C) 2007 自由软件基金会 <http://fsf.org/>
-任何人都可以复制和发布本许可证文档的完整副本，
-但不允许对它进行任何修改。
-
-序言
-
-GNU通用公共许可证是一份针对软件和其他种类作品的自由的、公共的许可证。大多数软件和其他实用作品的许可证剥夺了您共享和修改这些作品的自由。相比之下，GNU通用公共许可证旨在保证您共享和修改自由软件的所有版本的自由——确保自由软件对其所有用户来说都是自由的。我们，自由软件基金会，将GNU通用公共许可证用于我们的大多数软件；它也适用于任何作者以这种方式发布的作品。您也可以将它用于您的程序。
-
-当我们谈到自由软件时，我们指的是自由，而不是价格。我们的通用公共许可证旨在确保您有发布自由软件副本的自由（如果您愿意，也可以为此收费），确保您能收到源代码或者在您需要时可以获得它，确保您能修改软件或者在新的自由软件中使用它的片段，并且确保您知道您可以做这些事情。
-
-为了保护您的权利，我们需要防止其他人否认您的这些权利或者要求您放弃这些权利。因此，如果您发布软件的副本，或者修改它，您就承担了某些责任：尊重他人自由的责任。
-
-例如，如果您发布此类程序的副本，无论是免费还是收费，您必须将您获得的相同自由传递给接收者。您必须确保他们也能收到或获得源代码。并且您必须向他们展示这些条款，让他们知道他们的权利。`,
-    }
-};
-
-// 获取系统语言并匹配支持的语言
+// ��ȡϵͳ���Բ�ƥ��֧�ֵ�����
 function getSystemLanguage() {
     const userLanguage = navigator.language.toLowerCase();
     const supportedLanguages = Object.keys(languages);
     
-    // 检查完整匹配
+    // �������ƥ��
     if (supportedLanguages.includes(userLanguage)) {
         return userLanguage;
     }
     
-    // 检查语言代码匹配（例如 'zh-cn' 匹配 'zh'）
+    // ������Դ���ƥ�䣨���� 'zh-cn' ƥ�� 'zh'��
     const languageCode = userLanguage.split('-')[0];
     if (supportedLanguages.includes(languageCode)) {
         return languageCode;
     }
     
-    // 默认返回英语
+    // Ĭ�Ϸ���Ӣ��
     return 'en';
 }
 
-// 初始化默认语言为系统语言
+// ��ʼ��Ĭ������Ϊϵͳ����
 let currentLanguage = getSystemLanguage();
 
 // Function to switch language
@@ -352,6 +244,7 @@ function updateText() {
     document.getElementById('calculate-v2').textContent = i18n.calculateV2;
     document.getElementById('calculate-v3').textContent = i18n.calculateV3;
     document.getElementById('calculate-v4').textContent = i18n.calculateV4;
+    //document.getElementById('calculate-v5').textContent = i18n.calculateV5;
     document.getElementById('calculate-all').textContent = i18n.calculateAll;
     document.querySelector('.card:nth-of-type(2) .card-header h2').textContent = i18n.calculationResults;
     document.querySelector('.result-group:nth-of-type(1) .result-label').textContent = i18n.v1Value + " (v1_ept):";
@@ -360,6 +253,13 @@ function updateText() {
     document.querySelector('.result-group:nth-of-type(4) .result-label').textContent = i18n.v4MainValue + " (v4main_ept):";
     document.querySelector('.result-group:nth-of-type(5) .result-label').textContent = i18n.v4FoldValue + " (v4fold_ept):";
     document.querySelector('.result-group:nth-of-type(6) .result-label').textContent = i18n.v4SpValue + " (v4sp_ept):";
+    
+    // ɾ��V5���Ԫ�صĸ���
+    /* 
+    document.querySelector('.result-group:nth-of-type(7) .result-label').textContent = i18n.v5MainValue + " (v5main_ept):";
+    document.querySelector('.result-group:nth-of-type(8) .result-label').textContent = i18n.v5FoldValue + " (v5fold_ept):";
+    document.querySelector('.result-group:nth-of-type(9) .result-label').textContent = i18n.v5SPValue + " (v5sp_ept):";
+    */
 
     const gnuv3Title = document.querySelector('.gnuv3-dialog-title');
     if (gnuv3Title) {
@@ -374,7 +274,7 @@ function updateText() {
         disagreeButton.textContent = i18n.disagree;
     }
 
-    // 更新类型选择选项
+    // ��������ѡ��ѡ��
     const typeSelect = document.getElementById('type_static');
     const options = typeSelect.options;
     options[0].textContent = i18n.typeOptions.speed;
@@ -383,7 +283,7 @@ function updateText() {
     options[3].textContent = i18n.typeOptions.willpower;
     options[4].textContent = i18n.typeOptions.wit;
 
-    // 更新贡献者选择选项
+    // ���¹�����ѡ��ѡ��
     document.querySelector('.card:nth-of-type(3) .card-header h2').textContent = i18n.contributors;
 }
 
@@ -410,6 +310,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const v4MainResult = document.getElementById('v4main-result');
     const v4FoldResult = document.getElementById('v4fold-result');
     const v4SpResult = document.getElementById('v4sp-result');
+    /* ɾ��V5��ر���
+    const v5MainResult = document.getElementById('v5main-result');
+    const v5FoldResult = document.getElementById('v5fold-result');
+    const v5SpResult = document.getElementById('v5sp-result');
+    */
 
     // Calculate V1 button click event
     document.getElementById('calculate-v1').addEventListener('click', () => {
@@ -475,25 +380,33 @@ document.addEventListener('DOMContentLoaded', () => {
             v4MainResult.textContent = v4.v4main_ept;
             v4FoldResult.textContent = v4.v4fold_ept;
             v4SpResult.textContent = v4.v4sp_ept;
+
+            // ע�͵�V5����
+            /*
+            const v5 = umaSCE.evalV5();
+            v5MainResult.textContent = v5.v5main_ept;
+            v5FoldResult.textContent = v5.v5fold_ept;
+            v5SpResult.textContent = v5.v5sp_ept;
+            */
         } catch (error) {
-            alert(i18n.errorCalculatingAll + ': ' + error.message);
+            alert('Error calculating: ' + error.message);
         }
     });
     
     // Set default values
     document.getElementById('type_static').value = "0";
     document.getElementById('friendship_static').value = "0";
-    document.getElementById('friendship_award').value = "30";
-    document.getElementById('enthusiasm_award').value = "30";
-    document.getElementById('training_award').value = "10";
-    document.getElementById('strike_point').value = "100";
-    document.getElementById('friendship_point').value = "35";
-    document.getElementById('speed_bonus').value = "3";
+    document.getElementById('friendship_award').value = "0";
+    document.getElementById('enthusiasm_award').value = "0";
+    document.getElementById('training_award').value = "0";
+    document.getElementById('strike_point').value = "0";
+    document.getElementById('friendship_point').value = "0";
+    document.getElementById('speed_bonus').value = "0";
     document.getElementById('stamina_bonus').value = "0";
-    document.getElementById('power_bonus').value = "2";
+    document.getElementById('power_bonus').value = "0";
     document.getElementById('willpower_bonus').value = "0";
     document.getElementById('wit_bonus').value = "0";
-    document.getElementById('sp_bonus').value = "1";
+    document.getElementById('sp_bonus').value = "0";
 });
 
 function showGnuv3Dialog() {
