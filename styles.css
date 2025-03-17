@@ -48,11 +48,23 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
 }
 
 .app-bar h1 {
     font-size: 20px;
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#language-toggle {
+    white-space: nowrap;
+    padding: 8px 16px;
+    min-width: auto;
+    font-size: 14px;
+    max-width: 140px; /* 设置最大宽度 */
 }
 
 .content {
@@ -204,6 +216,20 @@ h3 {
     
     .button {
         width: 100%;
+    }
+
+    .app-bar {
+        padding: 12px;
+    }
+
+    .app-bar h1 {
+        font-size: 16px;
+    }
+
+    #language-toggle {
+        padding: 6px 12px;
+        font-size: 12px;
+        max-width: 100px; /* 在小屏幕上减小最大宽度 */
     }
 }
 
