@@ -723,18 +723,7 @@ Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
 3.This project not affiliated with Apple Inc.
-        `,
-        cardComparison: "Card Comparison",
-        addCard: "Add Card",
-        clearAll: "Clear All",
-        cardName: "Card Name",
-        deleteCard: "Delete",
-        compareResults: "Compare Results",
-        metric: "Metric",
-        value: "Value",
-        bestValue: "Best Value",
-        noCards: "No cards added for comparison",
-        cardLabel: "Card #{number}"
+        `
     },
     zh: {
         title: "UmaSCE \u7B97\u6CD5\u6F14\u793A",
@@ -1462,18 +1451,8 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
-3.\u672c\u9879\u76ee\u4e0e Apple Inc. \u65e0\u5173        `,
-        cardComparison: "支援卡对比",
-        addCard: "添加卡片",
-        clearAll: "清除全部",
-        cardName: "卡片名称",
-        deleteCard: "删除",
-        compareResults: "对比结果",
-        metric: "指标",
-        value: "数值",
-        bestValue: "最佳值",
-        noCards: "暂无卡片进行对比",
-        cardLabel: "卡片 #{number}"
+3.\u672c\u9879\u76ee\u4e0e Apple Inc. \u65e0\u5173        `
+
     }
 };
 
