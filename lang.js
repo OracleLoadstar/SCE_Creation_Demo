@@ -723,7 +723,8 @@ Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
 3.This project not affiliated with Apple Inc.
-        `
+
+The final interpretation right of this project belongs to OracleLoadstar.        `
     },
     zh: {
         title: "UmaSCE \u7B97\u6CD5\u6F14\u793A",
@@ -1451,7 +1452,11 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
 
-3.\u672c\u9879\u76ee\u4e0e Apple Inc. \u65e0\u5173        `
+3.\u672c\u9879\u76ee\u4e0e Apple Inc. \u65e0\u5173
+
+4.\u672c\u9879\u76ee\u6700\u7ec8\u89e3\u91ca\u6743\u5f52OracleLoadstar\u6240\u6709
+`
+
 
     }
 };
