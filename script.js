@@ -1,9 +1,8 @@
-// UmaSCE Algorithm JavaScript Implementation
-// Remove imports and use window object
-// ...existing code...
+// UmaSCE 算法实现
+// 移除所有导入，使用 window 对象
 class UmaSCE_Main {
     constructor() {
-        // Initialize properties
+        // 初始化属性
         this.type_static = 0;
         this.friendship_static = 0;
         this.friendship_award = 0;
@@ -29,7 +28,7 @@ class UmaSCE_Main {
         this.is_notice = true;
     }
 
-    // Get parameters from form
+    // 从表单获取参数
     getParamsFromForm() {
         this.type_static = parseInt(document.getElementById('type_static').value);
         this.friendship_static = parseInt(document.getElementById('friendship_static').value);
@@ -46,7 +45,7 @@ class UmaSCE_Main {
         this.sp_bonus = parseInt(document.getElementById('sp_bonus').value);
     }
 
-    // EvalV1 algorithm implementation
+    // V1 算法实现
     evalV1() {
         this.v1_ept = (this.friendship_award * 0.01 + 1) *
             (this.friendship_static * 0.01 + 1) *
@@ -59,7 +58,7 @@ class UmaSCE_Main {
         return this.v1_ept;
     }
 
-    // EvalV2 algorithm implementation
+    // V2 算法实现
     evalV2() {
         let v2_bonus = 0;
 
@@ -81,7 +80,7 @@ class UmaSCE_Main {
         return this.v2_ept;
     }
 
-    // EvalV3 algorithm implementation
+    // V3 算法实现
     evalV3() {
         let v3_bonus = 0;
 
@@ -108,7 +107,7 @@ class UmaSCE_Main {
         return this.v3_ept;
     }
 
-    // EvalV4 algorithm implementation
+    // V4 算法实现
     evalV4() {
         this.evalV2();
         const unstrike_v2_ept = this.unstrike_v1_ept + 0.1 * this.unstrike_v1_ept * this.sp_bonus;
@@ -172,8 +171,9 @@ class UmaSCE_Main {
         };
     }
 
-    // EvalV5 algorithm implementation
+    // V5 算法实现（实验性）
     evalV5() {
+        // 使用 window 对象访问 V5 计算器
         const v5calc = new window.UmaV5Calculator(); // Use window object
         const result = v5calc.calculate(this);
         this.v5main_ept = result.v5main_ept;
@@ -187,134 +187,160 @@ class UmaSCE_Main {
     }
 }
 
-// ��ȡϵͳ���Բ�ƥ��֧�ֵ�����
+// 获取系统语言并匹配支持的语言
 function getSystemLanguage() {
     const userLanguage = navigator.language.toLowerCase();
     const supportedLanguages = Object.keys(languages);
     
-    // �������ƥ��
+    // 完全匹配
     if (supportedLanguages.includes(userLanguage)) {
         return userLanguage;
     }
     
-    // ������Դ���ƥ�䣨���� 'zh-cn' ƥ�� 'zh'��
+    // 从语言代码匹配（例如 'zh-cn' 匹配 'zh'）
     const languageCode = userLanguage.split('-')[0];
     if (supportedLanguages.includes(languageCode)) {
         return languageCode;
     }
     
-    // Ĭ�Ϸ���Ӣ��
+    // 默认返回英语
     return 'en';
 }
 
-// ��ʼ��Ĭ������Ϊϵͳ����
+// 初始化默认语言为系统语言
 let currentLanguage = getSystemLanguage();
 
-// Function to switch language
+// 切换语言的函数
 function switchLanguage(lang) {
     currentLanguage = lang;
     i18n = languages[lang];
     updateText();
-    document.getElementById('language-toggle').textContent = i18n.switchLanguage;
 }
 
-// Internationalization object
+// 国际化对象
 let i18n = languages[currentLanguage];
 
-// Function to update text content based on selected language
+// 修改 updateText 函数，确保语言切换按钮的图标正确更新
 function updateText() {
-    document.title = i18n.title;
-    document.querySelector('.app-bar h1').textContent = i18n.title;
-    document.querySelector('#language-toggle').textContent = i18n.switchLanguage;
-    document.querySelector('.card-header h2').textContent = i18n.parameterSettings;
-    document.querySelector('label[for="type_static"]').textContent = i18n.type + " (type_static)";
-    document.querySelector('label[for="friendship_static"]').textContent = i18n.friendshipStatic + " (friendship_static)";
-    document.querySelector('label[for="friendship_award"]').textContent = i18n.friendshipAward + " (friendship_award)";
-    document.querySelector('label[for="enthusiasm_award"]').textContent = i18n.enthusiasmAward + " (enthusiasm_award)";
-    document.querySelector('label[for="training_award"]').textContent = i18n.trainingAward + " (training_award)";
-    document.querySelector('label[for="strike_point"]').textContent = i18n.strikePoint + " (strike_point)";
-    document.querySelector('label[for="friendship_point"]').textContent = i18n.friendshipPoint + " (friendship_point)";
-    document.querySelector('label[for="speed_bonus"]').textContent = i18n.speedBonus + " (speed_bonus)";
-    document.querySelector('label[for="stamina_bonus"]').textContent = i18n.staminaBonus + " (stamina_bonus)";
-    document.querySelector('label[for="power_bonus"]').textContent = i18n.powerBonus + " (power_bonus)";
-    document.querySelector('label[for="willpower_bonus"]').textContent = i18n.willpowerBonus + " (willpower_bonus)";
-    document.querySelector('label[for="wit_bonus"]').textContent = i18n.witBonus + " (wit_bonus)";
-    document.querySelector('label[for="sp_bonus"]').textContent = i18n.spBonus + " (sp_bonus)";
-    document.getElementById('calculate-v1').textContent = i18n.calculateV1;
-    document.getElementById('calculate-v2').textContent = i18n.calculateV2;
-    document.getElementById('calculate-v3').textContent = i18n.calculateV3;
-    document.getElementById('calculate-v4').textContent = i18n.calculateV4;
-    //document.getElementById('calculate-v5').textContent = i18n.calculateV5;
-    document.getElementById('calculate-all').textContent = i18n.calculateAll;
-    document.querySelector('.card:nth-of-type(2) .card-header h2').textContent = i18n.calculationResults;
-    document.querySelector('.result-group:nth-of-type(1) .result-label').textContent = i18n.v1Value + " (v1_ept):";
-    document.querySelector('.result-group:nth-of-type(2) .result-label').textContent = i18n.v2Value + " (v2_ept):";
-    document.querySelector('.result-group:nth-of-type(3) .result-label').textContent = i18n.v3Value + " (v3_ept):";
-    document.querySelector('.result-group:nth-of-type(4) .result-label').textContent = i18n.v4MainValue + " (v4main_ept):";
-    document.querySelector('.result-group:nth-of-type(5) .result-label').textContent = i18n.v4FoldValue + " (v4fold_ept):";
-    document.querySelector('.result-group:nth-of-type(6) .result-label').textContent = i18n.v4SpValue + " (v4sp_ept):";
-    
-    // ɾ��V5���Ԫ�صĸ���
-    /* 
-    document.querySelector('.result-group:nth-of-type(7) .result-label').textContent = i18n.v5MainValue + " (v5main_ept):";
-    document.querySelector('.result-group:nth-of-type(8) .result-label').textContent = i18n.v5FoldValue + " (v5fold_ept):";
-    document.querySelector('.result-group:nth-of-type(9) .result-label').textContent = i18n.v5SPValue + " (v5sp_ept):";
-    */
+    try {
+        // 更新标题和 header
+        document.title = i18n.title;
+        const header = document.querySelector('.header-left h1');
+        if (header) header.textContent = i18n.title;
 
-    const gnuv3Title = document.querySelector('.gnuv3-dialog-title');
-    if (gnuv3Title) {
-        gnuv3Title.textContent = i18n.gnuv3Title;
-    }
-    const agreeButton = document.querySelector('.gnuv3-dialog-buttons button:nth-child(1)');
-    if (agreeButton) {
-        agreeButton.textContent = i18n.agree;
-    }
-    const disagreeButton = document.querySelector('.gnuv3-dialog-buttons button:nth-child(2)');
-    if (disagreeButton) {
-        disagreeButton.textContent = i18n.disagree;
-    }
+        // 更新语言切换按钮（只显示图标）
+        const langBtn = document.getElementById('language-toggle');
+        if (langBtn) {
+            langBtn.innerHTML = '<span class="material-icons">translate</span>';
+        }
 
-    // ��������ѡ��ѡ��
-    const typeSelect = document.getElementById('type_static');
-    const options = typeSelect.options;
-    options[0].textContent = i18n.typeOptions.speed;
-    options[1].textContent = i18n.typeOptions.stamina;
-    options[2].textContent = i18n.typeOptions.power;
-    options[3].textContent = i18n.typeOptions.willpower;
-    options[4].textContent = i18n.typeOptions.wit;
+        // 更新贡献者卡片
+        const contributorsTitle = document.querySelector('.contributors-title');
+        if (contributorsTitle) {
+            contributorsTitle.textContent = i18n.contributors;
+        }
 
-    // ���¹�����ѡ��ѡ��
-    document.querySelector('.card:nth-of-type(3) .card-header h2').textContent = i18n.contributors;
+        // 更新所有文本内容
+        const elements = {
+            '.card-header h2': i18n.parameterSettings,
+            '.calculation-results-title': i18n.calculationResults, // 添加计算结果标题
+            'label[for="type_static"]': `${i18n.type} (type_static)`,
+            'label[for="friendship_static"]': `${i18n.friendshipStatic} (friendship_static)`,
+            'label[for="friendship_award"]': `${i18n.friendshipAward} (friendship_award)`,
+            'label[for="enthusiasm_award"]': `${i18n.enthusiasmAward} (enthusiasm_award)`,
+            'label[for="training_award"]': `${i18n.trainingAward} (training_award)`,
+            'label[for="strike_point"]': `${i18n.strikePoint} (strike_point)`,
+            'label[for="friendship_point"]': `${i18n.friendshipPoint} (friendship_point)`,
+            'label[for="speed_bonus"]': `${i18n.speedBonus} (speed_bonus)`,
+            'label[for="stamina_bonus"]': `${i18n.staminaBonus} (stamina_bonus)`,
+            'label[for="power_bonus"]': `${i18n.powerBonus} (power_bonus)`,
+            'label[for="willpower_bonus"]': `${i18n.willpowerBonus} (willpower_bonus)`,
+            'label[for="wit_bonus"]': `${i18n.witBonus} (wit_bonus)`,
+            'label[for="sp_bonus"]': `${i18n.spBonus} (sp_bonus)`,
+            '#calculate-v1': i18n.calculateV1,
+            '#calculate-v2': i18n.calculateV2,
+            '#calculate-v3': i18n.calculateV3,
+            '#calculate-v4': i18n.calculateV4,
+            '#calculate-all': i18n.calculateAll,
+            '.result-label.v1-label': `${i18n.v1Value} (v1_ept):`,
+            '.result-label.v2-label': `${i18n.v2Value} (v2_ept):`,
+            '.result-label.v3-label': `${i18n.v3Value} (v3_ept):`,
+            '.result-label.v4main-label': `${i18n.v4MainValue} (v4main_ept):`,
+            '.result-label.v4fold-label': `${i18n.v4FoldValue} (v4fold_ept):`,
+            '.result-label.v4sp-label': `${i18n.v4SpValue} (v4sp_ept):`,
+            '.contributors-card .card-header h2': i18n.contributors // 添加贡献者卡片标题
+        };
+
+        for (const [selector, text] of Object.entries(elements)) {
+            const element = document.querySelector(selector);
+            if (element) element.textContent = text;
+        }
+
+        // 更新类型选项
+        const typeSelect = document.getElementById('type_static');
+        if (typeSelect) {
+            const options = typeSelect.options;
+            const typeTexts = [
+                i18n.typeOptions.speed,
+                i18n.typeOptions.stamina,
+                i18n.typeOptions.power,
+                i18n.typeOptions.willpower,
+                i18n.typeOptions.wit
+            ];
+            typeTexts.forEach((text, index) => {
+                if (options[index]) options[index].textContent = `${text} (${index})`;
+            });
+        }
+    } catch (error) {
+        console.error('Error updating text:', error);
+    }
 }
 
 // Initialize after page load
 document.addEventListener('DOMContentLoaded', () => {
-    // 确保至少显示2秒加载动画
-    const minLoadTime = 2000; // 2秒
+    // 确保语言文件已加载
+    if (typeof languages === 'undefined') {
+        console.error('Language file not loaded');
+        return;
+    }
+
+    // 初始化语言
+    currentLanguage = getSystemLanguage();
+    i18n = languages[currentLanguage];
+    
+    // 加载动画相关代码
+    const minLoadTime = 2000;
     const startTime = Date.now();
     
     window.addEventListener('load', () => {
         const loadingScreen = document.getElementById('loading-screen');
+        if (!loadingScreen) return;
+
         const elapsedTime = Date.now() - startTime;
         const remainingTime = Math.max(0, minLoadTime - elapsedTime);
 
-        // 等待最小显示时间后再隐藏加载动画
         setTimeout(() => {
             loadingScreen.classList.add('hidden');
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
-            }, 500); // 与CSS过渡时间匹配
+            }, 500);
         }, remainingTime);
+
+        // 更新页面文本
+        updateText();
+        
+        // 显示GNU协议对话框（只在这里调用一次）
+        showGnuv3Dialog();
     });
 
-    // Set initial language
-    switchLanguage(currentLanguage);
-
-    // Add language toggle event listener
-    document.getElementById('language-toggle').addEventListener('click', () => {
-        const newLanguage = currentLanguage === 'en' ? 'zh' : 'en';
-        switchLanguage(newLanguage);
-    });
+    // 绑定语言切换事件
+    const langToggle = document.getElementById('language-toggle');
+    if (langToggle) {
+        langToggle.addEventListener('click', () => {
+            const newLanguage = currentLanguage === 'en' ? 'zh' : 'en';
+            switchLanguage(newLanguage);
+        });
+    }
 
     // Show GNUv3 dialog
     showGnuv3Dialog();
@@ -372,9 +398,9 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             umaSCE.getParamsFromForm();
             const v4 = umaSCE.evalV4();
-            v4MainResult.textContent = v4.v4main_ept;
-            v4FoldResult.textContent = v4.v4fold_ept;
-            v4SpResult.textContent = v4.v4sp_ept;
+            v4MainResult.textContent = parseFloat(v4.v4main_ept).toFixed(4);
+            v4FoldResult.textContent = parseFloat(v4.v4fold_ept).toFixed(4);
+            v4SpResult.textContent = parseFloat(v4.v4sp_ept).toFixed(4);
         } catch (error) {
             alert(i18n.errorCalculatingV4 + ': ' + error.message);
         }
@@ -395,11 +421,11 @@ document.addEventListener('DOMContentLoaded', () => {
             v3Result.textContent = v3.toFixed(4);
 
             const v4 = umaSCE.evalV4();
-            v4MainResult.textContent = v4.v4main_ept;
-            v4FoldResult.textContent = v4.v4fold_ept;
-            v4SpResult.textContent = v4.v4sp_ept;
+            v4MainResult.textContent = parseFloat(v4.v4main_ept).toFixed(4);
+            v4FoldResult.textContent = parseFloat(v4.v4fold_ept).toFixed(4);
+            v4SpResult.textContent = parseFloat(v4.v4sp_ept).toFixed(4);
 
-            // ע�͵�V5����
+            // 注释掉V5计算
             /*
             const v5 = umaSCE.evalV5();
             v5MainResult.textContent = v5.v5main_ept;
@@ -427,7 +453,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('sp_bonus').value = "0";
 });
 
+// 修改 showGnuv3Dialog 调用逻辑，确保只显示一次
+let isGnuv3DialogShown = false;
+
 function showGnuv3Dialog() {
+    if (isGnuv3DialogShown) return; // 防止重复显示
+    isGnuv3DialogShown = true;
+
     const dialog = document.createElement('div');
     dialog.classList.add('gnuv3-dialog');
 
@@ -440,7 +472,7 @@ function showGnuv3Dialog() {
     dialogContent.appendChild(title);
 
     const text = document.createElement('div');
-    text.classList.add('gnuv3-dialog-text')
+    text.classList.add('gnuv3-dialog-text');
     text.textContent = i18n.gnuv3Text;
     dialogContent.appendChild(text);
 
