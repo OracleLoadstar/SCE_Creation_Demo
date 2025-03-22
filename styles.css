@@ -64,7 +64,7 @@ body {
     padding: 8px 16px;
     min-width: auto;
     font-size: 14px;
-    max-width: 140px; /* ���������� */
+    max-width: 140px; /* ���������� */
 }
 
 .content {
@@ -229,7 +229,7 @@ h3 {
     #language-toggle {
         padding: 6px 12px;
         font-size: 12px;
-        max-width: 100px; /* ��С��Ļ�ϼ�С������ */
+        max-width: 100px; /* ��С��Ļ�ϼ�С������ */
     }
 }
 
@@ -376,4 +376,28 @@ h3 {
 .contributor-name {
     font-weight: 500;
     font-size: 16px;
+}
+
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: transform 0.5s ease-in-out;
+}
+
+#loading-screen img {
+    width: min(5vw, 5vh);  /* 使用视窗宽度和高度的最小值的70% */
+    height: min(5vw, 5vh);  /* 保持宽高相等，保持图片比例 */
+    object-fit: contain;  /* 确保图片保持比例完整显示 */
+}
+
+#loading-screen.hidden {
+    transform: translateX(-100%);
 }

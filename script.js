@@ -187,27 +187,27 @@ class UmaSCE_Main {
     }
 }
 
-// »ñÈ¡ÏµÍ³ÓïÑÔ²¢Æ¥ÅäÖ§³ÖµÄÓïÑÔ
+// ï¿½ï¿½È¡ÏµÍ³ï¿½ï¿½ï¿½Ô²ï¿½Æ¥ï¿½ï¿½Ö§ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½
 function getSystemLanguage() {
     const userLanguage = navigator.language.toLowerCase();
     const supportedLanguages = Object.keys(languages);
     
-    // ¼ì²éÍêÕûÆ¥Åä
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ¥ï¿½ï¿½
     if (supportedLanguages.includes(userLanguage)) {
         return userLanguage;
     }
     
-    // ¼ì²éÓïÑÔ´úÂëÆ¥Åä£¨ÀýÈç 'zh-cn' Æ¥Åä 'zh'£©
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½Æ¥ï¿½ä£¨ï¿½ï¿½ï¿½ï¿½ 'zh-cn' Æ¥ï¿½ï¿½ 'zh'ï¿½ï¿½
     const languageCode = userLanguage.split('-')[0];
     if (supportedLanguages.includes(languageCode)) {
         return languageCode;
     }
     
-    // Ä¬ÈÏ·µ»ØÓ¢Óï
+    // Ä¬ï¿½Ï·ï¿½ï¿½ï¿½Ó¢ï¿½ï¿½
     return 'en';
 }
 
-// ³õÊ¼»¯Ä¬ÈÏÓïÑÔÎªÏµÍ³ÓïÑÔ
+// ï¿½ï¿½Ê¼ï¿½ï¿½Ä¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÏµÍ³ï¿½ï¿½ï¿½ï¿½
 let currentLanguage = getSystemLanguage();
 
 // Function to switch language
@@ -254,7 +254,7 @@ function updateText() {
     document.querySelector('.result-group:nth-of-type(5) .result-label').textContent = i18n.v4FoldValue + " (v4fold_ept):";
     document.querySelector('.result-group:nth-of-type(6) .result-label').textContent = i18n.v4SpValue + " (v4sp_ept):";
     
-    // É¾³ýV5Ïà¹ØÔªËØµÄ¸üÐÂ
+    // É¾ï¿½ï¿½V5ï¿½ï¿½ï¿½Ôªï¿½ØµÄ¸ï¿½ï¿½ï¿½
     /* 
     document.querySelector('.result-group:nth-of-type(7) .result-label').textContent = i18n.v5MainValue + " (v5main_ept):";
     document.querySelector('.result-group:nth-of-type(8) .result-label').textContent = i18n.v5FoldValue + " (v5fold_ept):";
@@ -274,7 +274,7 @@ function updateText() {
         disagreeButton.textContent = i18n.disagree;
     }
 
-    // ¸üÐÂÀàÐÍÑ¡ÔñÑ¡Ïî
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ñ¡ï¿½ï¿½
     const typeSelect = document.getElementById('type_static');
     const options = typeSelect.options;
     options[0].textContent = i18n.typeOptions.speed;
@@ -283,12 +283,30 @@ function updateText() {
     options[3].textContent = i18n.typeOptions.willpower;
     options[4].textContent = i18n.typeOptions.wit;
 
-    // ¸üÐÂ¹±Ï×ÕßÑ¡ÔñÑ¡Ïî
+    // ï¿½ï¿½ï¿½Â¹ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ñ¡ï¿½ï¿½
     document.querySelector('.card:nth-of-type(3) .card-header h2').textContent = i18n.contributors;
 }
 
 // Initialize after page load
 document.addEventListener('DOMContentLoaded', () => {
+    // ç¡®ä¿è‡³å°‘æ˜¾ç¤º2ç§’åŠ è½½åŠ¨ç”»
+    const minLoadTime = 2000; // 2ç§’
+    const startTime = Date.now();
+    
+    window.addEventListener('load', () => {
+        const loadingScreen = document.getElementById('loading-screen');
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, minLoadTime - elapsedTime);
+
+        // ç­‰å¾…æœ€å°æ˜¾ç¤ºæ—¶é—´åŽå†éšè—åŠ è½½åŠ¨ç”»
+        setTimeout(() => {
+            loadingScreen.classList.add('hidden');
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+            }, 500); // ä¸ŽCSSè¿‡æ¸¡æ—¶é—´åŒ¹é…
+        }, remainingTime);
+    });
+
     // Set initial language
     switchLanguage(currentLanguage);
 
@@ -310,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const v4MainResult = document.getElementById('v4main-result');
     const v4FoldResult = document.getElementById('v4fold-result');
     const v4SpResult = document.getElementById('v4sp-result');
-    /* É¾³ýV5Ïà¹Ø±äÁ¿
+    /* É¾ï¿½ï¿½V5ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
     const v5MainResult = document.getElementById('v5main-result');
     const v5FoldResult = document.getElementById('v5fold-result');
     const v5SpResult = document.getElementById('v5sp-result');
@@ -381,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
             v4FoldResult.textContent = v4.v4fold_ept;
             v4SpResult.textContent = v4.v4sp_ept;
 
-            // ×¢ÊÍµôV5¼ÆËã
+            // ×¢ï¿½Íµï¿½V5ï¿½ï¿½ï¿½ï¿½
             /*
             const v5 = umaSCE.evalV5();
             v5MainResult.textContent = v5.v5main_ept;
