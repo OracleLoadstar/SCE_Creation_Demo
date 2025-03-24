@@ -451,6 +451,86 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('willpower_bonus').value = "0";
     document.getElementById('wit_bonus').value = "0";
     document.getElementById('sp_bonus').value = "0";
+
+    // 回到顶部按钮功能
+    document.getElementById('backToTop').addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+
+    // 保存支援卡按钮功能
+    document.getElementById('saveCard').addEventListener('click', () => {
+        // 获取所有表单数据
+        const formData = {
+            type_static: document.getElementById('type_static').value,
+            friendship_static: document.getElementById('friendship_static').value,
+            friendship_award: document.getElementById('friendship_award').value,
+            enthusiasm_award: document.getElementById('enthusiasm_award').value,
+            training_award: document.getElementById('training_award').value,
+            strike_point: document.getElementById('strike_point').value,
+            friendship_point: document.getElementById('friendship_point').value,
+            speed_bonus: document.getElementById('speed_bonus').value,
+            stamina_bonus: document.getElementById('stamina_bonus').value,
+            power_bonus: document.getElementById('power_bonus').value,
+            willpower_bonus: document.getElementById('willpower_bonus').value,
+            wit_bonus: document.getElementById('wit_bonus').value,
+            sp_bonus: document.getElementById('sp_bonus').value
+        };
+
+        // 创建Blob对象
+        const blob = new Blob([JSON.stringify(formData, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        // 创建下载链接并触发下载
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'support_card.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    // 上传支援卡按钮功能
+    document.getElementById('uploadCard').addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        
+        input.onchange = e => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = event => {
+                try {
+                    const data = JSON.parse(event.target.result);
+                    
+                    // 更新表单数据
+                    document.getElementById('type_static').value = data.type_static;
+                    document.getElementById('friendship_static').value = data.friendship_static;
+                    document.getElementById('friendship_award').value = data.friendship_award;
+                    document.getElementById('enthusiasm_award').value = data.enthusiasm_award;
+                    document.getElementById('training_award').value = data.training_award;
+                    document.getElementById('strike_point').value = data.strike_point;
+                    document.getElementById('friendship_point').value = data.friendship_point;
+                    document.getElementById('speed_bonus').value = data.speed_bonus;
+                    document.getElementById('stamina_bonus').value = data.stamina_bonus;
+                    document.getElementById('power_bonus').value = data.power_bonus;
+                    document.getElementById('willpower_bonus').value = data.willpower_bonus;
+                    document.getElementById('wit_bonus').value = data.wit_bonus;
+                    document.getElementById('sp_bonus').value = data.sp_bonus;
+                } catch (error) {
+                    alert(i18n.errorLoadingCard);
+                }
+            };
+            reader.readAsText(file);
+        };
+        
+        input.click();
+    });
 });
 
 // 修改 showGnuv3Dialog 调用逻辑，确保只显示一次
