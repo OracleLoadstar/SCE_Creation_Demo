@@ -601,6 +601,8 @@ h3 {
     position: relative;
     margin-bottom: 24px;
     overflow: hidden;
+    background: var(--header-gradient);
+    box-shadow: var(--shadow-2);
 }
 
 .header-backdrop {
@@ -646,16 +648,31 @@ h3 {
     object-fit: contain;
 }
 
-.header-left:hover .logo-container {
+.logo-container:hover {
+    transform: rotate(360deg);
+}
 
-    .header-left h1 {
-        font-size: 18px;
-    }
+.header-left h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0;
+}
 
-    .icon-button {
-        width: 36px;
-        height: 36px;
-    }
+.icon-button {
+    padding: 8px;
+    border: none;
+    border-radius: var(--border-radius);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--on-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.icon-button:hover {
+    background: rgba(255, 255, 255, 0.2);
 }
 
 /* 悬浮工具窗口样式 */
@@ -714,5 +731,23 @@ h3 {
 
     .tool-button .material-icons {
         font-size: 20px;
+    }
+
+    .header-content {
+        padding: 16px;
+    }
+
+    .header-left h1 {
+        font-size: 20px;
+    }
+
+    .logo-container {
+        width: 32px;
+        height: 32px;
+    }
+
+    .header-logo {
+        width: 24px;
+        height: 24px;
     }
 }
