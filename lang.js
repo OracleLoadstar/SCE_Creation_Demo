@@ -724,7 +724,24 @@ Public License instead of this License.  But first, please read
 
 3.This project not affiliated with Apple Inc.
 
-The final interpretation right of this project belongs to OracleLoadstar.        `
+4.The final interpretation right of this project belongs to OracleLoadstar.        `,
+        // Error messages
+        errorCalculatingV1: "Error calculating V1",
+        errorCalculatingV2: "Error calculating V2",
+        errorCalculatingV3: "Error calculating V3",
+        errorCalculatingV4: "Error calculating V4",
+        errorLoadingCard: "Error loading support card data",
+        
+        // Loading screen
+        loadingScreen: "Loading...",
+        loadingInitialize: "Initializing interface",
+        loadingStyles: "Loading style files",
+        loadingLanguages: "Loading language packs",
+        loadingCalculator: "Loading calculation modules",
+        skipLoading: "Skip",
+        // Form validation
+        cannotBeEmpty: " cannot be empty",
+        mustBeValidNumber: " must be a valid number"
     },
     zh: {
         title: "UmaSCE \u7B97\u6CD5\u6F14\u793A",
@@ -1455,9 +1472,24 @@ Public License instead of this License.  But first, please read
 3.\u672c\u9879\u76ee\u4e0e Apple Inc. \u65e0\u5173
 
 4.\u672c\u9879\u76ee\u6700\u7ec8\u89e3\u91ca\u6743\u5f52OracleLoadstar\u6240\u6709
-`
-
-
+`,
+        // 错误信息
+        errorCalculatingV1: "计算V1时发生错误",
+        errorCalculatingV2: "计算V2时发生错误",
+        errorCalculatingV3: "计算V3时发生错误",
+        errorCalculatingV4: "计算V4时发生错误",
+        errorLoadingCard: "加载支援卡数据时发生错误",
+        
+        // 加载界面
+        loadingScreen: "加载中...",
+        loadingInitialize: "初始化界面",
+        loadingStyles: "加载样式文件",
+        loadingLanguages: "加载语言包",
+        loadingCalculator: "加载计算模块",
+        skipLoading: "跳过",
+        // 表单验证
+        cannotBeEmpty: "不能为空",
+        mustBeValidNumber: "必须是有效的数字"
     }
 };
 

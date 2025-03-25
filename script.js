@@ -363,26 +363,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // 添加参数验证函数
     function validateInputs() {
         const inputs = [
-            { id: 'type_static', name: '支援卡类型' },
-            { id: 'friendship_static', name: '固有友情加成' },
-            { id: 'friendship_award', name: '友情加成' },
-            { id: 'enthusiasm_award', name: '干劲加成' },
-            { id: 'training_award', name: '训练加成' },
-            { id: 'strike_point', name: '得意率' },
-            { id: 'friendship_point', name: '初期羁绊' },
-            { id: 'speed_bonus', name: '速度加成' },
-            { id: 'stamina_bonus', name: '耐力加成' },
-            { id: 'power_bonus', name: '力量加成' },
-            { id: 'willpower_bonus', name: '根性加成' },
-            { id: 'wit_bonus', name: '智力加成' },
-            { id: 'sp_bonus', name: '技能点加成' }
+            { id: 'type_static', name: i18n.type },
+            { id: 'friendship_static', name: i18n.friendshipStatic },
+            { id: 'friendship_award', name: i18n.friendshipAward },
+            { id: 'enthusiasm_award', name: i18n.enthusiasmAward },
+            { id: 'training_award', name: i18n.trainingAward },
+            { id: 'strike_point', name: i18n.strikePoint },
+            { id: 'friendship_point', name: i18n.friendshipPoint },
+            { id: 'speed_bonus', name: i18n.speedBonus },
+            { id: 'stamina_bonus', name: i18n.staminaBonus },
+            { id: 'power_bonus', name: i18n.powerBonus },
+            { id: 'willpower_bonus', name: i18n.willpowerBonus },
+            { id: 'wit_bonus', name: i18n.witBonus },
+            { id: 'sp_bonus', name: i18n.spBonus }
         ];
 
         for (const input of inputs) {
             const element = document.getElementById(input.id);
             const value = element.value.trim();
             if (value === '') {
-                alert(`${input.name}不能为空`);
+                alert(`${input.name}${i18n.cannotBeEmpty}`);
                 element.focus();
                 return false;
             }
@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (input.id !== 'type_static') {
                 const numValue = Number(value);
                 if (isNaN(numValue)) {
-                    alert(`${input.name}必须是有效的数字`);
+                    alert(`${input.name}${i18n.mustBeValidNumber}`);
                     element.focus();
                     return false;
                 }
@@ -578,10 +578,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 加载资源列表
     const resources = [
-        { name: '初始化界面', time: 1000 },
-        { name: '加载样式文件', time: 500 },
-        { name: '加载语言包', time: 500 },
-        { name: '加载计算模块', time: 1000 }
+        { name: i18n.loadingInitialize, time: 1000 },
+        { name: i18n.loadingStyles, time: 500 },
+        { name: i18n.loadingLanguages, time: 500 },
+        { name: i18n.loadingCalculator, time: 1000 }
     ];
 
     // 加载动画相关代码
@@ -597,7 +597,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (const resource of resources) {
             if (loadingScreen.classList.contains('hidden')) break;
             
-            loadingText.textContent = `正在加载${resource.name}...`;
+            loadingText.textContent = `${i18n.loadingScreen} ${resource.name}`;
             await new Promise(resolve => setTimeout(resolve, resource.time));
             currentResourceIndex++;
         }
@@ -607,6 +607,7 @@ document.addEventListener('DOMContentLoaded', () => {
     skipTimeout = setTimeout(() => {
         if (!loadingScreen.classList.contains('hidden')) {
             skipButton.style.display = 'block';
+            skipButton.textContent = i18n.skipLoading; // 使用语言文件中的翻译
         }
     }, 3000);
 
