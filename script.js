@@ -693,3 +693,25 @@ function showGnuv3Dialog() {
     dialog.appendChild(dialogContent);
     document.body.appendChild(dialog);
 }
+
+// 更多按钮的点击事件
+const moreButton = document.getElementById('moreButton');
+const moreMenu = document.getElementById('moreMenu');
+
+// 点击更多按钮时显示/隐藏下拉菜单
+moreButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    moreMenu.classList.toggle('show');
+});
+
+// 点击页面其他地方时关闭下拉菜单
+document.addEventListener('click', (e) => {
+    if (!moreMenu.contains(e.target) && !moreButton.contains(e.target)) {
+        moreMenu.classList.remove('show');
+    }
+});
+
+// 阻止下拉菜单内的点击事件冒泡
+moreMenu.addEventListener('click', (e) => {
+    e.stopPropagation();
+});

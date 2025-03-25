@@ -214,14 +214,23 @@
         </footer>
 
         <!-- 悬浮工具窗口 -->
-        <div class="floating-tools">
-            <button class="tool-button" id="saveCard" title="保存支援卡">
-                <span class="material-icons">save</span>
-            </button>
-            <button class="tool-button" id="uploadCard" title="上传支援卡">
-                <span class="material-icons">upload</span>
-            </button>
-            <button class="tool-button" id="backToTop" title="回到顶部">
+        <div class="floating-buttons">
+            <div class="dropdown">
+                <button id="moreButton" class="button more-button">
+                    <span class="material-icons">more_vert</span>
+                </button>
+                <div id="moreMenu" class="dropdown-content">
+                    <button id="saveCard" class="dropdown-item">
+                        <span class="material-icons">save</span>
+                        <span class="button-text">保存支援卡</span>
+                    </button>
+                    <button id="uploadCard" class="dropdown-item">
+                        <span class="material-icons">upload</span>
+                        <span class="button-text">上传支援卡</span>
+                    </button>
+                </div>
+            </div>
+            <button id="backToTop" class="button back-to-top">
                 <span class="material-icons">arrow_upward</span>
             </button>
         </div>

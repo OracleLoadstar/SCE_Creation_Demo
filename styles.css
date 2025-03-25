@@ -675,6 +675,84 @@ h3 {
     background: rgba(255, 255, 255, 0.2);
 }
 
+/* 下拉菜单样式 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.more-button {
+    background: var(--primary-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.more-button:hover {
+    background: var(--primary-color-dark);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 100%;
+    bottom: 0;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    margin-right: 10px;
+    z-index: 1000;
+}
+
+.dropdown-content.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    width: 100%;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: var(--hover-color);
+}
+
+.dropdown-item .material-icons {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+.dropdown-item .button-text {
+    font-size: 14px;
+}
+
+/* 修改现有的floating-buttons样式 */
+.floating-buttons {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+}
+
 /* 悬浮工具窗口样式 */
 .floating-tools {
     position: fixed;
