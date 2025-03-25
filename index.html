@@ -17,7 +17,13 @@
 <body>
     <!-- 加载动画 -->
     <div id="loading-screen">
-        <img src="image/SCE_Loading2.gif" alt="Loading...">
+        <div class="loading-container">
+            <img src="image/SCE_Loading2.gif" alt="Loading...">
+            <div class="loading-info">
+                <span id="loading-text">正在加载...</span>
+                <button id="skip-loading" class="skip-button" style="display: none;">跳过</button>
+            </div>
+        </div>
     </div>
     <!-- 主要内容区域 -->
     <div class="app-container">
@@ -42,6 +48,11 @@
                     <h2>Parameter Settings</h2>
                 </div>
                 <div class="card-content">
+                    <div class="input-group">
+                        <label for="card_name">支援卡名称 (card_name)</label>
+                        <input type="text" id="card_name" class="input-field" placeholder="请输入支援卡名称" required>
+                    </div>
+
                     <div class="input-group">
                         <label for="type_static">Type (type_static)</label>
                         <select id="type_static" class="input-field">

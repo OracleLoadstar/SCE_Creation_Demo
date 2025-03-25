@@ -360,8 +360,49 @@ document.addEventListener('DOMContentLoaded', () => {
     const v5SpResult = document.getElementById('v5sp-result');
     */
 
-    // Calculate V1 button click event
+    // 添加参数验证函数
+    function validateInputs() {
+        const inputs = [
+            { id: 'type_static', name: '支援卡类型' },
+            { id: 'friendship_static', name: '固有友情加成' },
+            { id: 'friendship_award', name: '友情加成' },
+            { id: 'enthusiasm_award', name: '干劲加成' },
+            { id: 'training_award', name: '训练加成' },
+            { id: 'strike_point', name: '得意率' },
+            { id: 'friendship_point', name: '初期羁绊' },
+            { id: 'speed_bonus', name: '速度加成' },
+            { id: 'stamina_bonus', name: '耐力加成' },
+            { id: 'power_bonus', name: '力量加成' },
+            { id: 'willpower_bonus', name: '根性加成' },
+            { id: 'wit_bonus', name: '智力加成' },
+            { id: 'sp_bonus', name: '技能点加成' }
+        ];
+
+        for (const input of inputs) {
+            const element = document.getElementById(input.id);
+            const value = element.value.trim();
+            if (value === '') {
+                alert(`${input.name}不能为空`);
+                element.focus();
+                return false;
+            }
+            
+            // 对数字输入框进行验证
+            if (input.id !== 'type_static') {
+                const numValue = Number(value);
+                if (isNaN(numValue)) {
+                    alert(`${input.name}必须是有效的数字`);
+                    element.focus();
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // 修改计算按钮的事件处理函数，添加验证
     document.getElementById('calculate-v1').addEventListener('click', () => {
+        if (!validateInputs()) return;
         try {
             umaSCE.getParamsFromForm();
             const v1 = umaSCE.evalV1();
@@ -371,8 +412,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Calculate V2 button click event
     document.getElementById('calculate-v2').addEventListener('click', () => {
+        if (!validateInputs()) return;
         try {
             umaSCE.getParamsFromForm();
             const v2 = umaSCE.evalV2();
@@ -382,8 +423,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Calculate V3 button click event
     document.getElementById('calculate-v3').addEventListener('click', () => {
+        if (!validateInputs()) return;
         try {
             umaSCE.getParamsFromForm();
             const v3 = umaSCE.evalV3();
@@ -393,8 +434,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Calculate V4 button click event
     document.getElementById('calculate-v4').addEventListener('click', () => {
+        if (!validateInputs()) return;
         try {
             umaSCE.getParamsFromForm();
             const v4 = umaSCE.evalV4();
@@ -406,8 +447,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Calculate All button click event
     document.getElementById('calculate-all').addEventListener('click', () => {
+        if (!validateInputs()) return;
         try {
             umaSCE.getParamsFromForm();
 
@@ -462,8 +503,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 保存支援卡按钮功能
     document.getElementById('saveCard').addEventListener('click', () => {
+        if (!validateInputs()) return;
         // 获取所有表单数据
         const formData = {
+            card_name: document.getElementById('card_name').value,
             type_static: document.getElementById('type_static').value,
             friendship_static: document.getElementById('friendship_static').value,
             friendship_award: document.getElementById('friendship_award').value,
@@ -509,6 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = JSON.parse(event.target.result);
                     
                     // 更新表单数据
+                    document.getElementById('card_name').value = data.card_name || '';
                     document.getElementById('type_static').value = data.type_static;
                     document.getElementById('friendship_static').value = data.friendship_static;
                     document.getElementById('friendship_award').value = data.friendship_award;
@@ -530,6 +574,75 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         input.click();
+    });
+
+    // 加载资源列表
+    const resources = [
+        { name: '初始化界面', time: 1000 },
+        { name: '加载样式文件', time: 500 },
+        { name: '加载语言包', time: 500 },
+        { name: '加载计算模块', time: 1000 }
+    ];
+
+    // 加载动画相关代码
+    const loadingText = document.getElementById('loading-text');
+    const skipButton = document.getElementById('skip-loading');
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadStartTime = Date.now();
+    let currentResourceIndex = 0;
+    let skipTimeout;
+
+    // 更新加载提示文本
+    async function updateLoadingText() {
+        for (const resource of resources) {
+            if (loadingScreen.classList.contains('hidden')) break;
+            
+            loadingText.textContent = `正在加载${resource.name}...`;
+            await new Promise(resolve => setTimeout(resolve, resource.time));
+            currentResourceIndex++;
+        }
+    }
+
+    // 显示跳过按钮的定时器
+    skipTimeout = setTimeout(() => {
+        if (!loadingScreen.classList.contains('hidden')) {
+            skipButton.style.display = 'block';
+        }
+    }, 3000);
+
+    // 跳过按钮点击事件
+    skipButton.addEventListener('click', () => {
+        clearTimeout(skipTimeout);
+        loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+            loadingScreen.style.display = 'none';
+        }, 500);
+    });
+
+    // 开始加载动画
+    updateLoadingText();
+
+    // 当所有资源加载完成或超过最小加载时间后自动隐藏加载界面
+    window.addEventListener('load', () => {
+        const elapsedTime = Date.now() - loadStartTime;
+        const totalResourceTime = resources.reduce((sum, r) => sum + r.time, 0);
+        const remainingTime = Math.max(0, totalResourceTime - elapsedTime);
+
+        setTimeout(() => {
+            clearTimeout(skipTimeout);
+            if (!loadingScreen.classList.contains('hidden')) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }
+        }, remainingTime);
+
+        // 更新页面文本
+        updateText();
+        
+        // 显示GNU协议对话框
+        showGnuv3Dialog();
     });
 });
 

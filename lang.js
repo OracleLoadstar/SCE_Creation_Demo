@@ -767,11 +767,11 @@ The final interpretation right of this project belongs to OracleLoadstar.       
         disagree: "\u4E0D\u540C\u610F",
         switchLanguage: "\u5207\u6362\u8BED\u8A00",
         typeOptions: {
-            speed: "\u901f\u5ea6 (0)",
-            stamina: "\u8010\u529b (1)",
-            power: "\u529b\u91cf (2)",
-            willpower: "\u6839\u6027 (3)",
-            wit: "\u667A\u529B (4)"
+            speed: "\u901f\u5ea6 ",
+            stamina: "\u8010\u529b ",
+            power: "\u529b\u91cf ",
+            willpower: "\u6839\u6027 ",
+            wit: "\u667A\u529B "
         },
         contributors: "\u8d21\u732e\u8005",
         gnuv3Text: `
