@@ -697,7 +697,7 @@ h3 {
 }
 
 .more-button:hover {
-    background: var(--primary-color-dark);
+    background: var(--primary-variant);
 }
 
 .dropdown-content {
@@ -778,7 +778,7 @@ h3 {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--primary-color);
+    background: #6F93E7;  /* 直接使用新的颜色值 */
     color: white;
     border: none;
     cursor: pointer;
@@ -789,15 +789,26 @@ h3 {
     transition: all 0.3s ease;
 }
 
+.floating-buttons .button:hover,
+.floating-buttons .button:active {
+    background: #4E5BA8;  /* 直接使用新的颜色值 */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* 更多按钮特定样式 */
+.more-button {
+    background: #6F93E7 !important;  /* 直接使用新的颜色值 */
+}
+
+.more-button:hover,
+.more-button:active {
+    background: #4E5BA8 !important;  /* 直接使用新的颜色值 */
+}
+
 /* 移除多余的margin */
 .floating-buttons .more-button {
     margin-bottom: 10px;
-}
-
-.floating-buttons .button:hover {
-    background: var(--primary-color-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
 /* 悬浮工具窗口样式 */
