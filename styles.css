@@ -887,3 +887,96 @@ h3 {
         height: 24px;
     }
 }
+
+/* 通知系统样式 */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.notification {
+    background: white;
+    color: #333;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 300px;
+    position: relative;
+    animation: slideIn 0.3s ease-out;
+    pointer-events: auto;
+    overflow: hidden;
+}
+
+.notification.closing {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: #6F93E7;
+    width: 100%;
+    transform-origin: left;
+}
+
+.notification-progress.running {
+    animation: progress 3s linear;
+}
+
+.notification-progress.paused {
+    animation-play-state: paused;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes progress {
+    from {
+        transform: scaleX(1);
+    }
+    to {
+        transform: scaleX(0);
+    }
+}
+
+/* 更新浮动按钮样式 */
+.share-button {
+    margin-bottom: 10px;
+}
+
+.floating-buttons button {
+    opacity: 0.9;
+    transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.3s ease;
+}
+
+.floating-buttons button:hover {
+    opacity: 1;
+    transform: translateY(-2px);
+}

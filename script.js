@@ -705,15 +705,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             await navigator.clipboard.writeText(shareText);
-            alert('分享链接已复制到剪贴板！');
+            showNotification('分享链接已复制到剪贴板！');
         } catch (err) {
             console.error('复制到剪贴板失败:', err);
-            alert('复制失败，请手动复制链接：' + shareText);
+            showNotification('复制失败，请手动复制链接');
         }
     });
-
-    // 页面加载时读取URL参数
-    loadParamsFromUrl();
 
     // 修改 showGnuv3Dialog 调用逻辑，确保只显示一次
     function showGnuv3Dialog() {
@@ -790,4 +787,72 @@ document.addEventListener('DOMContentLoaded', () => {
     moreMenu.addEventListener('click', (e) => {
         e.stopPropagation();
     });
+
+    // 通知系统
+    function showNotification(message) {
+        const container = document.getElementById('notification-container');
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        
+        // 创建消息文本
+        const messageText = document.createElement('div');
+        messageText.textContent = message;
+        notification.appendChild(messageText);
+        
+        // 创建进度条
+        const progress = document.createElement('div');
+        progress.className = 'notification-progress running';
+        notification.appendChild(progress);
+        
+        // 添加到容器
+        container.appendChild(notification);
+        
+        // 鼠标悬停时暂停进度条
+        notification.addEventListener('mouseenter', () => {
+            progress.classList.remove('running');
+            progress.classList.add('paused');
+        });
+        
+        // 鼠标离开时恢复进度条
+        notification.addEventListener('mouseleave', () => {
+            progress.classList.remove('paused');
+            progress.classList.add('running');
+        });
+        
+        // 设置定时器
+        const timer = setTimeout(() => {
+            notification.classList.add('closing');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.parentElement.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+        
+        // 当鼠标悬停时清除定时器
+        notification.addEventListener('mouseenter', () => {
+            clearTimeout(timer);
+        });
+        
+        // 当鼠标离开时重新开始计时
+        notification.addEventListener('mouseleave', () => {
+            setTimeout(() => {
+                notification.classList.add('closing');
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.parentElement.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        });
+        
+        // 如果有其他通知，向下移动它们
+        const existingNotifications = container.children;
+        const height = notification.offsetHeight + 10; // 10px是间距
+        
+        for (let i = 0; i < existingNotifications.length - 1; i++) {
+            const notif = existingNotifications[i];
+            notif.style.transform = `translateY(${height}px)`;
+        }
+    }
 });
