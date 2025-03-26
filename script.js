@@ -386,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const element = document.getElementById(input.id);
             const value = element.value.trim();
             if (value === '') {
-                alert(`${input.name}${i18n.cannotBeEmpty}`);
+                showNotification(`${input.name}${i18n.cannotBeEmpty}`, 'warning');
                 element.focus();
                 return false;
             }
@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (input.id !== 'type_static') {
                 const numValue = Number(value);
                 if (isNaN(numValue)) {
-                    alert(`${input.name}${i18n.mustBeValidNumber}`);
+                    showNotification(`${input.name}${i18n.mustBeValidNumber}`, 'warning');
                     element.focus();
                     return false;
                 }
@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const v1 = umaSCE.evalV1();
             v1Result.textContent = v1.toFixed(4);
         } catch (error) {
-            alert(i18n.errorCalculatingV1 + ': ' + error.message);
+            showNotification(i18n.errorCalculatingV1 + ': ' + error.message, 'error');
         }
     });
 
@@ -423,7 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const v2 = umaSCE.evalV2();
             v2Result.textContent = v2.toFixed(4);
         } catch (error) {
-            alert(i18n.errorCalculatingV2 + ': ' + error.message);
+            showNotification(i18n.errorCalculatingV2 + ': ' + error.message, 'error');
         }
     });
 
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const v3 = umaSCE.evalV3();
             v3Result.textContent = v3.toFixed(4);
         } catch (error) {
-            alert(i18n.errorCalculatingV3 + ': ' + error.message);
+            showNotification(i18n.errorCalculatingV3 + ': ' + error.message, 'error');
         }
     });
 
@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
             v4FoldResult.textContent = parseFloat(v4.v4fold_ept).toFixed(4);
             v4SpResult.textContent = parseFloat(v4.v4sp_ept).toFixed(4);
         } catch (error) {
-            alert(i18n.errorCalculatingV4 + ': ' + error.message);
+            showNotification(i18n.errorCalculatingV4 + ': ' + error.message, 'error');
         }
     });
 
@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
             v5SpResult.textContent = v5.v5sp_ept;
             */
         } catch (error) {
-            alert('Error calculating: ' + error.message);
+            showNotification('计算出错: ' + error.message, 'error');
         }
     });
     
@@ -705,10 +705,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             await navigator.clipboard.writeText(shareText);
-            showNotification('分享链接已复制到剪贴板！');
+            showNotification('分享链接已复制到剪贴板！', 'info');
         } catch (err) {
             console.error('复制到剪贴板失败:', err);
-            showNotification('复制失败，请手动复制链接');
+            showNotification('复制失败，请手动复制链接', 'error');
         }
     });
 
@@ -789,23 +789,53 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 通知系统
-    function showNotification(message) {
+    function showNotification(message, type = 'info') {
         const container = document.getElementById('notification-container');
         const notification = document.createElement('div');
-        notification.className = 'notification';
+        notification.className = `notification ${type}`;
         
-        // 创建消息文本
-        const messageText = document.createElement('div');
-        messageText.textContent = message;
-        notification.appendChild(messageText);
+        // 创建图标
+        const icon = document.createElement('span');
+        icon.className = 'material-icons notification-icon';
+        switch (type) {
+            case 'info':
+                icon.textContent = 'info';
+                break;
+            case 'warning':
+                icon.textContent = 'warning';
+                break;
+            case 'error':
+                icon.textContent = 'error';
+                break;
+        }
+        
+        // 创建内容区域
+        const content = document.createElement('div');
+        content.className = 'notification-content';
+        content.textContent = message;
         
         // 创建进度条
         const progress = document.createElement('div');
         progress.className = 'notification-progress running';
+        
+        // 组装通知
+        notification.appendChild(icon);
+        notification.appendChild(content);
         notification.appendChild(progress);
         
-        // 添加到容器
-        container.appendChild(notification);
+        // 将新通知插入到容器顶部
+        container.insertBefore(notification, container.firstChild);
+        
+        // 移动现有的通知
+        const height = notification.offsetHeight + 10; // 10px是间距
+        const existingNotifications = Array.from(container.children).slice(1);
+        
+        // 等待新通知完成插入动画后再移动其他通知
+        setTimeout(() => {
+            existingNotifications.forEach(notif => {
+                notif.style.transform = `translateY(${height}px)`;
+            });
+        }, 10);
         
         // 鼠标悬停时暂停进度条
         notification.addEventListener('mouseenter', () => {
@@ -822,6 +852,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // 设置定时器
         const timer = setTimeout(() => {
             notification.classList.add('closing');
+            
+            // 移动其他通知回到原位
+            const currentNotifications = Array.from(container.children);
+            const index = currentNotifications.indexOf(notification);
+            const notificationsBelow = currentNotifications.slice(index + 1);
+            
+            notificationsBelow.forEach(notif => {
+                notif.style.transform = 'translateY(0)';
+            });
+            
             setTimeout(() => {
                 if (notification.parentElement) {
                     notification.parentElement.removeChild(notification);
@@ -838,6 +878,16 @@ document.addEventListener('DOMContentLoaded', () => {
         notification.addEventListener('mouseleave', () => {
             setTimeout(() => {
                 notification.classList.add('closing');
+                
+                // 移动其他通知回到原位
+                const currentNotifications = Array.from(container.children);
+                const index = currentNotifications.indexOf(notification);
+                const notificationsBelow = currentNotifications.slice(index + 1);
+                
+                notificationsBelow.forEach(notif => {
+                    notif.style.transform = 'translateY(0)';
+                });
+                
                 setTimeout(() => {
                     if (notification.parentElement) {
                         notification.parentElement.removeChild(notification);
@@ -845,14 +895,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 300);
             }, 3000);
         });
-        
-        // 如果有其他通知，向下移动它们
-        const existingNotifications = container.children;
-        const height = notification.offsetHeight + 10; // 10px是间距
-        
-        for (let i = 0; i < existingNotifications.length - 1; i++) {
-            const notif = existingNotifications[i];
-            notif.style.transform = `translateY(${height}px)`;
-        }
     }
 });

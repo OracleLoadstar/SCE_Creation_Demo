@@ -902,7 +902,6 @@ h3 {
 
 .notification {
     background: white;
-    color: #333;
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
@@ -911,10 +910,51 @@ h3 {
     animation: slideIn 0.3s ease-out;
     pointer-events: auto;
     overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transform: translateY(0);  /* 添加初始transform值 */
+    transition: transform 0.3s ease;  /* 添加transform过渡效果 */
 }
 
-.notification.closing {
-    animation: slideOut 0.3s ease-in forwards;
+/* 移动通知框的类 */
+.notification.move-down {
+    transform: translateY(calc(100% + 10px));  /* 向下移动一个通知框的高度加间距 */
+}
+
+.notification-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex-grow: 1;
+    color: #333;
+}
+
+/* 通知类型样式 */
+.notification.info {
+    border-left: 4px solid #6F93E7;
+}
+
+.notification.info .notification-icon {
+    color: #6F93E7;
+}
+
+.notification.warning {
+    border-left: 4px solid #FFA726;
+}
+
+.notification.warning .notification-icon {
+    color: #FFA726;
+}
+
+.notification.error {
+    border-left: 4px solid #EF5350;
+}
+
+.notification.error .notification-icon {
+    color: #EF5350;
 }
 
 .notification-progress {
@@ -922,9 +962,20 @@ h3 {
     bottom: 0;
     left: 0;
     height: 3px;
-    background: #6F93E7;
     width: 100%;
     transform-origin: left;
+}
+
+.notification.info .notification-progress {
+    background: #6F93E7;
+}
+
+.notification.warning .notification-progress {
+    background: #FFA726;
+}
+
+.notification.error .notification-progress {
+    background: #EF5350;
 }
 
 .notification-progress.running {
