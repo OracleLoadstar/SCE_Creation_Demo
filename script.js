@@ -1,5 +1,9 @@
 // UmaSCE 算法实现
 // 移除所有导入，使用 window 对象
+
+// GNU 协议对话框显示状态
+let isGnuv3DialogShown = false;
+
 class UmaSCE_Main {
     constructor() {
         // 初始化属性
@@ -124,7 +128,7 @@ class UmaSCE_Main {
         this.v4sp_ept = Math.floor(((failure_strike_rate + failure_unstrike_rate) *
             (this.unstrike_v1_ept + 0.1 * this.unstrike_v1_ept * this.sp_bonus) +
             (success_strike_rate + success_unstrike_rate) *
-            (this.v1_ept + 0.1 * this.v1_ept * this.sp_bonus) -
+            (this.v1_ept + 0.1 * this.v1_ept * this.sp_bonus) - 
             (strike_rate + unstrike_rate)) * 10000);
 
         switch (this.type_static) {
@@ -645,82 +649,145 @@ document.addEventListener('DOMContentLoaded', () => {
         // 显示GNU协议对话框
         showGnuv3Dialog();
     });
-});
 
-// 修改 showGnuv3Dialog 调用逻辑，确保只显示一次
-let isGnuv3DialogShown = false;
+    // 分享功能相关函数
+    function getUrlParameterString() {
+        const params = {
+            card_name: document.getElementById('card_name').value,
+            type_static: document.getElementById('type_static').value,
+            friendship_static: document.getElementById('friendship_static').value,
+            friendship_award: document.getElementById('friendship_award').value,
+            enthusiasm_award: document.getElementById('enthusiasm_award').value,
+            training_award: document.getElementById('training_award').value,
+            strike_point: document.getElementById('strike_point').value,
+            friendship_point: document.getElementById('friendship_point').value,
+            speed_bonus: document.getElementById('speed_bonus').value,
+            stamina_bonus: document.getElementById('stamina_bonus').value,
+            power_bonus: document.getElementById('power_bonus').value,
+            willpower_bonus: document.getElementById('willpower_bonus').value,
+            wit_bonus: document.getElementById('wit_bonus').value,
+            sp_bonus: document.getElementById('sp_bonus').value
+        };
 
-function showGnuv3Dialog() {
-    if (isGnuv3DialogShown) return; // 防止重复显示
-    isGnuv3DialogShown = true;
+        const queryString = Object.entries(params)
+            .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+            .join('&');
 
-    const dialog = document.createElement('div');
-    dialog.classList.add('gnuv3-dialog');
+        return `${window.location.origin}${window.location.pathname}?${queryString}`;
+    }
 
-    const dialogContent = document.createElement('div');
-    dialogContent.classList.add('gnuv3-dialog-content');
+    function loadParamsFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const inputs = [
+            'card_name', 'type_static', 'friendship_static', 'friendship_award',
+            'enthusiasm_award', 'training_award', 'strike_point', 'friendship_point',
+            'speed_bonus', 'stamina_bonus', 'power_bonus', 'willpower_bonus',
+            'wit_bonus', 'sp_bonus'
+        ];
 
-    const title = document.createElement('h2');
-    title.classList.add('gnuv3-dialog-title');
-    title.textContent = i18n.gnuv3Title;
-    dialogContent.appendChild(title);
+        inputs.forEach(id => {
+            const value = urlParams.get(id);
+            if (value !== null) {
+                document.getElementById(id).value = value;
+            }
+        });
 
-    const text = document.createElement('div');
-    text.classList.add('gnuv3-dialog-text');
-    text.textContent = i18n.gnuv3Text;
-    dialogContent.appendChild(text);
+        // 如果URL中有参数，自动计算所有结果
+        if (urlParams.toString()) {
+            document.getElementById('calculate-all').click();
+        }
+    }
 
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('gnuv3-dialog-buttons');
-
-    const disagreeButton = document.createElement('button');
-    disagreeButton.textContent = i18n.disagree;
-    disagreeButton.classList.add('button');
-    disagreeButton.addEventListener('click', () => {
-        window.close();
+    // 分享按钮点击事件
+    document.getElementById('shareCard').addEventListener('click', async () => {
+        const shareUrl = getUrlParameterString();
+        const shareText = `打开浏览器${shareUrl}，和我一起分析支援卡！`;
+        
+        try {
+            await navigator.clipboard.writeText(shareText);
+            alert('分享链接已复制到剪贴板！');
+        } catch (err) {
+            console.error('复制到剪贴板失败:', err);
+            alert('复制失败，请手动复制链接：' + shareText);
+        }
     });
-    buttonContainer.appendChild(disagreeButton);
 
-    const agreeButton = document.createElement('button');
-    agreeButton.textContent = i18n.agree;
-    agreeButton.classList.add('button', 'primary');
-    agreeButton.addEventListener('click', () => {
-        document.body.removeChild(dialog);
+    // 页面加载时读取URL参数
+    loadParamsFromUrl();
+
+    // 修改 showGnuv3Dialog 调用逻辑，确保只显示一次
+    function showGnuv3Dialog() {
+        if (isGnuv3DialogShown) return; // 防止重复显示
+        isGnuv3DialogShown = true;
+
+        const dialog = document.createElement('div');
+        dialog.classList.add('gnuv3-dialog');
+
+        const dialogContent = document.createElement('div');
+        dialogContent.classList.add('gnuv3-dialog-content');
+
+        const title = document.createElement('h2');
+        title.classList.add('gnuv3-dialog-title');
+        title.textContent = i18n.gnuv3Title;
+        dialogContent.appendChild(title);
+
+        const text = document.createElement('div');
+        text.classList.add('gnuv3-dialog-text');
+        text.textContent = i18n.gnuv3Text;
+        dialogContent.appendChild(text);
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('gnuv3-dialog-buttons');
+
+        const disagreeButton = document.createElement('button');
+        disagreeButton.textContent = i18n.disagree;
+        disagreeButton.classList.add('button');
+        disagreeButton.addEventListener('click', () => {
+            window.close();
+        });
+        buttonContainer.appendChild(disagreeButton);
+
+        const agreeButton = document.createElement('button');
+        agreeButton.textContent = i18n.agree;
+        agreeButton.classList.add('button', 'primary');
+        agreeButton.addEventListener('click', () => {
+            document.body.removeChild(dialog);
+        });
+        buttonContainer.appendChild(agreeButton);
+
+        dialogContent.appendChild(buttonContainer);
+        dialog.appendChild(dialogContent);
+        document.body.appendChild(dialog);
+    }
+
+    // 更多按钮的点击事件
+    const moreButton = document.getElementById('moreButton');
+    const moreMenu = document.getElementById('moreMenu');
+    const overlay = document.querySelector('.overlay');
+        
+    // 点击更多按钮时显示/隐藏下拉菜单和背景遮罩
+    moreButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        moreMenu.classList.toggle('show');
+        overlay.classList.toggle('show');
     });
-    buttonContainer.appendChild(agreeButton);
+        
+    // 点击页面其他地方时关闭下拉菜单和背景遮罩
+    document.addEventListener('click', (e) => {
+        if (!moreMenu.contains(e.target) && !moreButton.contains(e.target)) {
+            moreMenu.classList.remove('show');
+            overlay.classList.remove('show');
+        }
+    });
 
-    dialogContent.appendChild(buttonContainer);
-    dialog.appendChild(dialogContent);
-    document.body.appendChild(dialog);
-}
-
-// 更多按钮的点击事件
-const moreButton = document.getElementById('moreButton');
-const moreMenu = document.getElementById('moreMenu');
-const overlay = document.querySelector('.overlay');
-    
-// 点击更多按钮时显示/隐藏下拉菜单和背景遮罩
-moreButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    moreMenu.classList.toggle('show');
-    overlay.classList.toggle('show');
-});
-    
-// 点击页面其他地方时关闭下拉菜单和背景遮罩
-document.addEventListener('click', (e) => {
-    if (!moreMenu.contains(e.target) && !moreButton.contains(e.target)) {
+    // 点击遮罩层时关闭菜单
+    overlay.addEventListener('click', () => {
         moreMenu.classList.remove('show');
         overlay.classList.remove('show');
-    }
-});
-
-// 点击遮罩层时关闭菜单
-overlay.addEventListener('click', () => {
-    moreMenu.classList.remove('show');
-    overlay.classList.remove('show');
-});
-    
-// 阻止下拉菜单内的点击事件冒泡
-moreMenu.addEventListener('click', (e) => {
-    e.stopPropagation();
+    });
+        
+    // 阻止下拉菜单内的点击事件冒泡
+    moreMenu.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
 });
