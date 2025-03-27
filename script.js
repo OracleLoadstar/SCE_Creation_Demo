@@ -645,7 +645,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 更新页面文本
         updateText();
-        
+        // 从URL获取参数
+        loadParamsFromUrl();
         // 显示GNU协议对话框
         showGnuv3Dialog();
     });
@@ -701,7 +702,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 分享按钮点击事件
     document.getElementById('shareCard').addEventListener('click', async () => {
         const shareUrl = getUrlParameterString();
-        const shareText = `打开浏览器${shareUrl}，和我一起分析支援卡！`;
+        const shareText = `${shareUrl}`;
         
         try {
             await navigator.clipboard.writeText(shareText);
