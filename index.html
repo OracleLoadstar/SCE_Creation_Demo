@@ -54,20 +54,95 @@
                     </div>
 
                     <div class="input-group">
-                        <label for="type_static">Type (type_static)</label>
-                        <select id="type_static" class="input-field">
-                            <option value="0">Speed (0)</option>
-                            <option value="1">Stamina (1)</option>
-                            <option value="2">Power (2)</option>
-                            <option value="3">Willpower (3)</option>
-                            <option value="4">Wit (4)</option>
-                        </select>
+                        <div class="type-container">
+                            <label for="type_static">Type (type_static)</label>
+                            <div class="type-controls">
+                                <select id="type_static" class="input-field short-select">
+                                    <option value="0">Speed (0)</option>
+                                    <option value="1">Stamina (1)</option>
+                                    <option value="2">Power (2)</option>
+                                    <option value="3">Willpower (3)</option>
+                                    <option value="4">Wit (4)</option>
+                                </select>
+                                <div class="switch-container">
+                                    <label class="switch">
+                                        <input type="checkbox" id="enable_enum">
+                                        <span class="slider round"></span>
+                                    </label>
+                                    <span class="switch-label">启用枚举拓展</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="input-group">
+                    <div id="enum_card" class="card" style="display: none;">
+                        <div class="card-header">
+                            <h2>Enum Values</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="input-row">
+                                <div class="input-group half">
+                                    <label for="enum_friendship_award">Friendship Award</label>
+                                    <input type="number" id="enum_friendship_award" class="input-field" value="0">
+                                </div>
+                                <div class="input-group half">
+                                    <label for="enum_enthusiasm_award">Enthusiasm Award</label>
+                                    <input type="number" id="enum_enthusiasm_award" class="input-field" value="1">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group half">
+                                    <label for="enum_training_award">Training Award</label>
+                                    <input type="number" id="enum_training_award" class="input-field" value="2">
+                                </div>
+                                <div class="input-group half">
+                                    <label for="enum_friendship_point">Friendship Point</label>
+                                    <input type="number" id="enum_friendship_point" class="input-field" value="3">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group half">
+                                    <label for="enum_strike_point">Strike Point</label>
+                                    <input type="number" id="enum_strike_point" class="input-field" value="4">
+                                </div>
+                                <div class="input-group half">
+                                    <label for="enum_speed_bonus">Speed Bonus</label>
+                                    <input type="number" id="enum_speed_bonus" class="input-field" value="5">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group half">
+                                    <label for="enum_stamina_bonus">Stamina Bonus</label>
+                                    <input type="number" id="enum_stamina_bonus" class="input-field" value="6">
+                                </div>
+                                <div class="input-group half">
+                                    <label for="enum_power_bonus">Power Bonus</label>
+                                    <input type="number" id="enum_power_bonus" class="input-field" value="7">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group half">
+                                    <label for="enum_willpower_bonus">Willpower Bonus</label>
+                                    <input type="number" id="enum_willpower_bonus" class="input-field" value="8">
+                                </div>
+                                <div class="input-group half">
+                                    <label for="enum_wit_bonus">Wit Bonus</label>
+                                    <input type="number" id="enum_wit_bonus" class="input-field" value="9">
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-group half">
+                                    <label for="enum_sp_bonus">SP Bonus</label>
+                                    <input type="number" id="enum_sp_bonus" class="input-field" value="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- <div class="input-group">
                         <label for="friendship_static">Friendship Static (friendship_static)</label>
                         <input type="number" id="friendship_static" class="input-field" value="0" min="0">
-                    </div>
+                    </div> -->
 
                     <div class="input-group">
                         <label for="friendship_award">Friendship Award (friendship_award)</label>

@@ -34,6 +34,7 @@ class UmaSCE_Main {
 
     // 从表单获取参数
     getParamsFromForm() {
+        // 首先获取非枚举输入
         this.type_static = parseInt(document.getElementById('type_static').value);
         this.friendship_static = parseInt(document.getElementById('friendship_static').value);
         this.friendship_award = parseInt(document.getElementById('friendship_award').value);
@@ -47,6 +48,39 @@ class UmaSCE_Main {
         this.willpower_bonus = parseInt(document.getElementById('willpower_bonus').value);
         this.wit_bonus = parseInt(document.getElementById('wit_bonus').value);
         this.sp_bonus = parseInt(document.getElementById('sp_bonus').value);
+
+        // 如果启用了枚举拓展，将枚举值叠加到对应的非枚举值上
+        if (document.getElementById('enable_enum').checked) {
+            // 获取枚举值
+            const enumValues = {
+                friendship_award: parseInt(document.getElementById('enum_friendship_award').value || 0),
+                enthusiasm_award: parseInt(document.getElementById('enum_enthusiasm_award').value || 0),
+                training_award: parseInt(document.getElementById('enum_training_award').value || 0),
+                friendship_point: parseInt(document.getElementById('enum_friendship_point').value || 0),
+                strike_point: parseInt(document.getElementById('enum_strike_point').value || 0),
+                speed_bonus: parseInt(document.getElementById('enum_speed_bonus').value || 0),
+                stamina_bonus: parseInt(document.getElementById('enum_stamina_bonus').value || 0),
+                power_bonus: parseInt(document.getElementById('enum_power_bonus').value || 0),
+                willpower_bonus: parseInt(document.getElementById('enum_willpower_bonus').value || 0),
+                wit_bonus: parseInt(document.getElementById('enum_wit_bonus').value || 0),
+                sp_bonus: parseInt(document.getElementById('enum_sp_bonus').value || 0)
+            };
+            
+            // 特殊处理：friendship_award加算至friendship_static
+            this.friendship_static += enumValues.friendship_award;
+            
+            // 其他枚举值叠加到对应的非枚举值上
+            this.enthusiasm_award += enumValues.enthusiasm_award;
+            this.training_award += enumValues.training_award;
+            this.strike_point += enumValues.strike_point;
+            this.friendship_point += enumValues.friendship_point;
+            this.speed_bonus += enumValues.speed_bonus;
+            this.stamina_bonus += enumValues.stamina_bonus;
+            this.power_bonus += enumValues.power_bonus;
+            this.willpower_bonus += enumValues.willpower_bonus;
+            this.wit_bonus += enumValues.wit_bonus;
+            this.sp_bonus += enumValues.sp_bonus;
+        }
     }
 
     // V1 算法实现
@@ -295,6 +329,13 @@ function updateText() {
                 if (options[index]) options[index].textContent = `${text} (${index})`;
             });
         }
+
+        if (document.querySelector('.switch-label')) {
+            document.querySelector('.switch-label').textContent = i18n.enableEnumExtension || '启用枚举拓展';
+        }
+        if (document.querySelector('#enum_card .card-header h2')) {
+            document.querySelector('#enum_card .card-header h2').textContent = i18n.enumValues || 'Enum Values';
+        }
     } catch (error) {
         console.error('Error updating text:', error);
     }
@@ -484,7 +525,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Set default values
     document.getElementById('type_static').value = "0";
-    document.getElementById('friendship_static').value = "0";
+    // document.getElementById('friendship_static').value = "0";
     document.getElementById('friendship_award').value = "0";
     document.getElementById('enthusiasm_award').value = "0";
     document.getElementById('training_award').value = "0";
@@ -890,4 +931,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }, { once: true });  // 确保事件监听器只触发一次
         });
     }
+
+    // 绑定枚举拓展开关事件
+    document.getElementById('enable_enum').addEventListener('change', function(e) {
+        const enumCard = document.getElementById('enum_card');
+        if (e.target.checked) {
+            enumCard.style.display = 'block';
+            showNotification('已启用枚举拓展功能', 'info');
+        } else {
+            enumCard.style.display = 'none';
+            showNotification('已禁用枚举拓展功能', 'info');
+        }
+    });
 });

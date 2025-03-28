@@ -35,6 +35,8 @@ const languages = {
         agree: "Agree",
         disagree: "Disagree",
         switchLanguage: "Switch Language",
+        enableEnumExtension: "Enable Enum Extension",
+        enumValues: "Enum Values",
         typeOptions: {
             speed: "Speed",
             stamina: "Stamina",
@@ -783,6 +785,8 @@ Public License instead of this License.  But first, please read
         agree: "\u540C\u610F",
         disagree: "\u4E0D\u540C\u610F",
         switchLanguage: "\u5207\u6362\u8BED\u8A00",
+        enableEnumExtension: "启用枚举拓展",
+        enumValues: "枚举值",
         typeOptions: {
             speed: "\u901f\u5ea6 ",
             stamina: "\u8010\u529b ",
