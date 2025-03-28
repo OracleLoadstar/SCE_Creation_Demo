@@ -872,19 +872,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoContainer = document.querySelector('.logo-container');
     if (logoContainer) {
         logoContainer.addEventListener('click', () => {
-            // 移除之前的动画类
-            logoContainer.classList.remove('rotate-left', 'rotate-right');
+            // 如果正在执行动画，不做任何处理
+            if (logoContainer.classList.contains('rotate-left') || 
+                logoContainer.classList.contains('rotate-right')) {
+                return;
+            }
             
             // 随机选择旋转方向
             const direction = Math.random() < 0.5 ? 'rotate-left' : 'rotate-right';
             
-            // 添加新的动画类
+            // 添加动画类
             logoContainer.classList.add(direction);
             
-            // 动画结束后移除类
+            // 动画结束后移除类，以便下次点击可以再次触发
             logoContainer.addEventListener('animationend', () => {
                 logoContainer.classList.remove('rotate-left', 'rotate-right');
-            }, { once: true });  // 事件监听器只触发一次
+            }, { once: true });  // 确保事件监听器只触发一次
         });
     }
 });
