@@ -640,6 +640,12 @@ h3 {
     align-items: center;
     justify-content: center;
     transition: transform 0.3s ease;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+    animation: rotateRight 0.6s ease-in-out;
 }
 
 .header-logo {
@@ -648,8 +654,22 @@ h3 {
     object-fit: contain;
 }
 
-.logo-container:hover {
-    transform: rotate(360deg);
+@keyframes rotateLeft {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+}
+
+@keyframes rotateRight {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.rotate-left {
+    animation: rotateLeft 0.6s ease-in-out;
+}
+
+.rotate-right {
+    animation: rotateRight 0.6s ease-in-out;
 }
 
 .header-left h1 {
@@ -907,14 +927,13 @@ h3 {
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     width: 300px;
     position: relative;
-    animation: slideIn 0.3s ease-out;
-    pointer-events: auto;
-    overflow: hidden;
     display: flex;
     align-items: flex-start;
     gap: 12px;
-    transform: translateY(0);  /* 添加初始transform值 */
-    transition: transform 0.3s ease;  /* 添加transform过渡效果 */
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    pointer-events: auto;
 }
 
 /* 移动通知框的类 */
@@ -962,28 +981,26 @@ h3 {
     bottom: 0;
     left: 0;
     height: 3px;
+    background-color: currentColor;
+    opacity: 0.5;
     width: 100%;
-    transform-origin: left;
+    transition: width linear;
 }
 
 .notification.info .notification-progress {
-    background: #6F93E7;
+    background-color: #6F93E7;
 }
 
 .notification.warning .notification-progress {
-    background: #FFA726;
+    background-color: #FFA726;
 }
 
 .notification.error .notification-progress {
-    background: #EF5350;
+    background-color: #EF5350;
 }
 
 .notification-progress.running {
-    animation: progress 3s linear;
-}
-
-.notification-progress.paused {
-    animation-play-state: paused;
+    animation: progress 3s linear forwards;
 }
 
 @keyframes slideIn {
@@ -1010,10 +1027,10 @@ h3 {
 
 @keyframes progress {
     from {
-        transform: scaleX(1);
+        width: 100%;
     }
     to {
-        transform: scaleX(0);
+        width: 0%;
     }
 }
 

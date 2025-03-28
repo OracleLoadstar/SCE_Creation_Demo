@@ -795,106 +795,96 @@ document.addEventListener('DOMContentLoaded', () => {
         const notification = document.createElement('div');
         notification.className = `notification ${type}`;
         
-        // 创建图标
+        // 设置初始状态为隐藏
+        notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
+        
         const icon = document.createElement('span');
         icon.className = 'material-icons notification-icon';
-        switch (type) {
-            case 'info':
-                icon.textContent = 'info';
-                break;
-            case 'warning':
-                icon.textContent = 'warning';
-                break;
-            case 'error':
-                icon.textContent = 'error';
-                break;
-        }
+        icon.textContent = type === 'error' ? 'error' : (type === 'warning' ? 'warning' : 'info');
         
-        // 创建内容区域
         const content = document.createElement('div');
         content.className = 'notification-content';
         content.textContent = message;
         
-        // 创建进度条
         const progress = document.createElement('div');
-        progress.className = 'notification-progress running';
+        progress.className = 'notification-progress';
         
-        // 组装通知
         notification.appendChild(icon);
         notification.appendChild(content);
         notification.appendChild(progress);
         
-        // 将新通知插入到容器顶部
+        // 添加到容器前，移动已有的通知
+        const notifications = container.getElementsByClassName('notification');
+        Array.from(notifications).forEach(notif => {
+            notif.classList.add('move-down');
+        });
+        
+        // 添加新通知到容器
         container.insertBefore(notification, container.firstChild);
         
-        // 移动现有的通知
-        const height = notification.offsetHeight + 10; // 10px是间距
-        const existingNotifications = Array.from(container.children).slice(1);
-        
-        // 等待新通知完成插入动画后再移动其他通知
-        setTimeout(() => {
-            existingNotifications.forEach(notif => {
-                notif.style.transform = `translateY(${height}px)`;
+        // 触发进入动画
+        requestAnimationFrame(() => {
+            notification.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            notification.style.transform = 'translateX(0)';
+            notification.style.opacity = '1';
+            
+            // 启动进度条动画
+            requestAnimationFrame(() => {
+                progress.classList.add('running');
             });
-        }, 10);
-        
-        // 鼠标悬停时暂停进度条
-        notification.addEventListener('mouseenter', () => {
-            progress.classList.remove('running');
-            progress.classList.add('paused');
         });
-        
-        // 鼠标离开时恢复进度条
-        notification.addEventListener('mouseleave', () => {
-            progress.classList.remove('paused');
-            progress.classList.add('running');
-        });
-        
-        // 设置定时器
-        const timer = setTimeout(() => {
-            notification.classList.add('closing');
+
+        // 设置移除通知的超时
+        const removeNotification = () => {
+            notification.style.transform = 'translateX(100%)';
+            notification.style.opacity = '0';
             
-            // 移动其他通知回到原位
-            const currentNotifications = Array.from(container.children);
-            const index = currentNotifications.indexOf(notification);
-            const notificationsBelow = currentNotifications.slice(index + 1);
-            
-            notificationsBelow.forEach(notif => {
-                notif.style.transform = 'translateY(0)';
-            });
-            
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.parentElement.removeChild(notification);
+            notification.addEventListener('transitionend', () => {
+                if (container.contains(notification)) {
+                    container.removeChild(notification);
+                    // 恢复其他通知的位置
+                    const remainingNotifications = container.getElementsByClassName('notification');
+                    Array.from(remainingNotifications).forEach(notif => {
+                        notif.classList.remove('move-down');
+                    });
                 }
-            }, 300);
-        }, 3000);
-        
-        // 当鼠标悬停时清除定时器
+            }, { once: true });
+        };
+
+        // 3秒后移除通知
+        const timeout = setTimeout(removeNotification, 3000);
+
+        // 鼠标悬停时暂停进度条和移除计时器
         notification.addEventListener('mouseenter', () => {
-            clearTimeout(timer);
+            clearTimeout(timeout);
+            progress.style.animationPlayState = 'paused';
         });
-        
-        // 当鼠标离开时重新开始计时
+
+        // 鼠标离开时恢复进度条和重新设置移除计时器
         notification.addEventListener('mouseleave', () => {
-            setTimeout(() => {
-                notification.classList.add('closing');
-                
-                // 移动其他通知回到原位
-                const currentNotifications = Array.from(container.children);
-                const index = currentNotifications.indexOf(notification);
-                const notificationsBelow = currentNotifications.slice(index + 1);
-                
-                notificationsBelow.forEach(notif => {
-                    notif.style.transform = 'translateY(0)';
-                });
-                
-                setTimeout(() => {
-                    if (notification.parentElement) {
-                        notification.parentElement.removeChild(notification);
-                    }
-                }, 300);
-            }, 3000);
+            progress.style.animationPlayState = 'running';
+            setTimeout(removeNotification, 3000);
+        });
+    }
+
+    // 添加 logo 点击事件处理
+    const logoContainer = document.querySelector('.logo-container');
+    if (logoContainer) {
+        logoContainer.addEventListener('click', () => {
+            // 移除之前的动画类
+            logoContainer.classList.remove('rotate-left', 'rotate-right');
+            
+            // 随机选择旋转方向
+            const direction = Math.random() < 0.5 ? 'rotate-left' : 'rotate-right';
+            
+            // 添加新的动画类
+            logoContainer.classList.add(direction);
+            
+            // 动画结束后移除类
+            logoContainer.addEventListener('animationend', () => {
+                logoContainer.classList.remove('rotate-left', 'rotate-right');
+            }, { once: true });  // 事件监听器只触发一次
         });
     }
 });
