@@ -336,6 +336,15 @@ function updateText() {
         if (document.querySelector('#enum_card .card-header h2')) {
             document.querySelector('#enum_card .card-header h2').textContent = i18n.enumValues || 'Enum Values';
         }
+
+        // 更新枚举输入框标签
+        const enumLabels = document.querySelectorAll('[data-i18n^="enumLabels."]');
+        enumLabels.forEach(label => {
+            const key = label.getAttribute('data-i18n').split('.')[1];
+            if (i18n.enumLabels && i18n.enumLabels[key]) {
+                label.textContent = i18n.enumLabels[key];
+            }
+        });
     } catch (error) {
         console.error('Error updating text:', error);
     }
@@ -697,7 +706,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = {
             card_name: document.getElementById('card_name').value,
             type_static: document.getElementById('type_static').value,
-            friendship_static: document.getElementById('friendship_static').value,
             friendship_award: document.getElementById('friendship_award').value,
             enthusiasm_award: document.getElementById('enthusiasm_award').value,
             training_award: document.getElementById('training_award').value,
@@ -708,7 +716,20 @@ document.addEventListener('DOMContentLoaded', () => {
             power_bonus: document.getElementById('power_bonus').value,
             willpower_bonus: document.getElementById('willpower_bonus').value,
             wit_bonus: document.getElementById('wit_bonus').value,
-            sp_bonus: document.getElementById('sp_bonus').value
+            sp_bonus: document.getElementById('sp_bonus').value,
+            // 添加枚举值参数
+            enable_enum: document.getElementById('enable_enum').checked,
+            enum_friendship_award: document.getElementById('enum_friendship_award').value,
+            enum_enthusiasm_award: document.getElementById('enum_enthusiasm_award').value,
+            enum_training_award: document.getElementById('enum_training_award').value,
+            enum_friendship_point: document.getElementById('enum_friendship_point').value,
+            enum_strike_point: document.getElementById('enum_strike_point').value,
+            enum_speed_bonus: document.getElementById('enum_speed_bonus').value,
+            enum_stamina_bonus: document.getElementById('enum_stamina_bonus').value,
+            enum_power_bonus: document.getElementById('enum_power_bonus').value,
+            enum_willpower_bonus: document.getElementById('enum_willpower_bonus').value,
+            enum_wit_bonus: document.getElementById('enum_wit_bonus').value,
+            enum_sp_bonus: document.getElementById('enum_sp_bonus').value
         };
 
         const queryString = Object.entries(params)
@@ -721,13 +742,39 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadParamsFromUrl() {
         const urlParams = new URLSearchParams(window.location.search);
         const inputs = [
-            'card_name', 'type_static', 'friendship_static', 'friendship_award',
+            'card_name', 'type_static', 'friendship_award',
             'enthusiasm_award', 'training_award', 'strike_point', 'friendship_point',
             'speed_bonus', 'stamina_bonus', 'power_bonus', 'willpower_bonus',
             'wit_bonus', 'sp_bonus'
         ];
 
+        // 处理非枚举字段
         inputs.forEach(id => {
+            const value = urlParams.get(id);
+            if (value !== null) {
+                document.getElementById(id).value = value;
+            }
+        });
+
+        // 处理枚举开关状态
+        const enableEnum = urlParams.get('enable_enum');
+        if (enableEnum !== null) {
+            const enumCheckbox = document.getElementById('enable_enum');
+            enumCheckbox.checked = enableEnum === 'true';
+            // 触发change事件以显示/隐藏枚举卡片
+            const event = new Event('change');
+            enumCheckbox.dispatchEvent(event);
+        }
+
+        // 处理枚举值字段
+        const enumInputs = [
+            'enum_friendship_award', 'enum_enthusiasm_award', 'enum_training_award',
+            'enum_friendship_point', 'enum_strike_point', 'enum_speed_bonus',
+            'enum_stamina_bonus', 'enum_power_bonus', 'enum_willpower_bonus',
+            'enum_wit_bonus', 'enum_sp_bonus'
+        ];
+
+        enumInputs.forEach(id => {
             const value = urlParams.get(id);
             if (value !== null) {
                 document.getElementById(id).value = value;
@@ -747,10 +794,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             await navigator.clipboard.writeText(shareText);
-            showNotification('分享链接已复制到剪贴板！', 'info');
+            showNotification(i18n.notifications.shareLinkCopied, 'info');
         } catch (err) {
-            console.error('复制到剪贴板失败:', err);
-            showNotification('复制失败，请手动复制链接', 'error');
+            console.error(i18n.notifications.copyError, err);
+            showNotification(i18n.notifications.copyFailed, 'error');
         }
     });
 
@@ -954,10 +1001,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const enumCard = document.getElementById('enum_card');
         if (e.target.checked) {
             enumCard.style.display = 'block';
-            showNotification('已启用枚举拓展功能', 'info');
+            showNotification(i18n.notifications.enableEnum, 'info');
         } else {
             enumCard.style.display = 'none';
-            showNotification('已禁用枚举拓展功能', 'info');
+            showNotification(i18n.notifications.disableEnum, 'info');
         }
     });
 });
