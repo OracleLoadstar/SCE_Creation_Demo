@@ -8,7 +8,7 @@ class UmaSCE_Main {
     constructor() {
         // 初始化属性
         this.type_static = 0;
-        this.friendship_static = 0;
+        // Removed friendship_static initialization
         this.friendship_award = 0;
         this.enthusiasm_award = 0;
         this.training_award = 0;
@@ -36,7 +36,7 @@ class UmaSCE_Main {
     getParamsFromForm() {
         // 首先获取非枚举输入
         this.type_static = parseInt(document.getElementById('type_static').value);
-        this.friendship_static = parseInt(document.getElementById('friendship_static').value);
+        // Removed friendship_static since it's commented out in HTML
         this.friendship_award = parseInt(document.getElementById('friendship_award').value);
         this.enthusiasm_award = parseInt(document.getElementById('enthusiasm_award').value);
         this.training_award = parseInt(document.getElementById('training_award').value);
@@ -66,9 +66,6 @@ class UmaSCE_Main {
                 sp_bonus: parseInt(document.getElementById('enum_sp_bonus').value || 0)
             };
             
-            // 特殊处理：friendship_award加算至friendship_static
-            this.friendship_static += enumValues.friendship_award;
-            
             // 其他枚举值叠加到对应的非枚举值上
             this.enthusiasm_award += enumValues.enthusiasm_award;
             this.training_award += enumValues.training_award;
@@ -86,7 +83,6 @@ class UmaSCE_Main {
     // V1 算法实现
     evalV1() {
         this.v1_ept = (this.friendship_award * 0.01 + 1) *
-            (this.friendship_static * 0.01 + 1) *
             (this.enthusiasm_award * 0.002 + 1) *
             (this.training_award * 0.01 + 1);
 
@@ -418,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateInputs() {
         const inputs = [
             { id: 'type_static', name: i18n.type },
-            { id: 'friendship_static', name: i18n.friendshipStatic },
+            // Removed friendship_static since it's commented out in HTML
             { id: 'friendship_award', name: i18n.friendshipAward },
             { id: 'enthusiasm_award', name: i18n.enthusiasmAward },
             { id: 'training_award', name: i18n.trainingAward },
@@ -562,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = {
             card_name: document.getElementById('card_name').value,
             type_static: document.getElementById('type_static').value,
-            friendship_static: document.getElementById('friendship_static').value,
+            // Removed friendship_static
             friendship_award: document.getElementById('friendship_award').value,
             enthusiasm_award: document.getElementById('enthusiasm_award').value,
             training_award: document.getElementById('training_award').value,
@@ -608,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 更新表单数据
                     document.getElementById('card_name').value = data.card_name || '';
                     document.getElementById('type_static').value = data.type_static;
-                    document.getElementById('friendship_static').value = data.friendship_static;
+                    // Removed friendship_static since it's commented out in HTML
                     document.getElementById('friendship_award').value = data.friendship_award;
                     document.getElementById('enthusiasm_award').value = data.enthusiasm_award;
                     document.getElementById('training_award').value = data.training_award;
