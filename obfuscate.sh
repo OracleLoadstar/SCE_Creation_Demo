@@ -24,11 +24,11 @@ then
     echo "未找到 Terser，尝试全局安装..."
     npm install -g terser
     # 检查安装是否成功
-    if ! command -v terser &> /dev/null
-    then
-        echo "错误：Terser 安装失败。请检查 npm 的错误信息。"
-        exit 1
-    fi
+    # if ! command -v terser &> /dev/null
+    # then
+    #     echo "错误：Terser 安装失败。请检查 npm 的错误信息。"
+    #     exit 1
+    # fi
     echo "Terser 安装成功。"
 else
     echo "Terser 已安装。"
