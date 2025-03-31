@@ -1,19 +1,20 @@
 const CACHE_NAME = 'sce-cache-v1';
+const BASE_URL = self.location.pathname.replace('sw.js', '');
 const ASSETS = [
-  '.',
-  'index.html',
-  'styles.css',
-  'script_org.js',
-  'UmaSCE_V5.js',
-  'lang.js',
-  'fonts/font.css',
-  'fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2',
-  'image/SCE_ICON_Dynamic.gif',
-  'image/SCE_ICON_Static.png',
-  'image/SCE_Loading2.gif',
-  'image/SCEDif1.png',
-  'image/SCEPlus1.png',
-  'manifest.json'
+  BASE_URL,
+  `${BASE_URL}index.html`,
+  `${BASE_URL}styles.css`,
+  `${BASE_URL}script_org.js`,
+  `${BASE_URL}UmaSCE_V5.js`,
+  `${BASE_URL}lang.js`,
+  `${BASE_URL}fonts/font.css`,
+  `${BASE_URL}fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2`,
+  `${BASE_URL}image/SCE_ICON_Dynamic.gif`,
+  `${BASE_URL}image/SCE_ICON_Static.png`,
+  `${BASE_URL}image/SCE_Loading2.gif`,
+  `${BASE_URL}image/SCEDif1.png`,
+  `${BASE_URL}image/SCEPlus1.png`,
+  `${BASE_URL}manifest.json`
 ];
 
 // 安装 service worker
@@ -21,14 +22,19 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        // 分别缓存每个资源，这样单个资源失败不会影响整体
-        return Promise.all(
+        return Promise.allSettled(
           ASSETS.map(url => {
-            return cache.add(url).catch(err => {
-              console.error('Error caching ' + url + ':', err);
-              // 继续处理其他资源
-              return Promise.resolve();
-            });
+            return fetch(new Request(url, { cache: 'reload' }))
+              .then(response => {
+                if (!response.ok) {
+                  throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+                }
+                return cache.put(url, response);
+              })
+              .catch(err => {
+                console.error('Error caching ' + url + ':', err);
+                return Promise.resolve(); // 继续处理其他资源
+              });
           })
         );
       })
@@ -38,51 +44,61 @@ self.addEventListener('install', event => {
 // 激活 service worker
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME)
-          .map(key => caches.delete(key))
-      );
-    })
+    Promise.all([
+      caches.keys().then(keys => {
+        return Promise.all(
+          keys.filter(key => key !== CACHE_NAME)
+            .map(key => caches.delete(key))
+        );
+      }),
+      self.clients.claim() // 立即接管页面控制权
+    ])
   );
 });
 
 // 拦截请求并从缓存中响应
 self.addEventListener('fetch', event => {
+  // 忽略非 GET 请求
+  if (event.request.method !== 'GET') {
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        if (response) {
-          return response;
+      .then(cachedResponse => {
+        if (cachedResponse) {
+          return cachedResponse;
         }
-        // 如果缓存中没有，尝试从网络获取
-        return fetch(event.request).then(response => {
-          // 检查响应是否有效
-          if (!response || response.status !== 200 || response.type !== 'basic') {
+
+        return fetch(event.request.clone())
+          .then(response => {
+            // 检查响应是否有效
+            if (!response || response.status !== 200 || response.type !== 'basic') {
+              return response;
+            }
+
+            // 克隆响应用于缓存
+            const responseToCache = response.clone();
+
+            caches.open(CACHE_NAME)
+              .then(cache => {
+                cache.put(event.request, responseToCache)
+                  .catch(err => console.error('Error caching response:', err));
+              });
+
             return response;
-          }
-
-          // 克隆响应，因为响应流只能使用一次
-          const responseToCache = response.clone();
-
-          // 将新的响应添加到缓存中
-          caches.open(CACHE_NAME)
-            .then(cache => {
-              cache.put(event.request, responseToCache);
-            })
-            .catch(err => {
-              console.error('Error caching new response:', err);
+          })
+          .catch(error => {
+            console.error('Fetch failed:', error);
+            // 如果获取失败，尝试返回离线页面或错误响应
+            return new Response('Network error', {
+              status: 503,
+              statusText: 'Service Unavailable',
+              headers: new Headers({
+                'Content-Type': 'text/plain'
+              })
             });
-
-          return response;
-        }).catch(err => {
-          console.error('Fetch failed:', err);
-          // 如果网络请求失败，返回一个适当的错误响应
-          return new Response('Network error', {
-            status: 503,
-            statusText: 'Service Unavailable'
           });
-        });
       })
   );
 });
@@ -90,6 +106,8 @@ self.addEventListener('fetch', event => {
 // 处理更新消息
 self.addEventListener('message', event => {
   if (event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
+    self.skipWaiting()
+      .then(() => console.log('Service Worker skipped waiting'))
+      .catch(err => console.error('Error skipping waiting:', err));
   }
 });
