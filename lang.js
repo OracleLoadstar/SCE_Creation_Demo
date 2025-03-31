@@ -95,6 +95,19 @@ const languages = {
             shareLinkCopied: "Share link copied to clipboard!",
             copyFailed: "Copy failed, please copy the link manually",
             copyError: "Error copying to clipboard:"
+        },
+        // 应用管理
+        appManagement: {
+            title: "App Management",
+            install: "Install as App",
+            update: "Update App",
+            clearCache: "Clear Cache",
+            installSuccess: "App installed successfully",
+            updateSuccess: "App updated successfully",
+            clearSuccess: "Cache cleared successfully",
+            installError: "Failed to install app",
+            updateError: "Failed to update app",
+            clearError: "Failed to clear cache"
         }
     },
     zh: {
@@ -199,6 +212,19 @@ const languages = {
             shareLinkCopied: "分享链接已复制到剪贴板！",
             copyFailed: "复制失败，请手动复制链接",
             copyError: "复制到剪贴板失败:"
+        },
+        // 应用管理
+        appManagement: {
+            title: "应用管理",
+            install: "安装为应用",
+            update: "更新应用",
+            clearCache: "清理缓存",
+            installSuccess: "应用安装成功",
+            updateSuccess: "应用更新成功",
+            clearSuccess: "缓存清理成功",
+            installError: "应用安装失败",
+            updateError: "应用更新失败",
+            clearError: "缓存清理失败"
         }
     }
 };

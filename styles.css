@@ -1205,3 +1205,37 @@ input:checked + .slider:before {
         width: 100% !important;
     }
 }
+
+.app-management-card {
+    margin-bottom: 20px;
+}
+
+.app-management-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.app-management-buttons .button {
+    flex: 1;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+}
+
+.app-management-buttons .button .material-icons {
+    font-size: 20px;
+}
+
+@media (max-width: 600px) {
+    .app-management-buttons {
+        flex-direction: column;
+    }
+    
+    .app-management-buttons .button {
+        width: 100%;
+    }
+}

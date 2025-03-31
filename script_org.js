@@ -341,6 +341,12 @@ function updateText() {
                 label.textContent = i18n.enumLabels[key];
             }
         });
+
+        // 更新应用管理卡片文本
+        document.querySelector('.app-management-title').textContent = i18n.appManagement.title;
+        document.querySelector('#installApp .button-text').textContent = i18n.appManagement.install;
+        document.querySelector('#updateApp .button-text').textContent = i18n.appManagement.update;
+        document.querySelector('#clearCache .button-text').textContent = i18n.appManagement.clearCache;
     } catch (error) {
         console.error('Error updating text:', error);
     }
@@ -593,7 +599,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = {
             card_name: document.getElementById('card_name').value,
             type_static: document.getElementById('type_static').value,
-            // Removed friendship_static
             friendship_award: document.getElementById('friendship_award').value,
             enthusiasm_award: document.getElementById('enthusiasm_award').value,
             training_award: document.getElementById('training_award').value,
@@ -604,7 +609,20 @@ document.addEventListener('DOMContentLoaded', () => {
             power_bonus: document.getElementById('power_bonus').value,
             willpower_bonus: document.getElementById('willpower_bonus').value,
             wit_bonus: document.getElementById('wit_bonus').value,
-            sp_bonus: document.getElementById('sp_bonus').value
+            sp_bonus: document.getElementById('sp_bonus').value,
+            // 添加枚举相关数据
+            enable_enum: document.getElementById('enable_enum').checked,
+            enum_friendship_award: document.getElementById('enum_friendship_award').value,
+            enum_enthusiasm_award: document.getElementById('enum_enthusiasm_award').value,
+            enum_training_award: document.getElementById('enum_training_award').value,
+            enum_friendship_point: document.getElementById('enum_friendship_point').value,
+            enum_strike_point: document.getElementById('enum_strike_point').value,
+            enum_speed_bonus: document.getElementById('enum_speed_bonus').value,
+            enum_stamina_bonus: document.getElementById('enum_stamina_bonus').value,
+            enum_power_bonus: document.getElementById('enum_power_bonus').value,
+            enum_willpower_bonus: document.getElementById('enum_willpower_bonus').value,
+            enum_wit_bonus: document.getElementById('enum_wit_bonus').value,
+            enum_sp_bonus: document.getElementById('enum_sp_bonus').value
         };
 
         // 创建Blob对象
@@ -639,7 +657,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // 更新表单数据
                     document.getElementById('card_name').value = data.card_name || '';
                     document.getElementById('type_static').value = data.type_static;
-                    // Removed friendship_static since it's commented out in HTML
                     document.getElementById('friendship_award').value = data.friendship_award;
                     document.getElementById('enthusiasm_award').value = data.enthusiasm_award;
                     document.getElementById('training_award').value = data.training_award;
@@ -651,8 +668,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.getElementById('willpower_bonus').value = data.willpower_bonus;
                     document.getElementById('wit_bonus').value = data.wit_bonus;
                     document.getElementById('sp_bonus').value = data.sp_bonus;
+
+                    // 处理枚举开关状态
+                    const enumCheckbox = document.getElementById('enable_enum');
+                    if (data.enable_enum !== undefined) {
+                        enumCheckbox.checked = data.enable_enum;
+                        // 触发change事件以显示/隐藏枚举卡片
+                        const event = new Event('change');
+                        enumCheckbox.dispatchEvent(event);
+                    }
+
+                    // 更新枚举值
+                    if (data.enum_friendship_award !== undefined) document.getElementById('enum_friendship_award').value = data.enum_friendship_award;
+                    if (data.enum_enthusiasm_award !== undefined) document.getElementById('enum_enthusiasm_award').value = data.enum_enthusiasm_award;
+                    if (data.enum_training_award !== undefined) document.getElementById('enum_training_award').value = data.enum_training_award;
+                    if (data.enum_friendship_point !== undefined) document.getElementById('enum_friendship_point').value = data.enum_friendship_point;
+                    if (data.enum_strike_point !== undefined) document.getElementById('enum_strike_point').value = data.enum_strike_point;
+                    if (data.enum_speed_bonus !== undefined) document.getElementById('enum_speed_bonus').value = data.enum_speed_bonus;
+                    if (data.enum_stamina_bonus !== undefined) document.getElementById('enum_stamina_bonus').value = data.enum_stamina_bonus;
+                    if (data.enum_power_bonus !== undefined) document.getElementById('enum_power_bonus').value = data.enum_power_bonus;
+                    if (data.enum_willpower_bonus !== undefined) document.getElementById('enum_willpower_bonus').value = data.enum_willpower_bonus;
+                    if (data.enum_wit_bonus !== undefined) document.getElementById('enum_wit_bonus').value = data.enum_wit_bonus;
+                    if (data.enum_sp_bonus !== undefined) document.getElementById('enum_sp_bonus').value = data.enum_sp_bonus;
+
+                    // 自动计算结果
+                    document.getElementById('calculate-all').click();
                 } catch (error) {
-                    alert(i18n.errorLoadingCard);
+                    showNotification(i18n.errorLoadingCard, 'error');
                 }
             };
             reader.readAsText(file);
@@ -1038,4 +1080,160 @@ document.addEventListener('DOMContentLoaded', () => {
             showNotification(i18n.notifications.disableEnum, 'info');
         }
     });
+
+    // 应用管理功能
+    const installApp = document.getElementById('installApp');
+    const updateApp = document.getElementById('updateApp');
+    const clearCache = document.getElementById('clearCache');
+
+    // PWA 安装功能
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installApp.style.display = 'block';
+    });
+
+    installApp.addEventListener('click', async () => {
+        if (!deferredPrompt) {
+            showNotification(i18n.appManagement.installError, 'error');
+            return;
+        }
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            showNotification(i18n.appManagement.installSuccess, 'info');
+        } else {
+            showNotification(i18n.appManagement.installError, 'error');
+        }
+        deferredPrompt = null;
+    });
+
+    // 更新应用功能
+    if ('serviceWorker' in navigator) {
+        let newWorker;
+        let refreshing = false;
+
+        updateApp.addEventListener('click', () => {
+            if (newWorker) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                showNotification(i18n.appManagement.updateSuccess, 'info');
+            } else {
+                showNotification(i18n.appManagement.updateError, 'error');
+            }
+        });
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            refreshing = true;
+            window.location.reload();
+        });
+
+        navigator.serviceWorker.ready.then((registration) => {
+            registration.addEventListener('updatefound', () => {
+                newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            updateApp.style.display = 'block';
+                        }
+                    }
+                });
+            });
+        });
+    }
+
+    // 清理缓存功能
+    clearCache.addEventListener('click', async () => {
+        if (!('caches' in window)) {
+            showNotification(i18n.appManagement.clearError, 'error');
+            return;
+        }
+
+        try {
+            const cacheKeys = await caches.keys();
+            await Promise.all(cacheKeys.map(key => caches.delete(key)));
+            showNotification(i18n.appManagement.clearSuccess, 'info');
+        } catch (err) {
+            showNotification(i18n.appManagement.clearError, 'error');
+        }
+    });
+});
+
+// 注册 Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+                console.error('ServiceWorker registration failed:', err);
+            });
+    });
+}
+
+// PWA 安装功能
+let deferredPrompt;
+const installButton = document.getElementById('installApp');
+const updateButton = document.getElementById('updateApp');
+const clearCacheButton = document.getElementById('clearCache');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installButton.style.display = 'flex';
+});
+
+installButton.addEventListener('click', async () => {
+    if (!deferredPrompt) {
+        showNotification(i18n.appManagement.installError, 'error');
+        return;
+    }
+    
+    try {
+        const result = await deferredPrompt.prompt();
+        if (result.outcome === 'accepted') {
+            showNotification(i18n.appManagement.installSuccess, 'info');
+            installButton.style.display = 'none';
+        }
+    } catch (err) {
+        showNotification(i18n.appManagement.installError, 'error');
+    }
+    
+    deferredPrompt = null;
+});
+
+// 更新应用
+updateButton.addEventListener('click', async () => {
+    if (!('serviceWorker' in navigator)) {
+        showNotification(i18n.appManagement.updateError, 'error');
+        return;
+    }
+
+    try {
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration) {
+            await registration.update();
+            showNotification(i18n.appManagement.updateSuccess, 'info');
+        }
+    } catch (err) {
+        showNotification(i18n.appManagement.updateError, 'error');
+    }
+});
+
+// 清理缓存
+clearCacheButton.addEventListener('click', async () => {
+    if (!('caches' in window)) {
+        showNotification(i18n.appManagement.clearError, 'error');
+        return;
+    }
+
+    try {
+        const cacheKeys = await caches.keys();
+        await Promise.all(cacheKeys.map(key => caches.delete(key)));
+        showNotification(i18n.appManagement.clearSuccess, 'info');
+    } catch (err) {
+        showNotification(i18n.appManagement.clearError, 'error');
+    }
 });
