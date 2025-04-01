@@ -17,80 +17,76 @@ const ASSETS = [
   `${BASE_URL}manifest.json`
 ];
 
-// 安装 service worker
+// 静默预缓存核心资源
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
+        // 静默缓存所有资源
         return Promise.allSettled(
-          ASSETS.map(url => {
-            return fetch(new Request(url, { cache: 'reload' }))
+          ASSETS.map(url => 
+            fetch(new Request(url, { cache: 'reload' }))
               .then(response => {
-                if (!response.ok) {
-                  throw new Error(`Failed to fetch ${url}: ${response.status} ${response.statusText}`);
+                if (response.ok) {
+                  return cache.put(url, response);
                 }
-                return cache.put(url, response);
+                throw new Error(`Failed to fetch ${url}`);
               })
               .catch(err => {
-                console.error('Error caching ' + url + ':', err);
+                console.warn(`Caching failed for ${url}:`, err);
                 return Promise.resolve(); // 继续处理其他资源
-              });
-          })
+              })
+          )
         );
       })
+      .then(() => self.skipWaiting()) // 立即激活新版本
   );
 });
 
-// 激活 service worker
+// 接管页面控制权
 self.addEventListener('activate', event => {
   event.waitUntil(
     Promise.all([
-      caches.keys().then(keys => {
-        return Promise.all(
+      // 清理旧缓存
+      caches.keys()
+        .then(keys => Promise.all(
           keys.filter(key => key !== CACHE_NAME)
             .map(key => caches.delete(key))
-        );
-      }),
-      self.clients.claim() // 立即接管页面控制权
+        )),
+      // 立即接管页面
+      self.clients.claim()
     ])
   );
 });
 
-// 拦截请求并从缓存中响应
+// 网络优先的缓存策略
 self.addEventListener('fetch', event => {
-  // 忽略非 GET 请求
-  if (event.request.method !== 'GET') {
-    return;
-  }
+  if (event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request)
-      .then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
+    fetch(event.request)
+      .then(response => {
+        // 检查响应是否有效
+        if (!response || response.status !== 200) {
+          throw new Error('Network response was not ok');
         }
 
-        return fetch(event.request.clone())
-          .then(response => {
-            // 检查响应是否有效
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
+        // 克隆响应用于缓存
+        const responseToCache = response.clone();
+        caches.open(CACHE_NAME)
+          .then(cache => cache.put(event.request, responseToCache))
+          .catch(err => console.warn('Cache update failed:', err));
+
+        return response;
+      })
+      .catch(() => 
+        // 网络请求失败时使用缓存
+        caches.match(event.request)
+          .then(cachedResponse => {
+            if (cachedResponse) {
+              return cachedResponse;
             }
-
-            // 克隆响应用于缓存
-            const responseToCache = response.clone();
-
-            caches.open(CACHE_NAME)
-              .then(cache => {
-                cache.put(event.request, responseToCache)
-                  .catch(err => console.error('Error caching response:', err));
-              });
-
-            return response;
-          })
-          .catch(error => {
-            console.error('Fetch failed:', error);
-            // 如果获取失败，尝试返回离线页面或错误响应
+            // 如果缓存中也没有，返回离线页面或错误响应
             return new Response('Network error', {
               status: 503,
               statusText: 'Service Unavailable',
@@ -98,8 +94,8 @@ self.addEventListener('fetch', event => {
                 'Content-Type': 'text/plain'
               })
             });
-          });
-      })
+          })
+      )
   );
 });
 
@@ -107,7 +103,7 @@ self.addEventListener('fetch', event => {
 self.addEventListener('message', event => {
   if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting()
-      .then(() => console.log('Service Worker skipped waiting'))
-      .catch(err => console.error('Error skipping waiting:', err));
+      .then(() => console.log('Service Worker activated'))
+      .catch(err => console.error('Error activating Service Worker:', err));
   }
 });

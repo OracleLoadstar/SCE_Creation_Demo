@@ -18,6 +18,33 @@
       "sizes": "64x64",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "image/SCE_ICON_Static.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "image/SCE_ICON_Static.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "image/SCE_ICON_Static.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "prefer_related_applications": false,
+  "categories": ["utilities"],
+  "shortcuts": [
+    {
+      "name": "快速计算",
+      "url": "/?quick=true",
+      "icons": [{ "src": "image/SCE_ICON_Static.png", "sizes": "192x192" }]
     }
   ]
 }
