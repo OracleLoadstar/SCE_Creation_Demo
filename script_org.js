@@ -1135,7 +1135,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 installButton.addEventListener('click', async () => {
-    if (!deferredPrompt) {
+    if (deferredPrompt) {
         showNotification(i18n.appManagement.installError, 'error');
         return;
     }

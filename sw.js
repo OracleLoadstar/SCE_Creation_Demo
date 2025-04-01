@@ -4,7 +4,7 @@ const ASSETS = [
   BASE_URL,
   `${BASE_URL}index.html`,
   `${BASE_URL}styles.css`,
-  `${BASE_URL}script_org.js`,
+  `${BASE_URL}script.js`,
   `${BASE_URL}UmaSCE_V5.js`,
   `${BASE_URL}lang.js`,
   `${BASE_URL}fonts/font.css`,
