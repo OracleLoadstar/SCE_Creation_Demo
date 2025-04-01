@@ -268,34 +268,18 @@
                     <h2 class="app-management-title">应用管理</h2>
                 </div>
                 <div class="card-content">
-                    <div class="app-info">
-                        <div class="app-status">
-                            <div class="status-item">
-                                <span class="material-icons">cloud_done</span>
-                                <span class="status-text">已缓存</span>
-                            </div>
-                            <div class="status-item">
-                                <span class="material-icons">update</span>
-                                <span class="status-text">最后更新: <span id="last-update">-</span></span>
-                            </div>
-                        </div>
-                        <div class="cache-size">
-                            <span class="material-icons">storage</span>
-                            <span>缓存大小: <span id="cache-size">-</span></span>
-                        </div>
-                    </div>
-                    <div class="app-actions">
-                        <button id="check-update" class="action-button">
+                    <div class="app-management-buttons">
+                        <button id="installApp" class="button primary">
+                            <span class="material-icons">get_app</span>
+                            <span class="button-text">安装为应用</span>
+                        </button>
+                        <button id="updateApp" class="button primary">
                             <span class="material-icons">system_update</span>
-                            <span>检查更新</span>
+                            <span class="button-text">更新应用</span>
                         </button>
-                        <button id="clear-data" class="action-button">
-                            <span class="material-icons">delete_sweep</span>
-                            <span>清除数据</span>
-                        </button>
-                        <button id="export-data" class="action-button">
-                            <span class="material-icons">file_download</span>
-                            <span>导出数据</span>
+                        <button id="clearCache" class="button primary">
+                            <span class="material-icons">cleaning_services</span>
+                            <span class="button-text">清理缓存</span>
                         </button>
                     </div>
                 </div>
@@ -368,6 +352,6 @@
     <!-- 脚本加载顺序：语言文件 -> V5 算法 -> 主脚本 -->
     <script src="lang.js"></script>
     <script src="UmaSCE_V5.js"></script>  
-    <script src="script.js"></script>
+    <script src="script_org.js"></script>
 </body>
 </html>

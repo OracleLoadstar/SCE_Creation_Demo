@@ -352,85 +352,6 @@ function updateText() {
     }
 }
 
-// 通知系统
-function showNotification(message, type = 'info') {
-    const container = document.getElementById('notification-container');
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    
-    // 设置初始状态为隐藏
-    notification.style.transform = 'translateX(100%)';
-    notification.style.opacity = '0';
-    
-    const icon = document.createElement('span');
-    icon.className = 'material-icons notification-icon';
-    icon.textContent = type === 'error' ? 'error' : (type === 'warning' ? 'warning' : 'info');
-    
-    const content = document.createElement('div');
-    content.className = 'notification-content';
-    content.textContent = message;
-    
-    const progress = document.createElement('div');
-    progress.className = 'notification-progress';
-    
-    notification.appendChild(icon);
-    notification.appendChild(content);
-    notification.appendChild(progress);
-    
-    // 添加到容器前，移动已有的通知
-    const notifications = container.getElementsByClassName('notification');
-    Array.from(notifications).forEach(notif => {
-        notif.classList.add('move-down');
-    });
-    
-    // 添加新通知到容器
-    container.insertBefore(notification, container.firstChild);
-    
-    // 触发进入动画
-    requestAnimationFrame(() => {
-        notification.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-        notification.style.transform = 'translateX(0)';
-        notification.style.opacity = '1';
-        
-        // 启动进度条动画
-        requestAnimationFrame(() => {
-            progress.classList.add('running');
-        });
-    });
-
-    // 设置移除通知的超时
-    const removeNotification = () => {
-        notification.style.transform = 'translateX(100%)';
-        notification.style.opacity = '0';
-        
-        notification.addEventListener('transitionend', () => {
-            if (container.contains(notification)) {
-                container.removeChild(notification);
-                // 恢复其他通知的位置
-                const remainingNotifications = container.getElementsByClassName('notification');
-                Array.from(remainingNotifications).forEach(notif => {
-                    notif.classList.remove('move-down');
-                });
-            }
-        }, { once: true });
-    };
-
-    // 3秒后移除通知
-    const timeout = setTimeout(removeNotification, 3000);
-
-    // 鼠标悬停时暂停进度条和移除计时器
-    notification.addEventListener('mouseenter', () => {
-        clearTimeout(timeout);
-        progress.style.animationPlayState = 'paused';
-    });
-
-    // 鼠标离开时恢复进度条和重新设置移除计时器
-    notification.addEventListener('mouseleave', () => {
-        progress.style.animationPlayState = 'running';
-        setTimeout(removeNotification, 3000);
-    });
-}
-
 // Initialize after page load
 document.addEventListener('DOMContentLoaded', () => {
     // 确保语言文件已加载
@@ -1041,7 +962,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const icon = document.createElement('span');
         icon.className = 'material-icons notification-icon';
-        icon.textContent = type === 'error' ? 'error' : (type === 'warning' ? 'warning' : 'info');
+        icon.textContent = type === 'error' ? 'error' : (type === 'error' ? 'error' : 'info');
         
         const content = document.createElement('div');
         content.className = 'notification-content';
@@ -1107,12 +1028,142 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(removeNotification, 3000);
         });
     }
+
+    // 添加 logo 点击事件处理
+    const logoContainer = document.querySelector('.logo-container');
+    if (logoContainer) {
+        logoContainer.addEventListener('click', () => {
+            // 如果正在执行动画，不做任何处理
+            if (logoContainer.classList.contains('rotate-left') || 
+                logoContainer.classList.contains('rotate-right')) {
+                return;
+            }
+            
+            // 随机选择旋转方向
+            const direction = Math.random() < 0.5 ? 'rotate-left' : 'rotate-right';
+            
+            // 添加动画类
+            logoContainer.classList.add(direction);
+            
+            // 创建溅射图标
+            const splash = document.createElement('img');
+            splash.src = direction === 'rotate-left' ? 'image/SCEDif1.png' : 'image/SCEPlus1.png';
+            splash.className = `splash-icon ${direction === 'rotate-left' ? 'splash-left' : 'splash-right'}`;
+            
+            // 设置初始位置
+            splash.style.left = '50%';
+            splash.style.top = '50%';
+            
+            // 将溅射图标添加到logo容器
+            logoContainer.appendChild(splash);
+            
+            // 动画结束后移除类和溅射图标
+            logoContainer.addEventListener('animationend', () => {
+                logoContainer.classList.remove('rotate-left', 'rotate-right');
+            }, { once: true });
+            
+            // 溅射动画结束后移除溅射图标
+            splash.addEventListener('animationend', () => {
+                logoContainer.removeChild(splash);
+            }, { once: true });
+        });
+    }
+
+    // 绑定枚举拓展开关事件
+    document.getElementById('enable_enum').addEventListener('change', function(e) {
+        const enumCard = document.getElementById('enum_card');
+        if (e.target.checked) {
+            enumCard.style.display = 'block';
+            showNotification(i18n.notifications.enableEnum, 'info');
+        } else {
+            enumCard.style.display = 'none';
+            showNotification(i18n.notifications.disableEnum, 'info');
+        }
+    });
+
+    // 应用管理功能
+    const installApp = document.getElementById('installApp');
+    const updateApp = document.getElementById('updateApp');
+    const clearCache = document.getElementById('clearCache');
+
+    // PWA 安装功能
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installApp.style.display = 'block';
+    });
+
+    installApp.addEventListener('click', async () => {
+        if (!deferredPrompt) {
+            showNotification(i18n.appManagement.installError, 'error');
+            return;
+        }
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            showNotification(i18n.appManagement.installSuccess, 'info');
+        } else {
+            showNotification(i18n.appManagement.installError, 'error');
+        }
+        deferredPrompt = null;
+    });
+
+    // 更新应用功能
+    if ('serviceWorker' in navigator) {
+        let newWorker;
+        let refreshing = false;
+
+        updateApp.addEventListener('click', () => {
+            if (newWorker) {
+                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                showNotification(i18n.appManagement.updateSuccess, 'info');
+            } else {
+                showNotification(i18n.appManagement.updateError, 'error');
+            }
+        });
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            refreshing = true;
+            window.location.reload();
+        });
+
+        navigator.serviceWorker.ready.then((registration) => {
+            registration.addEventListener('updatefound', () => {
+                newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed') {
+                        if (navigator.serviceWorker.controller) {
+                            updateApp.style.display = 'block';
+                        }
+                    }
+                });
+            });
+        });
+    }
+
+    // 清理缓存功能
+    clearCache.addEventListener('click', async () => {
+        if (!('caches' in window)) {
+            showNotification(i18n.appManagement.clearError, 'error');
+            return;
+        }
+
+        try {
+            const cacheKeys = await caches.keys();
+            await Promise.all(cacheKeys.map(key => caches.delete(key)));
+            showNotification(i18n.appManagement.clearSuccess, 'info');
+        } catch (err) {
+            showNotification(i18n.appManagement.clearError, 'error');
+        }
+    });
 });
 
 // 注册 Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js', { scope: './' })
+        navigator.serviceWorker.register('/sw.js')
             .then(registration => {
                 console.log('ServiceWorker registration successful');
             })
@@ -1135,7 +1186,7 @@ window.addEventListener('beforeinstallprompt', (e) => {
 });
 
 installButton.addEventListener('click', async () => {
-    if (deferredPrompt) {
+    if (!deferredPrompt) {
         showNotification(i18n.appManagement.installError, 'error');
         return;
     }
