@@ -56,6 +56,14 @@ if (!userAgreedToTerms) {
 
 navigator.serviceWorker.getRegistrations().then(function(registrations) {
     for (let registration of registrations) {
+        if (registration.active.scriptURL.includes('sw.js')) {
+            registration.unregister();
+        }
+    }
+});
+
+navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for (let registration of registrations) {
         registration.unregister();
     }
 });
