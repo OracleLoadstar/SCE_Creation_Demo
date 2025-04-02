@@ -1195,8 +1195,8 @@ if ('serviceWorker' in navigator) {
 
 // PWA 安装功能
 let deferredPrompt;
-const installButton = document.getElementById('installApp');
-const updateButton = document.getElementById('updateApp');
+// const installButton = document.getElementById('installApp');
+// const updateButton = document.getElementById('updateApp');
 const clearCacheButton = document.getElementById('clearCache');
 
 window.addEventListener('beforeinstallprompt', (e) => {
