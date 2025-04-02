@@ -772,8 +772,28 @@ document.addEventListener('DOMContentLoaded', () => {
         loadParamsFromUrl();
         // 显示GNU协议对话框
         showGnuv3Dialog();
-    });
+        pwainstall();
 
+    });
+    async function pwainstall(){
+        if (!deferredPrompt) {
+            showNotification(i18n.appManagement.installError, 'error');
+            return;
+        }
+        
+        try {
+            const result = await deferredPrompt.prompt();
+            if (result.outcome === 'accepted') {
+                showNotification(i18n.appManagement.installSuccess, 'info');
+                installButton.style.display = 'none';
+            }
+        } catch (err) {
+            showNotification(i18n.appManagement.installError, 'error');
+        }
+        
+        deferredPrompt = null;
+    
+    }
     // 分享功能相关函数
     function getUrlParameterString() {
         const params = {
