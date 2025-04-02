@@ -47,7 +47,14 @@ self.addEventListener('message', event => {
   if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-async function checkVersion() {
+  
+  async function checkVersion() {
+    const userAgreedToTerms = localStorage.getItem('userAgreedToTerms');
+    if (!userAgreedToTerms) {
+        // 显示协议警告，用户同意后设置标志
+        // 这里可以显示协议相关的逻辑
+        return;
+    }
     const response = await fetch('https://sce.off.sd/version_info/last_version.txt');
     const latestVersion = await response.text();
     const cachedVersion = await (await fetch('version.txt')).text();
@@ -58,10 +65,11 @@ async function checkVersion() {
             cacheNames.forEach(function(cacheName) {
                 caches.delete(cacheName);
             });
+            // 强制更新服务工作者
+            self.skipWaiting();
         });
     }
-}
+  }
 
-checkVersion();
-
+  checkVersion();
 });
