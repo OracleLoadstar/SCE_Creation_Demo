@@ -1117,9 +1117,9 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     });
 
     // 应用管理功能
-    const installApp = document.getElementById('installApp');
-    const updateApp = document.getElementById('updateApp');
-    const clearCache = document.getElementById('clearCache');
+    // const installApp = document.getElementById('installApp');
+    // const updateApp = document.getElementById('updateApp');
+    // const clearCache = document.getElementById('clearCache');
 
     // PWA 安装功能
     let deferredPrompt;
@@ -1129,54 +1129,54 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         installApp.style.display = 'block';
     });
 
-    installApp.addEventListener('click', async () => {
-        if (!deferredPrompt) {
-            showNotification(i18n.appManagement.installSuccess, 'info');
-            return;
-        }
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            showNotification(i18n.appManagement.installSuccess, 'info');
-        } else {
-            showNotification(i18n.appManagement.installSuccess, 'info');
-        }
-        deferredPrompt = null;
-    });
+    // installApp.addEventListener('click', async () => {
+    //     if (!deferredPrompt) {
+    //         showNotification(i18n.appManagement.installSuccess, 'info');
+    //         return;
+    //     }
+    //     deferredPrompt.prompt();
+    //     const { outcome } = await deferredPrompt.userChoice;
+    //     if (outcome === 'accepted') {
+    //         showNotification(i18n.appManagement.installSuccess, 'info');
+    //     } else {
+    //         showNotification(i18n.appManagement.installSuccess, 'info');
+    //     }
+    //     deferredPrompt = null;
+    // });
 
     // 更新应用功能
-    if ('serviceWorker' in navigator) {
-        let newWorker;
-        let refreshing = false;
+    // if ('serviceWorker' in navigator) {
+    //     let newWorker;
+    //     let refreshing = false;
 
-        updateApp.addEventListener('click', () => {
-            if (newWorker) {
-                newWorker.postMessage({ type: 'SKIP_WAITING' });
-                showNotification(i18n.appManagement.updateSuccess, 'info');
-            } else {
-                showNotification(i18n.appManagement.updateError, 'error');
-            }
-        });
+    //     updateApp.addEventListener('click', () => {
+    //         if (newWorker) {
+    //             newWorker.postMessage({ type: 'SKIP_WAITING' });
+    //             showNotification(i18n.appManagement.updateSuccess, 'info');
+    //         } else {
+    //             showNotification(i18n.appManagement.updateError, 'error');
+    //         }
+    //     });
 
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (refreshing) return;
-            refreshing = true;
-            window.location.reload();
-        });
+    //     navigator.serviceWorker.addEventListener('controllerchange', () => {
+    //         if (refreshing) return;
+    //         refreshing = true;
+    //         window.location.reload();
+    //     });
 
-        navigator.serviceWorker.ready.then((registration) => {
-            registration.addEventListener('updatefound', () => {
-                newWorker = registration.installing;
-                newWorker.addEventListener('statechange', () => {
-                    if (newWorker.state === 'installed') {
-                        if (navigator.serviceWorker.controller) {
-                            updateApp.style.display = 'block';
-                        }
-                    }
-                });
-            });
-        });
-    }
+    //     navigator.serviceWorker.ready.then((registration) => {
+    //         registration.addEventListener('updatefound', () => {
+    //             newWorker = registration.installing;
+    //             newWorker.addEventListener('statechange', () => {
+    //                 if (newWorker.state === 'installed') {
+    //                     if (navigator.serviceWorker.controller) {
+    //                         updateApp.style.display = 'block';
+    //                     }
+    //                 }
+    //             });
+    //         });
+    //     });
+    // }
 
     // 清理缓存功能
     clearCache.addEventListener('click', async () => {
@@ -1209,66 +1209,67 @@ if ('serviceWorker' in navigator) {
 }
 
 // PWA 安装功能
-let deferredPrompt;
-// const installButton = document.getElementById('installApp');
-// const updateButton = document.getElementById('updateApp');
-const clearCacheButton = document.getElementById('clearCache');
+// let deferredPrompt;
+// // const installButton = document.getElementById('installApp');
+// // const updateButton = document.getElementById('updateApp');
+// const clearCacheButton = document.getElementById('clearCache');
 
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installButton.style.display = 'flex';
-});
+// window.addEventListener('beforeinstallprompt', (e) => {
+//     e.preventDefault();
+//     deferredPrompt = e;
+//     installButton.style.display = 'flex';
+// });
 
-installButton.addEventListener('click', async () => {
-    if (!deferredPrompt) {
-        showNotification(i18n.appManagement.installError, 'error');
-        return;
-    }
+// installButton.addEventListener('click', async () => {
+//     if (!deferredPrompt) {
+//         showNotification(i18n.appManagement.installError, 'error');
+//         return;
+//     }
     
-    try {
-        const result = await deferredPrompt.prompt();
-        if (result.outcome === 'accepted') {
-            showNotification(i18n.appManagement.installSuccess, 'info');
-            installButton.style.display = 'none';
-        }
-    } catch (err) {
-        showNotification(i18n.appManagement.installError, 'error');
-    }
+//     try {
+//         const result = await deferredPrompt.prompt();
+//         if (result.outcome === 'accepted') {
+//             showNotification(i18n.appManagement.installSuccess, 'info');
+//             installButton.style.display = 'none';
+//         }
+//     } catch (err) {
+//         showNotification(i18n.appManagement.installError, 'error');
+//     }
     
-    deferredPrompt = null;
-});
+//     deferredPrompt = null;
+// });
 
-// 更新应用
-updateButton.addEventListener('click', async () => {
-    if (!('serviceWorker' in navigator)) {
-        showNotification(i18n.appManagement.updateError, 'error');
-        return;
-    }
+// // 更新应用
+// updateButton.addEventListener('click', async () => {
+//     if (!('serviceWorker' in navigator)) {
+//         showNotification(i18n.appManagement.updateError, 'error');
+//         return;
+//     }
 
-    try {
-        const registration = await navigator.serviceWorker.getRegistration();
-        if (registration) {
-            await registration.update();
-            showNotification(i18n.appManagement.updateSuccess, 'info');
-        }
-    } catch (err) {
-        showNotification(i18n.appManagement.updateError, 'error');
-    }
-});
+//     try {
+//         const registration = await navigator.serviceWorker.getRegistration();
+//         if (registration) {
+//             await registration.update();
+//             showNotification(i18n.appManagement.updateSuccess, 'info');
+//         }
+//     } catch (err) {
+//         showNotification(i18n.appManagement.updateError, 'error');
+//     }
+// });
 
 // 清理缓存
-clearCacheButton.addEventListener('click', async () => {
-    if (!('caches' in window)) {
-        showNotification(i18n.appManagement.clearError, 'error');
-        return;
-    }
+// clearCacheButton.addEventListener('click', async () => {
+//     if (!('caches' in window)) {
+//         showNotification(i18n.appManagement.clearError, 'error');
+//         return;
+//     }
 
-    try {
-        const cacheKeys = await caches.keys();
-        await Promise.all(cacheKeys.map(key => caches.delete(key)));
-        showNotification(i18n.appManagement.clearSuccess, 'info');
-    } catch (err) {
-        showNotification(i18n.appManagement.clearError, 'error');
-    }
-});
+//     try {
+//         const cacheKeys = await caches.keys();
+//         await Promise.all(cacheKeys.map(key => caches.delete(key)));
+//         showNotification(i18n.appManagement.clearSuccess, 'info');
+//     } catch (err) {
+//         showNotification(i18n.appManagement.clearError, 'error');
+//     }
+
+// });

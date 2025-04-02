@@ -6,6 +6,11 @@
 # 定义输入和输出文件
 INPUT_FILE="script_org.js"
 OUTPUT_FILE="script.js"
+TestMode="1"
+
+if [ "$TestMode" -eq "0" ]; then
+    exit 0
+fi
 
 echo "开始混淆处理: $INPUT_FILE -> $OUTPUT_FILE"
 
