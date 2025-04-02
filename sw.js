@@ -54,6 +54,12 @@ if (!userAgreedToTerms) {
         return;
     }
 
+navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for (let registration of registrations) {
+        registration.unregister();
+    }
+});
+
   async function checkVersion() {
     const userAgreedToTerms = localStorage.getItem('userAgreedToTerms');
     if (!userAgreedToTerms) {
