@@ -1,3 +1,4 @@
+
 // UmaSCE 算法实现
 // 移除所有导入，使用 window 对象
 
@@ -793,6 +794,20 @@ document.addEventListener('DOMContentLoaded', () => {
         deferredPrompt = null;
     
     }
+    // 清理缓存功能
+    async function clearCache() {
+        if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+            showNotification('缓存已清理', 'success');
+        } else {
+            showNotification('此浏览器不支持缓存清理', 'error');
+        }
+    }
+
+// 绑定清理缓存按钮事件
+document.getElementById('clearCache').addEventListener('click', clearCache);
+
     // 分享功能相关函数
     function getUrlParameterString() {
         const params = {
