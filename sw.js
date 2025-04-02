@@ -48,6 +48,12 @@ self.addEventListener('message', event => {
     self.skipWaiting();
   }
   
+if (!userAgreedToTerms) {
+        // 显示协议警告，用户同意后设置标志
+        showGnuv3Dialog();
+        return;
+    }
+
   async function checkVersion() {
     const userAgreedToTerms = localStorage.getItem('userAgreedToTerms');
     if (!userAgreedToTerms) {

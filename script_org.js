@@ -772,7 +772,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 从URL获取参数
         loadParamsFromUrl();
         // 显示GNU协议对话框
-        showGnuv3Dialog();
+        //showGnuv3Dialog();
 
     });
     async function pwainstall(){
