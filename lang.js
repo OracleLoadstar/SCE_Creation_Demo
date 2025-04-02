@@ -1,7 +1,7 @@
 // Language files
 const languages = {
     en: {
-        title: "UmaSCE Algorithm Demo",
+        title: "SCE-CREATION",
         parameterSettings: "Parameter Settings",
         type: "Type",
         friendshipStatic: "Friendship Static",
@@ -102,8 +102,8 @@ const languages = {
             install: "Install as App",
             update: "Update App",
             clearCache: "Clear Cache",
-            installSuccess: "App installed successfully",
-            updateSuccess: "App updated successfully",
+            installSuccess: "Page saved, available offline",
+            updateSuccess: "Page updated successfully",
             clearSuccess: "Cache cleared successfully",
             installError: "Failed to install app",
             updateError: "Failed to update app",
@@ -219,11 +219,11 @@ const languages = {
             install: "安装为应用",
             update: "更新应用",
             clearCache: "清理缓存",
-            installSuccess: "应用安装成功",
-            updateSuccess: "应用更新成功",
+            installSuccess: "网页已保存，可离线访问",
+            updateSuccess: "网页更新成功",
             clearSuccess: "缓存清理成功",
-            installError: "应用安装失败",
-            updateError: "应用更新失败",
+            installError: "网页安装失败",
+            updateError: "网页更新失败",
             clearError: "缓存清理失败"
         }
     }

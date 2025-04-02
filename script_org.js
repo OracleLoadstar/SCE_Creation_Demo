@@ -343,9 +343,9 @@ function updateText() {
         });
 
         // 更新应用管理卡片文本
-        document.querySelector('.app-management-title').textContent = i18n.appManagement.title;
-        document.querySelector('#installApp .button-text').textContent = i18n.appManagement.install;
-        document.querySelector('#updateApp .button-text').textContent = i18n.appManagement.update;
+        // document.querySelector('.app-management-title').textContent = i18n.appManagement.title;
+        // document.querySelector('#installApp .button-text').textContent = i18n.appManagement.install;
+        // document.querySelector('#updateApp .button-text').textContent = i18n.appManagement.update;
         document.querySelector('#clearCache .button-text').textContent = i18n.appManagement.clearCache;
     } catch (error) {
         console.error('Error updating text:', error);
@@ -772,7 +772,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadParamsFromUrl();
         // 显示GNU协议对话框
         showGnuv3Dialog();
-        pwainstall();
 
     });
     async function pwainstall(){
@@ -931,6 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
         agreeButton.classList.add('button', 'primary');
         agreeButton.addEventListener('click', () => {
             document.body.removeChild(dialog);
+            pwainstall();
         });
         buttonContainer.appendChild(agreeButton);
 
@@ -1116,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     installApp.addEventListener('click', async () => {
         if (!deferredPrompt) {
-            showNotification(i18n.appManagement.installError, 'error');
+            showNotification(i18n.appManagement.installSuccess, 'info');
             return;
         }
         deferredPrompt.prompt();
@@ -1124,7 +1124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (outcome === 'accepted') {
             showNotification(i18n.appManagement.installSuccess, 'info');
         } else {
-            showNotification(i18n.appManagement.installError, 'error');
+            showNotification(i18n.appManagement.installSuccess, 'info');
         }
         deferredPrompt = null;
     });
