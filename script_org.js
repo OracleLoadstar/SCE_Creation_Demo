@@ -807,7 +807,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 绑定清理缓存按钮事件
 document.getElementById('clearCache').addEventListener('click', clearCache);
-
     // 分享功能相关函数
     function getUrlParameterString() {
         const params = {
@@ -1179,20 +1178,20 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     // }
 
     // 清理缓存功能
-    clearCache.addEventListener('click', async () => {
-        if (!('caches' in window)) {
-            showNotification(i18n.appManagement.clearError, 'error');
-            return;
-        }
+    // clearCache.addEventListener('click', async () => {
+    //     if (!('caches' in window)) {
+    //         showNotification(i18n.appManagement.clearError, 'error');
+    //         return;
+    //     }
 
-        try {
-            const cacheKeys = await caches.keys();
-            await Promise.all(cacheKeys.map(key => caches.delete(key)));
-            showNotification(i18n.appManagement.clearSuccess, 'info');
-        } catch (err) {
-            showNotification(i18n.appManagement.clearError, 'error');
-        }
-    });
+    //     try {
+    //         const cacheKeys = await caches.keys();
+    //         await Promise.all(cacheKeys.map(key => caches.delete(key)));
+    //         showNotification(i18n.appManagement.clearSuccess, 'info');
+    //     } catch (err) {
+    //         showNotification(i18n.appManagement.clearError, 'error');
+    //     }
+    // });
 });
 
 // 注册 Service Worker
