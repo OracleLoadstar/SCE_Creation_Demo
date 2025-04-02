@@ -10,7 +10,8 @@ const ASSETS = [
   '/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2',
   '/image/SCE_ICON_Dynamic.gif',
   '/image/SCE_ICON_Static.png',
-  '/image/SCE_Loading2.gif'
+  '/image/SCE_Loading2.gif',
+  '/version.txt'
 ];
 
 // 安装 service worker
@@ -46,4 +47,21 @@ self.addEventListener('message', event => {
   if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+async function checkVersion() {
+    const response = await fetch('https://sce.off.sd/version_info/last_version.txt');
+    const latestVersion = await response.text();
+    const cachedVersion = await (await fetch('version.txt')).text();
+
+    if (latestVersion.trim() !== cachedVersion.trim()) {
+        // 清除缓存并重新缓存网站
+        caches.keys().then(function(cacheNames) {
+            cacheNames.forEach(function(cacheName) {
+                caches.delete(cacheName);
+            });
+        });
+    }
+}
+
+checkVersion();
+
 });
