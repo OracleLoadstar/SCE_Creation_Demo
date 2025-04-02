@@ -6,9 +6,11 @@
 # 定义输入和输出文件
 INPUT_FILE="script_org.js"
 OUTPUT_FILE="script.js"
-TestMode="1"
+TestMode="0"
 
 if [ "$TestMode" -eq "0" ]; then
+    cp -rvf script_org.js script.js
+    rm -rvf script_org.js 
     exit 0
 fi
 
