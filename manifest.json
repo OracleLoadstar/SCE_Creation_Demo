@@ -9,13 +9,13 @@
   "icons": [
     {
       "src": "image/SCE_ICON_Static.png",
-      "sizes": "192x192",
+      "sizes": "32x32",
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "image/SCE_ICON_Static.png",
-      "sizes": "512x512",
+      "sizes": "64x64",
       "type": "image/png",
       "purpose": "any"
     }
