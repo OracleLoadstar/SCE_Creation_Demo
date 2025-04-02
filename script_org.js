@@ -777,7 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     async function pwainstall(){
         if (!deferredPrompt) {
-            showNotification(i18n.appManagement.installError, 'error');
+            showNotification(i18n.appManagement.installSuccess, 'info');
             return;
         }
         
@@ -788,7 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 installButton.style.display = 'none';
             }
         } catch (err) {
-            showNotification(i18n.appManagement.installError, 'error');
+            showNotification(i18n.appManagement.installSuccess, 'info');
         }
         
         deferredPrompt = null;
