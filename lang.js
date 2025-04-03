@@ -111,7 +111,7 @@ const languages = {
         }
     },
     zh: {
-        title: "UmaSCE \u7B97\u6CD5\u6F14\u793A",
+        title: "SCE-CREATION",
         parameterSettings: "\u53C2\u6570\u8BBE\u7F6E",
         type: "\u7C7B\u578B",
         friendshipStatic: "\u56fa\u6709\u53cb\u60c5",
