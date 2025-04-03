@@ -36,6 +36,7 @@ self.addEventListener('activate', event => {
 
 // 拦截请求并从缓存中响应
 self.addEventListener('fetch', event => {
+console.log('Fetching:', event.request.url);
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
