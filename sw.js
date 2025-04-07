@@ -37,6 +37,35 @@ self.addEventListener('activate', event => {
 // 拦截请求并从缓存中响应
 self.addEventListener('fetch', event => {
 console.log('Fetching:', event.request.url);
+  // Record visit via Cloudflare Worker for navigation requests
+  if (event.request.mode === 'navigate') {
+    const trackVisitViaWorker = async () => {
+      try {
+        // 重要：请将下面的 URL 替换为你的 Worker 的实际部署 URL
+        const workerUrl = 'https://webui-d1-worker.3290293702.workers.dev';
+
+        const response = await fetch(workerUrl, {
+          method: 'POST',
+          // 可以根据需要添加 headers，但对于这个简单的 Worker 可能不需要
+          // headers: { 'Content-Type': 'application/json' },
+          // body: JSON.stringify({ some_data: 'value' }) // 如果 Worker 需要 body 数据
+        });
+
+        if (!response.ok) {
+          console.error('Failed to record visit via Worker:', response.status, await response.text());
+        } else {
+          console.log('Visit recorded successfully via Worker.');
+        }
+      } catch (error) {
+        console.error('Error recording visit via Worker:', error);
+      }
+    };
+    // 异步执行，不阻塞主请求
+    // 使用 waitUntil 确保 Service Worker 在 fetch 完成前不会被终止
+    event.waitUntil(trackVisitViaWorker());
+  }
+
+
   event.respondWith(
     caches.match(event.request)
       .then(response => response || fetch(event.request))
