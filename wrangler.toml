@@ -1,0 +1,17 @@
+name = "webui-d1-worker" # Worker 名称
+main = "d1-worker.js"    # 指向 Worker 脚本
+
+compatibility_date = "2024-04-07"
+
+account_id = "46c416f90004e48e24cba6c9ff9612ff"
+
+# D1 数据库绑定
+[[d1_databases]]
+binding = "DB" # Worker 代码中使用的绑定名称 (env.DB)
+database_name = "sce_used"
+database_id = "f6bf4f4b-168a-432e-a602-6b24e7611116"
+
+# 保留现有的 KV 命名空间绑定
+[[kv_namespaces]]
+binding = "KV"
+id = "5218291ae69843f0b5a0206d2d78e20b"
