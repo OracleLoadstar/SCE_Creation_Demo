@@ -77,26 +77,7 @@ self.addEventListener('message', event => {
   if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
-  
-if (!userAgreedToTerms) {
-        // 显示协议警告，用户同意后设置标志
-        showGnuv3Dialog();
-        return;
-    }
-
-navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for (let registration of registrations) {
-        if (registration.active.scriptURL.includes('sw.js')) {
-            registration.unregister();
-        }
-    }
-});
-
-navigator.serviceWorker.getRegistrations().then(function(registrations) {
-    for (let registration of registrations) {
-        registration.unregister();
-    }
-});
+  // 移除 message 事件监听器外部的注销逻辑，将其整合到 checkVersion 中
 
   async function checkVersion() {
     const userAgreedToTerms = localStorage.getItem('userAgreedToTerms');
@@ -110,14 +91,36 @@ navigator.serviceWorker.getRegistrations().then(function(registrations) {
     const cachedVersion = await (await fetch('version.txt')).text();
 
     if (latestVersion.trim() !== cachedVersion.trim()) {
-        // 清除缓存并重新缓存网站
-        caches.keys().then(function(cacheNames) {
-            cacheNames.forEach(function(cacheName) {
-                caches.delete(cacheName);
-            });
-            // 强制更新服务工作者
-            self.skipWaiting();
+        // 版本不匹配，执行更新流程
+        console.log('New version detected. Starting update process...');
+        // 1. 清除所有缓存
+        caches.keys().then(cacheNames => {
+          return Promise.all(cacheNames.map(cacheName => caches.delete(cacheName)));
+        }).then(() => {
+          console.log('Caches cleared.');
+          // 2. 强制注销所有 Service Worker 注册
+          return navigator.serviceWorker.getRegistrations();
+        }).then(registrations => {
+          return Promise.all(registrations.map(registration => registration.unregister()));
+        }).then(() => {
+          console.log('All Service Workers unregistered.');
+          // 3. 通知所有客户端强制刷新
+          return self.clients.matchAll({ type: 'window' });
+        }).then(clients => {
+          clients.forEach(client => {
+            // 使用 navigate 方法强制重新加载页面
+            // 这比 client.postMessage 更可靠，因为它不依赖客户端监听消息
+            if (client.url && 'navigate' in client) {
+               client.navigate(client.url);
+            }
+          });
+          console.log('Sent refresh command to clients.');
+        }).catch(error => {
+          console.error('Error during update process:', error);
         });
+        // 注意：调用 self.skipWaiting() 可能在这里不再必要，
+        // 因为我们正在注销 SW 并强制刷新。可以保留或移除。
+        // self.skipWaiting();
     }
   }
 
