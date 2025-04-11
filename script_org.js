@@ -1079,27 +1079,27 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
             // 添加动画类
             logoContainer.classList.add(direction);
             
-            // 创建溅射图标
-            const splash = document.createElement('img');
-            splash.src = direction === 'rotate-left' ? 'image/SCEDif1.png' : 'image/SCEPlus1.png';
-            splash.className = `splash-icon ${direction === 'rotate-left' ? 'splash-left' : 'splash-right'}`;
+            // // 创建溅射图标
+            // const splash = document.createElement('img');
+            // splash.src = direction === 'rotate-left' ? 'image/SCEDif1.png' : 'image/SCEPlus1.png';
+            // splash.className = `splash-icon ${direction === 'rotate-left' ? 'splash-left' : 'splash-right'}`;
             
-            // 设置初始位置
-            splash.style.left = '50%';
-            splash.style.top = '50%';
+            // // 设置初始位置
+            // splash.style.left = '50%';
+            // splash.style.top = '50%';
             
-            // 将溅射图标添加到logo容器
-            logoContainer.appendChild(splash);
+            // // 将溅射图标添加到logo容器
+            // logoContainer.appendChild(splash);
             
-            // 动画结束后移除类和溅射图标
-            logoContainer.addEventListener('animationend', () => {
-                logoContainer.classList.remove('rotate-left', 'rotate-right');
-            }, { once: true });
+            // // 动画结束后移除类和溅射图标
+            // logoContainer.addEventListener('animationend', () => {
+            //     logoContainer.classList.remove('rotate-left', 'rotate-right');
+            // }, { once: true });
             
-            // 溅射动画结束后移除溅射图标
-            splash.addEventListener('animationend', () => {
-                logoContainer.removeChild(splash);
-            }, { once: true });
+            // // 溅射动画结束后移除溅射图标
+            // splash.addEventListener('animationend', () => {
+            //     logoContainer.removeChild(splash);
+            // }, { once: true });
         });
     }
 
