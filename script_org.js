@@ -1432,7 +1432,18 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
             'esp': 'enum_sp_bonus'
         };
 
-        // 填充非枚举字段
+        let hasEnumValues = false;
+        const enumFields = ['efs', 'ees', 'etr', 'egat', 'etrap', 'espd', 'esta', 'epow', 'ewill', 'ewit', 'esp'];
+
+        // 检查是否存在非零的固有加成值
+        for (const field of enumFields) {
+            if (cardData[field] !== undefined && cardData[field] !== 0 && cardData[field] !== null) {
+                hasEnumValues = true;
+                break;
+            }
+        }
+
+        // 填充所有字段（包括枚举和非枚举）
         for (const [apiField, formId] of Object.entries(fieldMap)) {
             const element = document.getElementById(formId);
             if (element && cardData[apiField] !== undefined) {
@@ -1448,32 +1459,39 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
                         console.warn(`Type value ${typeValue} not found in select options.`);
                         // 可以设置一个默认值或保持不变
                     }
-                } else if (!formId.startsWith('enum_')) { // 只填充非枚举数字字段
+                } else {
+                    // 填充其他字段（包括枚举字段）
                     element.value = cardData[apiField];
                 }
+            } else if (element && formId.startsWith('enum_')) {
+                 // 如果API数据中没有对应的枚举字段，则清空枚举输入框
+                 element.value = 0;
             }
         }
 
-        // 如果需要填充枚举字段，取消下面的注释并确保枚举开关已启用
-        /*
+
+        // 如果存在固有加成值，则启用枚举拓展并显示
         const enableEnumCheckbox = document.getElementById('enable_enum');
-        if (enableEnumCheckbox && enableEnumCheckbox.checked) {
-             for (const [apiField, formId] of Object.entries(fieldMap)) {
-                 if (formId.startsWith('enum_')) {
-                     const element = document.getElementById(formId);
-                     if (element && cardData[apiField] !== undefined) {
-                         element.value = cardData[apiField];
+        const enumCard = document.getElementById('enum_card');
+        if (enableEnumCheckbox && enumCard) {
+            if (hasEnumValues) {
+                enableEnumCheckbox.checked = true;
+                enumCard.style.display = 'block';
+            } else {
+                 // 如果没有固有加成值，可以选择取消勾选并隐藏 (可选逻辑)
+                 enableEnumCheckbox.checked = false;
+                 enumCard.style.display = 'none';
+                 // 清空所有枚举输入框的值
+                 for (const [apiField, formId] of Object.entries(fieldMap)) {
+                     if (formId.startsWith('enum_')) {
+                         const element = document.getElementById(formId);
+                         if (element) {
+                             element.value = 0;
+                         }
                      }
                  }
-             }
+            }
         }
-        */
-        // 如果希望使用预设时自动启用枚举，可以取消下面的注释
-        // const enableEnumCheckbox = document.getElementById('enable_enum');
-        // if (enableEnumCheckbox) {
-        //     enableEnumCheckbox.checked = true;
-        //     document.getElementById('enum_card').style.display = 'block'; // 显示枚举卡片
-        // }
 
         showNotification(`${i18n.presetApplied || '已应用预设'}: ${cardData.CardName}`, 'success');
         closeModal();
