@@ -1194,6 +1194,314 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     // });
 });
 
+    // --- 使用预设功能代码开始 ---
+
+    const usingNowCardButton = document.getElementById('usingnowcard');
+    let presetDataCache = null; // 缓存预设数据
+
+    // 类型映射
+    const typeMap = {
+        0: i18n.typeOptions.speed || 'Speed',
+        1: i18n.typeOptions.stamina || 'Stamina',
+        2: i18n.typeOptions.power || 'Power',
+        3: i18n.typeOptions.willpower || 'Willpower',
+        4: i18n.typeOptions.wit || 'Wit',
+        '-1': 'Friend' // 假设 -1 是友人卡
+    };
+
+    // 显示加载指示器
+    function showLoadingIndicator(show = true) {
+        let indicator = document.getElementById('preset-loading-indicator');
+        if (show) {
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'preset-loading-indicator';
+                indicator.style.position = 'fixed';
+                indicator.style.top = '50%';
+                indicator.style.left = '50%';
+                indicator.style.transform = 'translate(-50%, -50%)';
+                indicator.style.padding = '20px';
+                indicator.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+                indicator.style.color = 'white';
+                indicator.style.borderRadius = '8px';
+                indicator.textContent = i18n.loadingPresets || '正在加载预设...';
+                indicator.style.zIndex = '1001'; // 确保在弹窗之上
+                document.body.appendChild(indicator);
+            }
+            indicator.style.display = 'block';
+        } else {
+            if (indicator) {
+                indicator.style.display = 'none';
+            }
+        }
+    }
+
+    // 获取预设数据
+    async function fetchPresetData() {
+        if (presetDataCache) {
+            return presetDataCache;
+        }
+        showLoadingIndicator(true);
+        try {
+            // 注意：浏览器 fetch 无法直接设置代理，请确保网络环境允许访问
+            const response = await fetch('https://sce-data-api.3290293702.workers.dev/getUmaSceData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            presetDataCache = data;
+            return data;
+        } catch (error) {
+            console.error('Error fetching preset data:', error);
+            showNotification(i18n.errorFetchingPresets || '获取预设数据失败', 'error');
+            return null;
+        } finally {
+            showLoadingIndicator(false);
+        }
+    }
+
+    // 显示预设弹窗
+    function showPresetModal(data) {
+        closeModal(); // 关闭可能已存在的旧弹窗
+
+        const modal = document.createElement('div');
+        modal.id = 'preset-modal';
+        modal.style.position = 'fixed';
+        modal.style.left = '50%';
+        modal.style.top = '50%';
+        modal.style.transform = 'translate(-50%, -50%)';
+        modal.style.width = '80%';
+        modal.style.maxWidth = '600px';
+        modal.style.maxHeight = '80vh';
+        modal.style.backgroundColor = 'white';
+        modal.style.border = '1px solid #ccc';
+        modal.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+        modal.style.zIndex = '1000';
+        modal.style.display = 'flex';
+        modal.style.flexDirection = 'column';
+        modal.style.borderRadius = '8px';
+        modal.style.overflow = 'hidden'; // 防止内容溢出
+
+        const header = document.createElement('div');
+        header.style.padding = '15px';
+        header.style.backgroundColor = '#f1f1f1';
+        header.style.borderBottom = '1px solid #ddd';
+        header.style.display = 'flex';
+        header.style.justifyContent = 'space-between';
+        header.style.alignItems = 'center';
+
+        const title = document.createElement('h3');
+        title.textContent = i18n.usePresetTitle || '使用支援卡预设';
+        title.style.margin = '0';
+
+        const closeButton = document.createElement('button');
+        closeButton.innerHTML = '&times;'; // '×' symbol
+        closeButton.style.border = 'none';
+        closeButton.style.background = 'transparent';
+        closeButton.style.fontSize = '24px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.onclick = closeModal;
+
+        header.appendChild(title);
+        header.appendChild(closeButton);
+
+        const searchContainer = document.createElement('div');
+        searchContainer.style.padding = '10px 15px';
+        searchContainer.style.borderBottom = '1px solid #ddd';
+
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = i18n.searchPlaceholder || '搜索支援卡名称...';
+        searchInput.style.width = '100%';
+        searchInput.style.padding = '8px';
+        searchInput.style.boxSizing = 'border-box';
+        searchInput.oninput = () => filterTable(searchInput.value);
+        searchContainer.appendChild(searchInput);
+
+        const tableContainer = document.createElement('div');
+        tableContainer.style.overflowY = 'auto'; // 使表格内容可滚动
+        tableContainer.style.padding = '0 15px 15px 15px'; // 内边距
+        tableContainer.style.flexGrow = '1'; // 占据剩余空间
+
+        const table = document.createElement('table');
+        table.id = 'preset-table';
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+        table.style.marginTop = '10px';
+
+        const thead = document.createElement('thead');
+        thead.innerHTML = `
+            <tr>
+                <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">${i18n.cardNameHeader || '支援卡名称'}</th>
+                <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">${i18n.cardTypeHeader || '类别'}</th>
+                <th style="text-align: center; padding: 8px; border-bottom: 1px solid #ddd;">${i18n.useButtonHeader || '使用'}</th>
+            </tr>
+        `;
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        data.forEach(card => {
+            const row = tbody.insertRow();
+            row.dataset.cardData = JSON.stringify(card); // 将卡片数据存储在行上
+
+            const nameCell = row.insertCell();
+            nameCell.textContent = card.CardName;
+            nameCell.style.padding = '8px';
+            nameCell.style.borderBottom = '1px solid #eee';
+
+            const typeCell = row.insertCell();
+            typeCell.textContent = typeMap[card.type] || card.type; // 使用映射转换类型
+            typeCell.style.padding = '8px';
+            typeCell.style.borderBottom = '1px solid #eee';
+
+            const actionCell = row.insertCell();
+            actionCell.style.textAlign = 'center';
+            actionCell.style.padding = '8px';
+            actionCell.style.borderBottom = '1px solid #eee';
+
+            const useButton = document.createElement('button');
+            useButton.textContent = i18n.useButtonText || '使用';
+            useButton.classList.add('button', 'primary', 'small-button'); // 添加样式类
+            useButton.style.padding = '4px 8px'; // 调整按钮大小
+            useButton.style.fontSize = '12px';
+            useButton.onclick = () => fillFormData(card);
+            actionCell.appendChild(useButton);
+        });
+        table.appendChild(tbody);
+        tableContainer.appendChild(table);
+
+        modal.appendChild(header);
+        modal.appendChild(searchContainer);
+        modal.appendChild(tableContainer);
+
+        document.body.appendChild(modal);
+    }
+
+    // 过滤表格
+    function filterTable(searchTerm) {
+        const table = document.getElementById('preset-table');
+        if (!table) return;
+        const rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+        const filter = searchTerm.toLowerCase();
+
+        for (let i = 0; i < rows.length; i++) {
+            const nameCell = rows[i].getElementsByTagName('td')[0];
+            if (nameCell) {
+                const name = nameCell.textContent || nameCell.innerText;
+                if (name.toLowerCase().indexOf(filter) > -1) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        }
+    }
+
+    // 填充表单数据
+    function fillFormData(cardData) {
+        console.log('Filling form with card:', cardData.CardName);
+        // 字段映射 (API字段 -> 表单ID)
+        const fieldMap = {
+            'CardName': 'card_name',
+            'type': 'type_static',
+            'fs': 'friendship_award', // API 'fs' 对应 'friendship_award'
+            'es': 'enthusiasm_award',
+            'tr': 'training_award',
+            'gat': 'strike_point', // API 'gat' 对应 'strike_point'
+            'trap': 'friendship_point', // API 'trap' 对应 'friendship_point'
+            'spd': 'speed_bonus',
+            'sta': 'stamina_bonus',
+            'pow': 'power_bonus',
+            'will': 'willpower_bonus',
+            'wit': 'wit_bonus',
+            'sp': 'sp_bonus',
+            // 枚举字段映射 (如果需要填充枚举)
+            'efs': 'enum_friendship_award',
+            'ees': 'enum_enthusiasm_award',
+            'etr': 'enum_training_award',
+            'egat': 'enum_strike_point',
+            'etrap': 'enum_friendship_point',
+            'espd': 'enum_speed_bonus',
+            'esta': 'enum_stamina_bonus',
+            'epow': 'enum_power_bonus',
+            'ewill': 'enum_willpower_bonus',
+            'ewit': 'enum_wit_bonus',
+            'esp': 'enum_sp_bonus'
+        };
+
+        // 填充非枚举字段
+        for (const [apiField, formId] of Object.entries(fieldMap)) {
+            const element = document.getElementById(formId);
+            if (element && cardData[apiField] !== undefined) {
+                // 特殊处理 card_name 和 type_static
+                if (formId === 'card_name') {
+                    element.value = cardData[apiField];
+                } else if (formId === 'type_static') {
+                    // 确保类型值在下拉选项中存在
+                    const typeValue = cardData[apiField].toString();
+                    if ([...element.options].some(opt => opt.value === typeValue)) {
+                        element.value = typeValue;
+                    } else {
+                        console.warn(`Type value ${typeValue} not found in select options.`);
+                        // 可以设置一个默认值或保持不变
+                    }
+                } else if (!formId.startsWith('enum_')) { // 只填充非枚举数字字段
+                    element.value = cardData[apiField];
+                }
+            }
+        }
+
+        // 如果需要填充枚举字段，取消下面的注释并确保枚举开关已启用
+        /*
+        const enableEnumCheckbox = document.getElementById('enable_enum');
+        if (enableEnumCheckbox && enableEnumCheckbox.checked) {
+             for (const [apiField, formId] of Object.entries(fieldMap)) {
+                 if (formId.startsWith('enum_')) {
+                     const element = document.getElementById(formId);
+                     if (element && cardData[apiField] !== undefined) {
+                         element.value = cardData[apiField];
+                     }
+                 }
+             }
+        }
+        */
+        // 如果希望使用预设时自动启用枚举，可以取消下面的注释
+        // const enableEnumCheckbox = document.getElementById('enable_enum');
+        // if (enableEnumCheckbox) {
+        //     enableEnumCheckbox.checked = true;
+        //     document.getElementById('enum_card').style.display = 'block'; // 显示枚举卡片
+        // }
+
+        showNotification(`${i18n.presetApplied || '已应用预设'}: ${cardData.CardName}`, 'success');
+        closeModal();
+    }
+
+    // 关闭弹窗
+    function closeModal() {
+        const modal = document.getElementById('preset-modal');
+        if (modal) {
+            modal.remove();
+        }
+    }
+
+    // 为“使用预设”按钮添加事件监听器
+    if (usingNowCardButton) {
+        usingNowCardButton.addEventListener('click', async () => {
+            const data = await fetchPresetData();
+            if (data) {
+                showPresetModal(data);
+            }
+        });
+    }
+
+    // --- 使用预设功能代码结束 ---
+
+
 // 注册 Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
