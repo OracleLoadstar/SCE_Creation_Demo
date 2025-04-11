@@ -1,3 +1,81 @@
+// 通知系统
+window.showNotification = function(message, type = 'info') {
+    const container = document.getElementById('notification-container');
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    
+    // 设置初始状态为隐藏
+    notification.style.transform = 'translateX(100%)';
+    notification.style.opacity = '0';
+    
+    const icon = document.createElement('span');
+    icon.className = 'material-icons notification-icon';
+    icon.textContent = type === 'error' ? 'error' : (type === 'error' ? 'error' : 'info');
+    
+    const content = document.createElement('div');
+    content.className = 'notification-content';
+    content.textContent = message;
+    
+    const progress = document.createElement('div');
+    progress.className = 'notification-progress';
+    
+    notification.appendChild(icon);
+    notification.appendChild(content);
+    notification.appendChild(progress);
+    
+    // 添加到容器前，移动已有的通知
+    const notifications = container.getElementsByClassName('notification');
+    Array.from(notifications).forEach(notif => {
+        notif.classList.add('move-down');
+    });
+    
+    // 添加新通知到容器
+    container.insertBefore(notification, container.firstChild);
+    
+    // 触发进入动画
+    requestAnimationFrame(() => {
+        notification.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+        notification.style.transform = 'translateX(0)';
+        notification.style.opacity = '1';
+        
+        // 启动进度条动画
+        requestAnimationFrame(() => {
+            progress.classList.add('running');
+        });
+    });
+    
+    // 设置移除通知的超时
+    const removeNotification = () => {
+        notification.style.transform = 'translateX(100%)';
+        notification.style.opacity = '0';
+        
+        notification.addEventListener('transitionend', () => {
+            if (container.contains(notification)) {
+                container.removeChild(notification);
+                // 恢复其他通知的位置
+                const remainingNotifications = container.getElementsByClassName('notification');
+                Array.from(remainingNotifications).forEach(notif => {
+                    notif.classList.remove('move-down');
+                });
+            }
+        }, { once: true });
+    };
+
+    // 3秒后移除通知
+    const timeout = setTimeout(removeNotification, 3000);
+
+    // 鼠标悬停时暂停进度条和移除计时器
+    notification.addEventListener('mouseenter', () => {
+        clearTimeout(timeout);
+        progress.style.animationPlayState = 'paused';
+    });
+
+    // 鼠标离开时恢复进度条和重新设置移除计时器
+    notification.addEventListener('mouseleave', () => {
+        progress.style.animationPlayState = 'running';
+        setTimeout(removeNotification, 3000);
+    });
+};
 
 // UmaSCE 算法实现
 // 移除所有导入，使用 window 对象
@@ -384,6 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, remainingTime);
 
         // 更新页面文本
+        i18n = languages[currentLanguage];
         updateText();
         
         // 显示GNU协议对话框（只在这里调用一次）
@@ -776,6 +855,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
     async function pwainstall(){
+        i18n = languages[currentLanguage];
         if (!deferredPrompt) {
             showNotification(i18n.appManagement.installSuccess, 'info');
             return;
@@ -985,83 +1065,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     });
 
     // 通知系统
-    function showNotification(message, type = 'info') {
-        const container = document.getElementById('notification-container');
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        
-        // 设置初始状态为隐藏
-        notification.style.transform = 'translateX(100%)';
-        notification.style.opacity = '0';
-        
-        const icon = document.createElement('span');
-        icon.className = 'material-icons notification-icon';
-        icon.textContent = type === 'error' ? 'error' : (type === 'error' ? 'error' : 'info');
-        
-        const content = document.createElement('div');
-        content.className = 'notification-content';
-        content.textContent = message;
-        
-        const progress = document.createElement('div');
-        progress.className = 'notification-progress';
-        
-        notification.appendChild(icon);
-        notification.appendChild(content);
-        notification.appendChild(progress);
-        
-        // 添加到容器前，移动已有的通知
-        const notifications = container.getElementsByClassName('notification');
-        Array.from(notifications).forEach(notif => {
-            notif.classList.add('move-down');
-        });
-        
-        // 添加新通知到容器
-        container.insertBefore(notification, container.firstChild);
-        
-        // 触发进入动画
-        requestAnimationFrame(() => {
-            notification.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
-            notification.style.transform = 'translateX(0)';
-            notification.style.opacity = '1';
-            
-            // 启动进度条动画
-            requestAnimationFrame(() => {
-                progress.classList.add('running');
-            });
-        });
-
-        // 设置移除通知的超时
-        const removeNotification = () => {
-            notification.style.transform = 'translateX(100%)';
-            notification.style.opacity = '0';
-            
-            notification.addEventListener('transitionend', () => {
-                if (container.contains(notification)) {
-                    container.removeChild(notification);
-                    // 恢复其他通知的位置
-                    const remainingNotifications = container.getElementsByClassName('notification');
-                    Array.from(remainingNotifications).forEach(notif => {
-                        notif.classList.remove('move-down');
-                    });
-                }
-            }, { once: true });
-        };
-
-        // 3秒后移除通知
-        const timeout = setTimeout(removeNotification, 3000);
-
-        // 鼠标悬停时暂停进度条和移除计时器
-        notification.addEventListener('mouseenter', () => {
-            clearTimeout(timeout);
-            progress.style.animationPlayState = 'paused';
-        });
-
-        // 鼠标离开时恢复进度条和重新设置移除计时器
-        notification.addEventListener('mouseleave', () => {
-            progress.style.animationPlayState = 'running';
-            setTimeout(removeNotification, 3000);
-        });
-    }
+    window.showNotification = function(message, type = 'info') { };
 
     // 添加 logo 点击事件处理
     const logoContainer = document.querySelector('.logo-container');
