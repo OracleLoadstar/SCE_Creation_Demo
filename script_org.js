@@ -365,6 +365,47 @@ document.addEventListener('DOMContentLoaded', () => {
     currentLanguage = getSystemLanguage();
     i18n = languages[currentLanguage];
     
+
+    // --- Service Worker 更新处理逻辑 ---
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.addEventListener('message', event => {
+            if (event.data && event.data.type === 'SW_UPDATED') {
+                console.log('Received SW_UPDATED message from Service Worker.');
+                // 显示更新通知
+                showNotification(i18n.appUpdated || '应用已更新，将清除本地数据并刷新页面...', 'warning');
+
+                // 延迟执行清理和刷新，给用户一点时间看到通知
+                setTimeout(() => {
+                    try {
+                        console.log('Clearing localStorage due to update...');
+                        localStorage.clear(); // 清除所有本地存储数据
+                        console.log('localStorage cleared.');
+
+                        console.log('Forcing page reload...');
+                        location.reload(true); // 强制刷新页面
+                    } catch (error) {
+                        console.error('Error during update cleanup and reload:', error);
+                        // 如果清理或刷新失败，尝试备用刷新
+                        location.reload();
+                    }
+                }, 3000); // 延迟3秒执行
+            }
+        });
+
+        // 初始注册 Service Worker (如果还没有注册逻辑的话)
+        // 注意：如果已有注册逻辑，请确保此监听器在其之前或之后添加，只要能运行即可
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('Service Worker registered with scope:', registration.scope);
+                // 可以添加检查更新的逻辑，例如 registration.update();
+            }).catch(error => {
+                console.error('Service Worker registration failed:', error);
+            });
+
+    }
+    // --- Service Worker 更新处理逻辑结束 ---
+
+
     // 加载动画相关代码
     const minLoadTime = 2000;
     const startTime = Date.now();
