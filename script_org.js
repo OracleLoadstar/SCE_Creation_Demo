@@ -1192,8 +1192,6 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     //         showNotification(i18n.appManagement.clearError, 'error');
     //     }
     // });
-});
-
     // --- 使用预设功能代码开始 ---
 
     const usingNowCardButton = document.getElementById('usingnowcard');
@@ -1500,6 +1498,9 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     }
 
     // --- 使用预设功能代码结束 ---
+
+});
+
 
 
 // 注册 Service Worker
