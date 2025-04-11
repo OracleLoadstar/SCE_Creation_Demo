@@ -37,7 +37,7 @@
                     <div class="logo-container">
                         <img src="image/SCE_ICON_Dynamic.gif" alt="Logo" class="header-logo">
                     </div>
-                    <h1>UmaSCE Algorithm Demo</h1>
+                    <h1>SCE-CREATION</h1>
                 </div>
                 <button id="language-toggle" class="icon-button">
                     <span class="material-icons">translate</span>
@@ -330,6 +330,10 @@
                         <span class="material-icons">save</span>
                         <span class="button-text">保存支援卡</span>
                     </button>
+                    <button id="usePreset" class="dropdown-item">
+                        <span class="material-icons">settings</span>
+                        <span class="button-text">使用预设</span>
+                    </button>
                     <button id="uploadCard" class="dropdown-item">
                         <span class="material-icons">upload</span>
                         <span class="button-text">上传支援卡</span>
@@ -351,6 +355,36 @@
 
         <!-- 通知容器 -->
         <div id="notification-container"></div>
+
+
+        <!-- 支援卡预设弹窗 -->
+        <div id="presetModal" class="modal" style="display: none;">
+            <div class="modal-content card">
+                <div class="modal-header card-header">
+                    <h2 data-i18n="presetModal.title">使用支援卡预设</h2>
+                    <button id="closePresetModal" class="close-button">&times;</button>
+                </div>
+                <div class="modal-body card-content">
+                    <div class="input-group">
+                        <input type="text" id="presetSearchInput" class="input-field" placeholder="搜索支援卡名称...">
+                    </div>
+                    <div class="table-container">
+                        <table id="presetTable">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="presetModal.cardName">支援卡名称</th>
+                                    <th data-i18n="presetModal.cardType">类别</th>
+                                    <th data-i18n="presetModal.action">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="presetTableBody">
+                                <!-- 数据将通过 JS 填充 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 

@@ -1194,6 +1194,262 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     // });
 });
 
+
+    // --- 支援卡预设功能 --- 
+    const usePresetButton = document.getElementById('usePreset');
+    const presetModal = document.getElementById('presetModal');
+    const closePresetModalButton = document.getElementById('closePresetModal');
+    const presetSearchInput = document.getElementById('presetSearchInput');
+    const presetTableBody = document.getElementById('presetTableBody');
+    const overlay = document.querySelector('.overlay'); // Assuming overlay exists for modal background click
+
+    let presetCardData = []; // 存储从 worker 获取的原始数据
+    let isPresetDataFetched = false;
+
+    // 映射 API 返回的字段到表单字段 ID
+    const fieldMapping = {
+        cardName: 'card_name',
+        cardType: 'type_static', // 需要将文本转换为对应的 value (0-4)
+        friendshipAward: 'friendship_award',
+        enthusiasmAward: 'enthusiasm_award',
+        trainingAward: 'training_award',
+        strikePoint: 'strike_point',
+        friendshipPoint: 'friendship_point',
+        speedBonus: 'speed_bonus',
+        staminaBonus: 'stamina_bonus',
+        powerBonus: 'power_bonus',
+        willpowerBonus: 'willpower_bonus',
+        witBonus: 'wit_bonus',
+        spBonus: 'sp_bonus',
+        // 枚举值映射
+        enumFriendshipAward: 'enum_friendship_award',
+        enumEnthusiasmAward: 'enum_enthusiasm_award',
+        enumTrainingAward: 'enum_training_award',
+        enumFriendshipPoint: 'enum_friendship_point',
+        enumStrikePoint: 'enum_strike_point',
+        enumSpeedBonus: 'enum_speed_bonus',
+        enumStaminaBonus: 'enum_stamina_bonus',
+        enumPowerBonus: 'enum_power_bonus',
+        enumWillpowerBonus: 'enum_willpower_bonus',
+        enumWitBonus: 'enum_wit_bonus',
+        enumSpBonus: 'enum_sp_bonus'
+    };
+
+    // 类型文本到值的映射
+    const typeValueMapping = {
+        '速': 0,
+        '耐': 1,
+        '力': 2,
+        '根': 3,
+        '智': 4,
+        '友人': 5, // 假设友人类型的值为 5，如果需要的话
+        '团队': 6  // 假设团队类型的值为 6
+    };
+
+    // 从 Worker 获取预设数据
+    async function fetchPresetData() {
+        if (isPresetDataFetched) return presetCardData;
+        showNotification(i18n.presetModal.fetchingData || '正在获取预设数据...', 'info');
+        try {
+            const response = await fetch('https://sce-data-api.3290293702.workers.dev/getUmaSceData', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            presetCardData = await response.json();
+            isPresetDataFetched = true;
+            showNotification(i18n.presetModal.fetchSuccess || '预设数据获取成功', 'success');
+            return presetCardData;
+        } catch (error) {
+            console.error('Error fetching preset data:', error);
+            showNotification(`${i18n.presetModal.fetchError || '获取预设数据失败'}: ${error.message}`, 'error');
+            return []; // 返回空数组表示失败
+        }
+    }
+
+    // 填充预设表格
+    function populatePresetTable(data) {
+        presetTableBody.innerHTML = ''; // 清空现有行
+        if (!data || data.length === 0) {
+            const row = presetTableBody.insertRow();
+            const cell = row.insertCell();
+            cell.colSpan = 3;
+            cell.textContent = i18n.presetModal.noData || '没有找到匹配的数据';
+            cell.style.textAlign = 'center';
+            return;
+        }
+
+        data.forEach(card => {
+            const row = presetTableBody.insertRow();
+            row.insertCell().textContent = card.name || 'N/A';
+            row.insertCell().textContent = card.type || 'N/A';
+            
+            const actionCell = row.insertCell();
+            const useButton = document.createElement('button');
+            useButton.textContent = i18n.presetModal.useButton || '使用';
+            useButton.classList.add('button', 'primary', 'use-preset-button');
+            useButton.dataset.cardId = card.id; // 使用 id 存储引用
+            actionCell.appendChild(useButton);
+        });
+    }
+
+    // 应用选定的预设到表单
+    function applyPreset(cardId) {
+        const selectedCard = presetCardData.find(card => card.id == cardId); // 注意类型转换
+        if (!selectedCard || !selectedCard.data) {
+            showNotification(i18n.presetModal.applyError || '应用预设失败：找不到卡片数据', 'error');
+            return;
+        }
+
+        try {
+            const cardDetails = JSON.parse(selectedCard.data);
+            
+            // 清空所有输入框的值，除了 card_name 和 type_static
+            const allInputs = document.querySelectorAll('.input-field');
+            allInputs.forEach(input => {
+                if (input.id !== 'card_name' && input.id !== 'type_static' && input.type !== 'checkbox') {
+                    input.value = input.type === 'number' ? '0' : '';
+                }
+            });
+            // 重置枚举开关
+            const enableEnumCheckbox = document.getElementById('enable_enum');
+            if (enableEnumCheckbox) {
+                enableEnumCheckbox.checked = false;
+                document.getElementById('enum_card').style.display = 'none';
+            }
+
+            let hasEnumValues = false;
+            // 填充表单字段
+            for (const apiKey in cardDetails) {
+                if (fieldMapping[apiKey]) {
+                    const formId = fieldMapping[apiKey];
+                    const element = document.getElementById(formId);
+                    if (element) {
+                        let valueToSet = cardDetails[apiKey];
+                        
+                        // 特殊处理 type_static
+                        if (formId === 'type_static') {
+                            valueToSet = typeValueMapping[valueToSet] !== undefined ? typeValueMapping[valueToSet] : '';
+                        }
+                        
+                        // 检查是否为枚举字段且有值
+                        if (formId.startsWith('enum_') && valueToSet != 0 && valueToSet != null && valueToSet !== '') {
+                            hasEnumValues = true;
+                        }
+
+                        element.value = valueToSet;
+                    }
+                }
+            }
+
+            // 如果存在有效的枚举值，则勾选并显示枚举区域
+            if (hasEnumValues && enableEnumCheckbox) {
+                enableEnumCheckbox.checked = true;
+                document.getElementById('enum_card').style.display = 'block';
+            }
+
+            presetModal.style.display = 'none'; // 关闭弹窗
+            if (overlay) overlay.style.display = 'none';
+            showNotification(`${i18n.presetModal.applySuccess || '已应用预设'}: ${selectedCard.name}`, 'success');
+
+        } catch (error) {
+            console.error('Error applying preset:', error);
+            showNotification(`${i18n.presetModal.applyError || '应用预设失败'}: ${error.message}`, 'error');
+        }
+    }
+
+    // --- 事件监听器 ---
+
+    // 打开预设弹窗
+    if (usePresetButton) {
+        usePresetButton.addEventListener('click', async () => {
+            const data = await fetchPresetData();
+            populatePresetTable(data);
+            presetModal.style.display = 'block';
+            if (overlay) overlay.style.display = 'block';
+            // 更新弹窗内的文本（如果需要的话）
+            updatePresetModalText(); 
+        });
+    }
+
+    // 关闭预设弹窗（按钮）
+    if (closePresetModalButton) {
+        closePresetModalButton.addEventListener('click', () => {
+            presetModal.style.display = 'none';
+            if (overlay) overlay.style.display = 'none';
+        });
+    }
+
+    // 关闭预设弹窗（点击背景）
+    if (presetModal) {
+        presetModal.addEventListener('click', (event) => {
+            if (event.target === presetModal) { // 仅当点击背景本身时关闭
+                presetModal.style.display = 'none';
+                if (overlay) overlay.style.display = 'none';
+            }
+        });
+    }
+
+    // 搜索框输入事件
+    if (presetSearchInput) {
+        presetSearchInput.addEventListener('input', () => {
+            const searchTerm = presetSearchInput.value.toLowerCase();
+            if (!presetCardData) return;
+            const filteredData = presetCardData.filter(card => 
+                (card.name && card.name.toLowerCase().includes(searchTerm)) ||
+                (card.type && card.type.toLowerCase().includes(searchTerm))
+            );
+            populatePresetTable(filteredData);
+        });
+    }
+
+    // 表格内“使用”按钮点击事件（事件委托）
+    if (presetTableBody) {
+        presetTableBody.addEventListener('click', (event) => {
+            if (event.target.classList.contains('use-preset-button')) {
+                const cardId = event.target.dataset.cardId;
+                applyPreset(cardId);
+            }
+        });
+    }
+
+    // 更新预设弹窗内的文本（需要添加到 updateText 或单独调用）
+    function updatePresetModalText() {
+        const modalTitle = presetModal.querySelector('.modal-header h2');
+        const searchPlaceholder = presetModal.querySelector('#presetSearchInput');
+        const thName = presetModal.querySelector('#presetTable th:nth-child(1)');
+        const thType = presetModal.querySelector('#presetTable th:nth-child(2)');
+        const thAction = presetModal.querySelector('#presetTable th:nth-child(3)');
+
+        if (modalTitle) modalTitle.textContent = i18n.presetModal.title || '使用支援卡预设';
+        if (searchPlaceholder) searchPlaceholder.placeholder = i18n.presetModal.searchPlaceholder || '搜索支援卡名称...';
+        if (thName) thName.textContent = i18n.presetModal.cardName || '支援卡名称';
+        if (thType) thType.textContent = i18n.presetModal.cardType || '类别';
+        if (thAction) thAction.textContent = i18n.presetModal.action || '操作';
+        
+        // 更新表格中已存在的“使用”按钮文本（如果表格已填充）
+        const useButtons = presetTableBody.querySelectorAll('.use-preset-button');
+        useButtons.forEach(button => {
+            button.textContent = i18n.presetModal.useButton || '使用';
+        });
+    }
+    
+    // 在 switchLanguage 函数中也调用 updatePresetModalText
+    const originalSwitchLanguage = switchLanguage;
+    switchLanguage = function(lang) {
+        originalSwitchLanguage(lang);
+        if (presetModal && presetModal.style.display === 'block') {
+             updatePresetModalText(); // 如果弹窗是打开的，更新文本
+        }
+    }
+    // --- 支援卡预设功能结束 --- 
+
+
+
 // 注册 Service Worker
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

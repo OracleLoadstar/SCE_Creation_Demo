@@ -96,6 +96,21 @@ const languages = {
             copyFailed: "Copy failed, please copy the link manually",
             copyError: "Error copying to clipboard:"
         },
+        presetModal: {
+            title: "Use Support Card Preset",
+            searchPlaceholder: "Search support card name...",
+            cardName: "Card Name",
+            cardType: "Type",
+            action: "Action",
+            useButton: "Use",
+            fetchingData: "Fetching preset data...",
+            fetchSuccess: "Preset data fetched successfully",
+            fetchError: "Failed to fetch preset data",
+            applySuccess: "Preset applied",
+            applyError: "Failed to apply preset",
+            noData: "No matching data found"
+        },
+
         // 应用管理
         appManagement: {
             title: "App Management",
@@ -211,7 +226,26 @@ const languages = {
             disableEnum: "已禁用固有加成功能",
             shareLinkCopied: "分享链接已复制到剪贴板！",
             copyFailed: "复制失败，请手动复制链接",
-            copyError: "复制到剪贴板失败:"
+            copyError: "复制到剪贴板失败:",
+
+        presetModal: {
+            title: "使用支援卡预设",
+            searchPlaceholder: "搜索支援卡名称...",
+            cardName: "支援卡名称",
+            cardType: "类别",
+            action: "操作",
+            useButton: "使用",
+            fetchingData: "正在获取预设数据...",
+            fetchSuccess: "预设数据获取成功",
+            fetchError: "获取预设数据失败",
+            applySuccess: "已应用预设",
+            applyError: "应用预设失败",
+            noData: "没有找到匹配的数据"
+        },
+
+        },
+
+
         },
         // 应用管理
         appManagement: {
@@ -226,6 +260,6 @@ const languages = {
             updateError: "网页更新失败",
             clearError: "缓存清理失败"
         }
-    }
-};
+    };
+
 
