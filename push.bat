@@ -1,7 +1,7 @@
 @echo off
 
 :main
-powershell cat ./version.txt
+powershell cat .\version.txt
 call :fetch_version
 echo %version_name% > .\version.txt
 echo %version_name% > .\version_info\last_version.txt
