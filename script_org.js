@@ -366,44 +366,8 @@ document.addEventListener('DOMContentLoaded', () => {
     i18n = languages[currentLanguage];
     
 
-    // --- Service Worker 更新处理逻辑 ---
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.addEventListener('message', event => {
-            if (event.data && event.data.type === 'SW_UPDATED') {
-                console.log('Received SW_UPDATED message from Service Worker.');
-                // 显示更新通知
-                showNotification(i18n.appUpdated || '应用已更新，将清除本地数据并刷新页面...', 'warning');
-
-                // 延迟执行清理和刷新，给用户一点时间看到通知
-                setTimeout(() => {
-                    try {
-                        console.log('Clearing localStorage due to update...');
-                        localStorage.clear(); // 清除所有本地存储数据
-                        console.log('localStorage cleared.');
-
-                        console.log('Forcing page reload...');
-                        location.reload(true); // 强制刷新页面
-                    } catch (error) {
-                        console.error('Error during update cleanup and reload:', error);
-                        // 如果清理或刷新失败，尝试备用刷新
-                        location.reload();
-                    }
-                }, 3000); // 延迟3秒执行
-            }
-        });
-
-        // 初始注册 Service Worker (如果还没有注册逻辑的话)
-        // 注意：如果已有注册逻辑，请确保此监听器在其之前或之后添加，只要能运行即可
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('Service Worker registered with scope:', registration.scope);
-                // 可以添加检查更新的逻辑，例如 registration.update();
-            }).catch(error => {
-                console.error('Service Worker registration failed:', error);
-            });
-
-    }
-    // --- Service Worker 更新处理逻辑结束 ---
+    // --- 移除 Service Worker 相关逻辑 ---
+    // 不再注册 Service Worker，也不再监听其消息
 
 
     // 加载动画相关代码
@@ -411,6 +375,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const startTime = Date.now();
     
     window.addEventListener('load', () => {
+
+        // --- 记录访问 via Cloudflare Worker ---
+        async function trackVisitViaWorker() {
+            try {
+                // 重要：请将下面的 URL 替换为你的 Worker 的实际部署 URL
+                const workerUrl = 'https://webui-d1-worker.3290293702.workers.dev';
+
+                const response = await fetch(workerUrl, {
+                    method: 'POST',
+                    // 可以根据需要添加 headers，但对于这个简单的 Worker 可能不需要
+                    // headers: { 'Content-Type': 'application/json' },
+                    // body: JSON.stringify({ some_data: 'value' }) // 如果 Worker 需要 body 数据
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to record visit via Worker:', response.status, await response.text());
+                } else {
+                    console.log('Visit recorded successfully via Worker.');
+                }
+            } catch (error) {
+                console.error('Error recording visit via Worker:', error);
+            }
+        }
+        // 页面加载完成后记录访问
+        trackVisitViaWorker();
+        // --- 记录访问结束 ---
+
+
         const loadingScreen = document.getElementById('loading-screen');
         if (!loadingScreen) return;
 
@@ -816,25 +808,8 @@ document.addEventListener('DOMContentLoaded', () => {
         //showGnuv3Dialog();
 
     });
-    async function pwainstall(){
-        if (!deferredPrompt) {
-            showNotification(i18n.appManagement.installSuccess, 'info');
-            return;
-        }
-        
-        try {
-            const result = await deferredPrompt.prompt();
-            if (result.outcome === 'accepted') {
-                showNotification(i18n.appManagement.installSuccess, 'info');
-                installButton.style.display = 'none';
-            }
-        } catch (err) {
-            showNotification(i18n.appManagement.installSuccess, 'info');
-        }
-        
-        deferredPrompt = null;
-    
-    }
+    // --- 移除 PWA 安装功能 ---
+    // async function pwainstall(){ ... } // 函数已移除
     // 清理缓存功能
     async function clearCache() {
         if ('caches' in window) {
@@ -1378,7 +1353,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
             <tr>
                 <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">${i18n.cardNameHeader || '支援卡名称'}</th>
                 <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">${i18n.cardTypeHeader || '类别'}</th>
-                <th style="text-align: center; padding: 8px; border-bottom: 1px solid #ddd;">${i18n.useButtonHeader || '使用'}</th>
+                <th style="text-align: center; padding: 8px; border-bottom: 1px solid #ddd;">${i18n.useButtonHeader || '复制'}</th>
             </tr>
         `;
         table.appendChild(thead);
