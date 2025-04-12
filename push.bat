@@ -12,3 +12,5 @@ goto eof
 :fetch_version
 set /p version_name="请提供版本号："
 set /p commit="请提供commit："
+
+:eof

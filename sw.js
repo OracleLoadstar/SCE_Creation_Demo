@@ -24,7 +24,7 @@ self.addEventListener('install', event => {
 
 // 激活 service worker
 // 激活 service worker - 加入版本检查和强制更新逻辑
-self.addEventListener('activate', event => {
+self.addEventListener('load', event => {
   console.log('Service Worker activating.');
 
   // 立即控制客户端

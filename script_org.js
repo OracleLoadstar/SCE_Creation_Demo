@@ -1319,7 +1319,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         modal.style.maxHeight = '80vh';
         modal.style.backgroundColor = 'white';
         modal.style.border = '1px solid #ccc';
-        modal.style.boxShadow = '0 4px 8px rgba(240,123,124,0.9)';
+        modal.style.boxShadow = '0 4px 8px rgba(240,123,124,0.2)';
         modal.style.zIndex = '1000';
         modal.style.display = 'flex';
         modal.style.flexDirection = 'column';
@@ -1328,7 +1328,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
 
         const header = document.createElement('div');
         header.style.padding = '15px';
-        header.style.backgroundColor = '#f1f1f1';
+        header.style.backgroundColor = '#f07b7c';
         header.style.borderBottom = '1px solid #ddd';
         header.style.display = 'flex';
         header.style.justifyContent = 'space-between';
