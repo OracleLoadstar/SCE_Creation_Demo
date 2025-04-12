@@ -1289,7 +1289,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         modal.style.left = '50%';
         modal.style.top = '50%';
         modal.style.transform = 'translate(-50%, -50%)';
-        modal.style.width = '80%';
+        modal.style.width = '90vw'; // 设置宽度为视口宽度的90%，使其自适应
         modal.style.maxWidth = '600px';
         modal.style.maxHeight = '80vh';
         modal.style.backgroundColor = 'white';
