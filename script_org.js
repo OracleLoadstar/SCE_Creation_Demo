@@ -1132,10 +1132,10 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
             // // 将溅射图标添加到logo容器
             // logoContainer.appendChild(splash);
             
-            // // 动画结束后移除类和溅射图标
-            // logoContainer.addEventListener('animationend', () => {
-            //     logoContainer.classList.remove('rotate-left', 'rotate-right');
-            // }, { once: true });
+            // 动画结束后移除类和溅射图标
+            logoContainer.addEventListener('animationend', () => {
+                logoContainer.classList.remove('rotate-left', 'rotate-right');
+            }, { once: true });
             
             // // 溅射动画结束后移除溅射图标
             // splash.addEventListener('animationend', () => {
@@ -1319,7 +1319,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         modal.style.maxHeight = '80vh';
         modal.style.backgroundColor = 'white';
         modal.style.border = '1px solid #ccc';
-        modal.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+        modal.style.boxShadow = '0 4px 8px rgba(240,123,124,0.9)';
         modal.style.zIndex = '1000';
         modal.style.display = 'flex';
         modal.style.flexDirection = 'column';
@@ -1403,13 +1403,14 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
             actionCell.style.padding = '8px';
             actionCell.style.borderBottom = '1px solid #eee';
 
-            const useButton = document.createElement('button');
-            useButton.textContent = i18n.useButtonText || '使用';
-            useButton.classList.add('button', 'primary', 'small-button'); // 添加样式类
-            useButton.style.padding = '4px 8px'; // 调整按钮大小
-            useButton.style.fontSize = '12px';
-            useButton.onclick = () => fillFormData(card);
-            actionCell.appendChild(useButton);
+            const copyIcon = document.createElement('span');
+            copyIcon.classList.add('material-icons');
+            copyIcon.textContent = 'content_copy';
+            copyIcon.style.cursor = 'pointer';
+            copyIcon.style.verticalAlign = 'middle'; // 垂直居中图标
+            copyIcon.title = i18n.usePresetTooltip || '使用此预设'; // 添加提示文字
+            copyIcon.onclick = () => fillFormData(card);
+            actionCell.appendChild(copyIcon);
         });
         table.appendChild(tbody);
         tableContainer.appendChild(table);
