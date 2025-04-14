@@ -371,24 +371,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // 加载动画相关代码
-    const minLoadTime = 2000;
-    const startTime = Date.now();
-    
-    window.addEventListener('load', () => {
+    const minLoadTime = 2000; // 最小加载时间 (ms)
+    const avatarLoadTimeout = 3000; // 头像加载超时显示跳过按钮的时间 (ms)
+    const pageLoadStartTime = Date.now(); // 记录页面开始加载的时间
+
+    window.addEventListener('load', async () => { // 改为 async 函数以使用 await
 
         // --- 记录访问 via Cloudflare Worker ---
         async function trackVisitViaWorker() {
             try {
-                // 重要：请将下面的 URL 替换为你的 Worker 的实际部署 URL
                 const workerUrl = 'https://sce_record.apicloud.ip-ddns.com';
-
-                const response = await fetch(workerUrl, {
-                    method: 'POST',
-                    // 可以根据需要添加 headers，但对于这个简单的 Worker 可能不需要
-                    // headers: { 'Content-Type': 'application/json' },
-                    // body: JSON.stringify({ some_data: 'value' }) // 如果 Worker 需要 body 数据
-                });
-
+                const response = await fetch(workerUrl, { method: 'POST' });
                 if (!response.ok) {
                     console.error('Failed to record visit via Worker:', response.status, await response.text());
                 } else {
@@ -398,29 +391,86 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error recording visit via Worker:', error);
             }
         }
-        // 页面加载完成后记录访问
-        trackVisitViaWorker();
+        trackVisitViaWorker(); // 异步执行，不阻塞后续加载
         // --- 记录访问结束 ---
 
-
         const loadingScreen = document.getElementById('loading-screen');
-        if (!loadingScreen) return;
+        const loadingTextElement = document.getElementById('loading-text');
+        const skipButton = document.getElementById('skip-loading');
+        if (!loadingScreen || !loadingTextElement || !skipButton) return;
 
-        const elapsedTime = Date.now() - startTime;
-        const remainingTime = Math.max(0, minLoadTime - elapsedTime);
+        let skipButtonTimeoutId = null; // 用于存储跳过按钮的 Timeout ID
+        let avatarsLoaded = false; // 标记头像是否加载完成
 
-        setTimeout(() => {
-            loadingScreen.classList.add('hidden');
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-            }, 500);
-        }, remainingTime);
+        // --- 处理贡献者头像加载 ---
+        const avatarImages = document.querySelectorAll('.contributor-avatar');
+        if (avatarImages.length > 0) {
+            loadingTextElement.textContent = i18n.loadingAvatars || '正在加载贡献者头像...';
 
-        // 更新页面文本
+            // 创建头像加载 Promise
+            const avatarLoadPromises = Array.from(avatarImages).map(img => {
+                return new Promise((resolve) => {
+                    if (img.complete) { // 如果图片已经加载完成 (可能来自缓存)
+                        resolve({ status: 'fulfilled', element: img });
+                    } else {
+                        img.onload = () => resolve({ status: 'fulfilled', element: img });
+                        img.onerror = () => resolve({ status: 'rejected', element: img }); // 加载失败也 resolve
+                    }
+                });
+            });
+
+            // 设置 3 秒后显示跳过按钮的计时器
+            skipButtonTimeoutId = setTimeout(() => {
+                if (!avatarsLoaded) { // 仅在头像未加载完成时显示
+                   skipButton.style.display = 'inline-block'; // 或 'block'
+                }
+            }, avatarLoadTimeout);
+
+            // 等待所有头像加载完成（或失败）
+            await Promise.allSettled(avatarLoadPromises);
+            avatarsLoaded = true; // 标记头像加载流程结束
+            clearTimeout(skipButtonTimeoutId); // 清除跳过按钮的计时器
+            skipButton.style.display = 'none'; // 无论如何，加载完成后隐藏跳过按钮
+            console.log('Contributor avatars loading finished.');
+        } else {
+            avatarsLoaded = true; // 没有头像，直接标记为完成
+        }
+        // --- 头像加载处理结束 ---
+
+        // --- 隐藏加载屏幕逻辑 ---
+        loadingTextElement.textContent = i18n.loadingComplete || '加载完成!'; // 更新最终加载文本
+
+        const hideLoadingScreen = () => {
+            if (!loadingScreen.classList.contains('hidden')) {
+                loadingScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500); // 等待淡出动画
+            }
+        };
+
+        const elapsedTime = Date.now() - pageLoadStartTime;
+        const remainingMinTime = Math.max(0, minLoadTime - elapsedTime);
+
+        // 等待最小加载时间结束后再隐藏
+        setTimeout(hideLoadingScreen, remainingMinTime);
+        // --- 隐藏逻辑结束 ---
+
+
+        // --- 更新页面其他部分 ---
         updateText();
-        
-        // 显示GNU协议对话框（只在这里调用一次）
         showGnuv3Dialog();
+        // --- 更新结束 ---
+
+        // --- 跳过按钮事件处理 ---
+        skipButton.onclick = () => {
+            console.log('Skip button clicked.');
+            clearTimeout(skipButtonTimeoutId); // 清除可能存在的计时器
+            avatarsLoaded = true; // 标记为已跳过/完成
+            hideLoadingScreen(); // 立即隐藏加载屏幕
+        };
+        // --- 跳过按钮处理结束 ---
+
     });
 
     // 绑定语言切换事件
