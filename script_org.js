@@ -380,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         async function trackVisitViaWorker() {
             try {
                 // 重要：请将下面的 URL 替换为你的 Worker 的实际部署 URL
-                const workerUrl = 'https://webui-d1-worker.3290293702.workers.dev';
+                const workerUrl = 'https://sce_record.apicloud.ip-ddns.com';
 
                 const response = await fetch(workerUrl, {
                     method: 'POST',
@@ -1258,7 +1258,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         showLoadingIndicator(true);
         try {
             // 注意：浏览器 fetch 无法直接设置代理，请确保网络环境允许访问
-            const response = await fetch('https://sce-data-api.3290293702.workers.dev/getUmaSceData', {
+            const response = await fetch('https://sce_data.apicloud.ip-ddns.com/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
