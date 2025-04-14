@@ -1333,6 +1333,18 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     function showPresetModal(data) {
         closeModal(); // 关闭可能已存在的旧弹窗
 
+        // 创建并添加蒙版
+        const overlay = document.createElement('div');
+        overlay.id = 'preset-modal-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // 半透明黑色
+        overlay.style.zIndex = '999'; // 低于弹窗，高于页面内容
+        document.body.appendChild(overlay);
+
         const modal = document.createElement('div');
         modal.id = 'preset-modal';
         modal.style.position = 'fixed';
@@ -1569,6 +1581,11 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         const modal = document.getElementById('preset-modal');
         if (modal) {
             modal.remove();
+        }
+        // 同时移除蒙版
+        const overlay = document.getElementById('preset-modal-overlay');
+        if (overlay) {
+            overlay.remove();
         }
     }
 
