@@ -438,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- 头像加载处理结束 ---
 
         // --- 隐藏加载屏幕逻辑 ---
-        loadingTextElement.textContent = i18n.loadingComplete || '加载完成!'; // 更新最终加载文本
+        loadingTextElement.textContent = i18n.loadingComplete || '正在加载头像'; // 更新最终加载文本
 
         const hideLoadingScreen = () => {
             if (!loadingScreen.classList.contains('hidden')) {
