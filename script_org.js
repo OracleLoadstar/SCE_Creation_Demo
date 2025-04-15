@@ -421,6 +421,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // 2. 加载计算模块 (视觉模拟)
             loadingTextElement.textContent = i18n.loadingModules || '加载中... 加载计算模块';
             await delay(150);
+            // 2.1. 实际初始化计算模块
+            umaSCE = new UmaSCE_Main();
+            console.log('Calculation modules initialized.');
 
             // 3. 加载贡献者头像 (带超时)
             loadingTextElement.textContent = i18n.loadingAvatars || '加载中... 加载贡献者头像';
@@ -497,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show GNUv3 dialog
     showGnuv3Dialog();
 
-    const umaSCE = new UmaSCE_Main();
+    let umaSCE; // 在外部声明，以便后续访问
 
     // Get result display elements
     const v1Result = document.getElementById('v1-result');
