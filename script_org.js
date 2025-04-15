@@ -371,9 +371,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // 加载动画相关代码
-    const minLoadTime = 2000; // 最小加载时间 (ms)
-    const avatarLoadTimeout = 3000; // 头像加载超时显示跳过按钮的时间 (ms)
-    const pageLoadStartTime = Date.now(); // 记录页面开始加载的时间
+    const totalMinDisplayTime = 3000; // 总最小显示时间 (ms)
+    const avatarStepTimeout = 3000; // 头像加载步骤超时时间 (ms)
 
     window.addEventListener('load', async () => { // 使用 async 函数
 
@@ -396,9 +395,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const loadingScreen = document.getElementById('loading-screen');
         const loadingTextElement = document.getElementById('loading-text');
-        // 跳过按钮不再需要，移除相关逻辑
-        // const skipButton = document.getElementById('skip-loading');
         if (!loadingScreen || !loadingTextElement) return;
+
+        const sequenceStartTime = Date.now(); // 记录加载序列开始时间
 
         // --- 隐藏加载屏幕的函数 ---
         const hideLoadingScreen = () => {
@@ -417,16 +416,17 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // 1. 加载样式 (视觉模拟)
             loadingTextElement.textContent = i18n.loadingStyles || '加载中... 加载样式';
-            await delay(150); // 短暂延迟让文本可见
+            await delay(150);
 
             // 2. 加载计算模块 (视觉模拟)
-            // 假设计算模块 (UmaSCE_Main, UmaV5Calculator) 已经通过 <script> 加载
             loadingTextElement.textContent = i18n.loadingModules || '加载中... 加载计算模块';
-            await delay(150); // 短暂延迟
+            await delay(150);
 
-            // 3. 加载贡献者头像
+            // 3. 加载贡献者头像 (带超时)
             loadingTextElement.textContent = i18n.loadingAvatars || '加载中... 加载贡献者头像';
             const avatarImages = document.querySelectorAll('.contributor-avatar');
+            let avatarStepTimedOut = false;
+
             if (avatarImages.length > 0) {
                 const avatarLoadPromises = Array.from(avatarImages).map(img => {
                     return new Promise((resolve) => {
@@ -434,31 +434,51 @@ document.addEventListener('DOMContentLoaded', () => {
                             resolve({ status: 'fulfilled', element: img });
                         } else {
                             img.onload = () => resolve({ status: 'fulfilled', element: img });
-                            img.onerror = () => resolve({ status: 'rejected', element: img }); // 失败也继续
+                            img.onerror = () => resolve({ status: 'rejected', element: img });
                         }
                     });
                 });
-                await Promise.allSettled(avatarLoadPromises);
-                console.log('Contributor avatars loading finished.');
+
+                const avatarTimeoutPromise = delay(avatarStepTimeout).then(() => 'timeout');
+
+                const raceResult = await Promise.race([
+                    Promise.allSettled(avatarLoadPromises),
+                    avatarTimeoutPromise
+                ]);
+
+                if (raceResult === 'timeout') {
+                    avatarStepTimedOut = true;
+                    console.log('Avatar loading step timed out after 3 seconds. Skipping remaining avatars.');
+                } else {
+                    console.log('Contributor avatars loading finished or failed within timeout.');
+                }
             } else {
-                 await delay(100); // 如果没有头像，也稍微延迟一下
+                await delay(100); // 没有头像也稍微等待
             }
 
-            // 4. 加载完成
+            // 4. 计算总耗时并等待最小总时间
+            const totalElapsedTime = Date.now() - sequenceStartTime;
+            const remainingWaitTime = Math.max(0, totalMinDisplayTime - totalElapsedTime);
+            if (remainingWaitTime > 0) {
+                console.log(`Waiting for minimum display time: ${remainingWaitTime}ms`);
+                await delay(remainingWaitTime);
+            }
+
+            // 5. 加载完成
             loadingTextElement.textContent = i18n.loadingComplete || '加载完成!';
-            await delay(200); // 显示完成消息一小段时间
+            await delay(200); // 短暂显示完成消息
 
             // 隐藏加载屏幕
             hideLoadingScreen();
 
-            // 更新页面内容
+            // 更新页面内容 (在隐藏动画开始后执行)
             updateText();
             showGnuv3Dialog();
 
         } catch (error) {
             console.error("Error during loading sequence:", error);
             loadingTextElement.textContent = i18n.loadingError || '加载出错!';
-            // 可以选择在这里也隐藏加载屏幕，或者保留错误信息
+            // 考虑是否在出错时也隐藏加载屏幕
             // hideLoadingScreen();
         }
         // --- 加载序列结束 ---
