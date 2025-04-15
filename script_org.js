@@ -375,9 +375,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const avatarLoadTimeout = 3000; // 头像加载超时显示跳过按钮的时间 (ms)
     const pageLoadStartTime = Date.now(); // 记录页面开始加载的时间
 
-    window.addEventListener('load', async () => { // 改为 async 函数以使用 await
+    window.addEventListener('load', async () => { // 使用 async 函数
 
-        // --- 记录访问 via Cloudflare Worker ---
+        // --- 记录访问 (异步执行，不阻塞UI) ---
         async function trackVisitViaWorker() {
             try {
                 const workerUrl = 'https://sce_record.apicloud.ip-ddns.com';
@@ -391,55 +391,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Error recording visit via Worker:', error);
             }
         }
-        trackVisitViaWorker(); // 异步执行，不阻塞后续加载
+        trackVisitViaWorker();
         // --- 记录访问结束 ---
 
         const loadingScreen = document.getElementById('loading-screen');
         const loadingTextElement = document.getElementById('loading-text');
-        const skipButton = document.getElementById('skip-loading');
-        if (!loadingScreen || !loadingTextElement || !skipButton) return;
+        // 跳过按钮不再需要，移除相关逻辑
+        // const skipButton = document.getElementById('skip-loading');
+        if (!loadingScreen || !loadingTextElement) return;
 
-        let skipButtonTimeoutId = null; // 用于存储跳过按钮的 Timeout ID
-        let avatarsLoaded = false; // 标记头像是否加载完成
-
-        // --- 处理贡献者头像加载 ---
-        const avatarImages = document.querySelectorAll('.contributor-avatar');
-        if (avatarImages.length > 0) {
-            loadingTextElement.textContent = i18n.loadingAvatars || '正在加载贡献者头像...';
-
-            // 创建头像加载 Promise
-            const avatarLoadPromises = Array.from(avatarImages).map(img => {
-                return new Promise((resolve) => {
-                    if (img.complete) { // 如果图片已经加载完成 (可能来自缓存)
-                        resolve({ status: 'fulfilled', element: img });
-                    } else {
-                        img.onload = () => resolve({ status: 'fulfilled', element: img });
-                        img.onerror = () => resolve({ status: 'rejected', element: img }); // 加载失败也 resolve
-                    }
-                });
-            });
-
-            // 设置 3 秒后显示跳过按钮的计时器
-            skipButtonTimeoutId = setTimeout(() => {
-                if (!avatarsLoaded) { // 仅在头像未加载完成时显示
-                   skipButton.style.display = 'inline-block'; // 或 'block'
-                }
-            }, avatarLoadTimeout);
-
-            // 等待所有头像加载完成（或失败）
-            await Promise.allSettled(avatarLoadPromises);
-            avatarsLoaded = true; // 标记头像加载流程结束
-            clearTimeout(skipButtonTimeoutId); // 清除跳过按钮的计时器
-            skipButton.style.display = 'none'; // 无论如何，加载完成后隐藏跳过按钮
-            console.log('Contributor avatars loading finished.');
-        } else {
-            avatarsLoaded = true; // 没有头像，直接标记为完成
-        }
-        // --- 头像加载处理结束 ---
-
-        // --- 隐藏加载屏幕逻辑 ---
-        loadingTextElement.textContent = i18n.loadingComplete || '正在加载头像'; // 更新最终加载文本
-
+        // --- 隐藏加载屏幕的函数 ---
         const hideLoadingScreen = () => {
             if (!loadingScreen.classList.contains('hidden')) {
                 loadingScreen.classList.add('hidden');
@@ -449,27 +410,58 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const elapsedTime = Date.now() - pageLoadStartTime;
-        const remainingMinTime = Math.max(0, minLoadTime - elapsedTime);
+        // --- 模拟延迟函数 ---
+        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-        // 等待最小加载时间结束后再隐藏
-        setTimeout(hideLoadingScreen, remainingMinTime);
-        // --- 隐藏逻辑结束 ---
+        // --- 新的加载序列 ---
+        try {
+            // 1. 加载样式 (视觉模拟)
+            loadingTextElement.textContent = i18n.loadingStyles || '加载中... 加载样式';
+            await delay(150); // 短暂延迟让文本可见
 
+            // 2. 加载计算模块 (视觉模拟)
+            // 假设计算模块 (UmaSCE_Main, UmaV5Calculator) 已经通过 <script> 加载
+            loadingTextElement.textContent = i18n.loadingModules || '加载中... 加载计算模块';
+            await delay(150); // 短暂延迟
 
-        // --- 更新页面其他部分 ---
-        updateText();
-        showGnuv3Dialog();
-        // --- 更新结束 ---
+            // 3. 加载贡献者头像
+            loadingTextElement.textContent = i18n.loadingAvatars || '加载中... 加载贡献者头像';
+            const avatarImages = document.querySelectorAll('.contributor-avatar');
+            if (avatarImages.length > 0) {
+                const avatarLoadPromises = Array.from(avatarImages).map(img => {
+                    return new Promise((resolve) => {
+                        if (img.complete) {
+                            resolve({ status: 'fulfilled', element: img });
+                        } else {
+                            img.onload = () => resolve({ status: 'fulfilled', element: img });
+                            img.onerror = () => resolve({ status: 'rejected', element: img }); // 失败也继续
+                        }
+                    });
+                });
+                await Promise.allSettled(avatarLoadPromises);
+                console.log('Contributor avatars loading finished.');
+            } else {
+                 await delay(100); // 如果没有头像，也稍微延迟一下
+            }
 
-        // --- 跳过按钮事件处理 ---
-        skipButton.onclick = () => {
-            console.log('Skip button clicked.');
-            clearTimeout(skipButtonTimeoutId); // 清除可能存在的计时器
-            avatarsLoaded = true; // 标记为已跳过/完成
-            hideLoadingScreen(); // 立即隐藏加载屏幕
-        };
-        // --- 跳过按钮处理结束 ---
+            // 4. 加载完成
+            loadingTextElement.textContent = i18n.loadingComplete || '加载完成!';
+            await delay(200); // 显示完成消息一小段时间
+
+            // 隐藏加载屏幕
+            hideLoadingScreen();
+
+            // 更新页面内容
+            updateText();
+            showGnuv3Dialog();
+
+        } catch (error) {
+            console.error("Error during loading sequence:", error);
+            loadingTextElement.textContent = i18n.loadingError || '加载出错!';
+            // 可以选择在这里也隐藏加载屏幕，或者保留错误信息
+            // hideLoadingScreen();
+        }
+        // --- 加载序列结束 ---
 
     });
 
