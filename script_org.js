@@ -364,6 +364,81 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初始化语言
     currentLanguage = getSystemLanguage();
     i18n = languages[currentLanguage];
+
+    // 绑定Calculate All按钮事件
+    const calculateAllBtn = document.getElementById('calculate-all');
+    if (calculateAllBtn) {
+        calculateAllBtn.addEventListener('click', async () => {
+            try {
+                // 显示AI响应区域和加载状态
+                const aiResponseSection = document.getElementById('ai-response-section');
+                const aiResponseContent = document.getElementById('ai-response-content');
+                const aiResponseLoading = document.getElementById('ai-response-loading');
+                
+                aiResponseSection.style.display = 'block';
+                aiResponseContent.textContent = '';
+                aiResponseLoading.style.display = 'block';
+
+                // 获取表单数据
+                const formData = {
+                    card_name: document.getElementById('card_name').value,
+                    type_static: document.getElementById('type_static').value,
+                    friendship_award: document.getElementById('friendship_award').value,
+                    enthusiasm_award: document.getElementById('enthusiasm_award').value,
+                    training_award: document.getElementById('training_award').value,
+                    strike_point: document.getElementById('strike_point').value,
+                    friendship_point: document.getElementById('friendship_point').value,
+                    speed_bonus: document.getElementById('speed_bonus').value,
+                    stamina_bonus: document.getElementById('stamina_bonus').value,
+                    power_bonus: document.getElementById('power_bonus').value,
+                    willpower_bonus: document.getElementById('willpower_bonus').value,
+                    wit_bonus: document.getElementById('wit_bonus').value,
+                    sp_bonus: document.getElementById('sp_bonus').value
+                };
+
+                // 如果启用了枚举拓展，添加枚举值
+                if (document.getElementById('enable_enum').checked) {
+                    formData.enum_friendship_award = document.getElementById('enum_friendship_award').value;
+                    formData.enum_enthusiasm_award = document.getElementById('enum_enthusiasm_award').value;
+                    formData.enum_training_award = document.getElementById('enum_training_award').value;
+                    formData.enum_friendship_point = document.getElementById('enum_friendship_point').value;
+                    formData.enum_strike_point = document.getElementById('enum_strike_point').value;
+                    formData.enum_speed_bonus = document.getElementById('enum_speed_bonus').value;
+                    formData.enum_stamina_bonus = document.getElementById('enum_stamina_bonus').value;
+                    formData.enum_power_bonus = document.getElementById('enum_power_bonus').value;
+                    formData.enum_willpower_bonus = document.getElementById('enum_willpower_bonus').value;
+                    formData.enum_wit_bonus = document.getElementById('enum_wit_bonus').value;
+                    formData.enum_sp_bonus = document.getElementById('enum_sp_bonus').value;
+                }
+
+                // 调用Cloudflare Worker
+                const response = await fetch('https://', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Worker request failed: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // 显示AI响应
+                aiResponseContent.textContent = data.answer || data.message || 'AI评价已生成';
+                aiResponseLoading.style.display = 'none';
+
+            } catch (error) {
+                console.error('Error during AI evaluation:', error);
+                const aiResponseContent = document.getElementById('ai-response-content');
+                aiResponseContent.textContent = `获取AI评价失败: ${error.message}`;
+                const aiResponseLoading = document.getElementById('ai-response-loading');
+                aiResponseLoading.style.display = 'none';
+            }
+        });
+    }
     
 
     // --- 移除 Service Worker 相关逻辑 ---
