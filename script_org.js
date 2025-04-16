@@ -412,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 // 调用Cloudflare Worker
-                const response = await fetch('https://', {
+                const response = await fetch('https://sce_cat.apicloud.ip-ddns.com', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
