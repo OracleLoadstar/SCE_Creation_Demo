@@ -393,7 +393,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     power_bonus: document.getElementById('power_bonus').value,
                     willpower_bonus: document.getElementById('willpower_bonus').value,
                     wit_bonus: document.getElementById('wit_bonus').value,
-                    sp_bonus: document.getElementById('sp_bonus').value
+                    sp_bonus: document.getElementById('sp_bonus').value,
+                    v1Value: document.getElementById('v1-result').value,
+                    v2Value: document.getElementById('v2-result').value,
+                    v3Value: document.getElementById('v3-result').value,
+                    v4main_result: document.getElementById('v4main-result').value,
+                    v4fold_result: document.getElementById('v4fold-result').value,
+                    v4sp_result: document.getElementById('v4sp-result').value
                 };
 
                 // 如果启用了枚举拓展，添加枚举值
@@ -421,6 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (!response.ok) {
+                    showNotification("完辣，North出错了！","error");
+                    aiResponseContent.textContent = `非常抱歉喵，下班了喵。～(∠・ω< )⌒★`;                    
                     throw new Error(`Worker request failed: ${response.status}`);
                 }
 
@@ -431,9 +439,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 aiResponseLoading.style.display = 'none';
 
             } catch (error) {
+                showNotification("网络错误，请检查连接后重试！","error");
                 console.error('Error during AI evaluation:', error);
                 const aiResponseContent = document.getElementById('ai-response-content');
-                aiResponseContent.textContent = `获取AI评价失败: ${error.message}`;
+                aiResponseContent.textContent = `非常抱歉喵，无法接收您的请求喵。(ಡ‸ಡ)
+North捕捉到的错误:"${error.message}"`;
                 const aiResponseLoading = document.getElementById('ai-response-loading');
                 aiResponseLoading.style.display = 'none';
             }
