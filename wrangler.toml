@@ -7,3 +7,6 @@ workers_dev = true
 
 [vars]
 DIFY_API_KEY = "app-hlgPlVFq8vsGw2A0DPUOyIHJ"
+
+[observability.logs]
+enabled = true
