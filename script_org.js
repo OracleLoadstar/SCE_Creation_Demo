@@ -417,13 +417,36 @@ document.addEventListener('DOMContentLoaded', () => {
                     formData.enum_sp_bonus = document.getElementById('enum_sp_bonus').value;
                 }
 
+                // 新增：获取 AI 参照预设和语言
+                let defcard = null;
+                const enableAiSwitch = document.getElementById('enable_ai');
+                if (enableAiSwitch && enableAiSwitch.checked) {
+                    const aiPresetSelect = document.getElementById('ai-preset-select');
+                    if (aiPresetSelect && aiPresetSelect.value) { // 确保选中了有效选项（非空字符串）
+                        try {
+                            // 确保解析前检查值是否为有效 JSON 字符串
+                            if (aiPresetSelect.value.startsWith('{') && aiPresetSelect.value.endsWith('}')) {
+                                defcard = JSON.parse(aiPresetSelect.value);
+                            } else {
+                                console.log("Selected value is not a valid JSON object for defcard, using null.");
+                            }
+                        } catch (e) {
+                            console.error("Error parsing defcard JSON:", e, "Value:", aiPresetSelect.value);
+                            // 解析失败，defcard 保持 null
+                        }
+                    }
+                }
+                formData.defcard = defcard; // 添加 defcard 到 formData (可能为 null)
+                formData.lang = currentLanguage; // 添加当前语言到 formData
+
+
                 // 调用Cloudflare Worker
                 const response = await fetch('https://sce_cat.apicloud.ip-ddns.com', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.stringify(formData) // 确保发送的是更新后的 formData
                 });
 
                 if (!response.ok) {
@@ -1689,6 +1712,26 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         }
     }
 
+
+    const enableAiSwitch = document.getElementById('enable_ai');
+    const aiPresetContainer = document.getElementById('ai-preset-container');
+    const aiPresetSearch = document.getElementById('ai-preset-search');
+
+    if (enableAiSwitch && aiPresetContainer) {
+        enableAiSwitch.addEventListener('change', () => {
+            if (enableAiSwitch.checked) {
+                aiPresetContainer.style.display = 'block';
+                loadAiPresets(); // 开关打开时加载预设
+            } else {
+                aiPresetContainer.style.display = 'none';
+            }
+        });
+    }
+
+     if (aiPresetSearch) {
+        aiPresetSearch.addEventListener('input', filterAiPresets);
+    }
+
     // 为“使用预设”按钮添加事件监听器
     if (usingNowCardButton) {
         usingNowCardButton.addEventListener('click', async () => {
@@ -1702,6 +1745,63 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
     // --- 使用预设功能代码结束 ---
 
 });
+
+// 新增：加载 AI 预设数据到下拉列表
+async function loadAiPresets() {
+    const selectElement = document.getElementById('ai-preset-select');
+    const searchInput = document.getElementById('ai-preset-search');
+    if (!selectElement || !searchInput) return;
+
+    // 清空现有选项和搜索框
+    selectElement.innerHTML = `<option value="">${i18n.aiPreset.none || '不使用参照'}</option>`;
+    searchInput.value = '';
+
+    try {
+        showLoadingIndicator(true); // 显示加载指示器
+        const presetData = await fetchPresetData(); // 复用现有函数获取数据
+        if (presetData && presetData.length > 0) {
+            presetData.forEach(card => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify(card); // 将整个卡片数据存储为值，方便后续使用
+                option.textContent = card.card_name || 'Unnamed Card';
+                // 添加原始文本作为数据属性，用于搜索
+                option.dataset.originalText = option.textContent.toLowerCase();
+                selectElement.appendChild(option);
+            });
+        } else {
+             selectElement.innerHTML = `<option value="">${i18n.aiPreset.noPresets || '无可用预设'}</option>`;
+        }
+    } catch (error) {
+        console.error('Error loading AI presets:', error);
+        showNotification(i18n.errorLoadingPresets || '加载预设失败', 'error');
+         selectElement.innerHTML = `<option value="">${i18n.aiPreset.loadError || '加载错误'}</option>`;
+    } finally {
+        showLoadingIndicator(false); // 隐藏加载指示器
+    }
+}
+
+// 新增：过滤 AI 预设下拉列表
+function filterAiPresets() {
+    const searchTerm = document.getElementById('ai-preset-search').value.toLowerCase();
+    const selectElement = document.getElementById('ai-preset-select');
+    const options = selectElement.options;
+
+    for (let i = 0; i < options.length; i++) {
+        const option = options[i];
+        // 保留 "不使用参照" 选项
+        if (option.value === "") {
+            option.style.display = '';
+            continue;
+        }
+        const originalText = option.dataset.originalText || ''; // 获取存储的原始文本
+        if (originalText.includes(searchTerm)) {
+            option.style.display = '';
+        } else {
+            option.style.display = 'none';
+        }
+    }
+}
+
 
 
 

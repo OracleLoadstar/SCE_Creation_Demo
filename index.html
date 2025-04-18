@@ -220,6 +220,14 @@
                         </label>
                         <span class="switch-label">AI评价</span>
                     </div>
+                    <div id="ai-preset-container" class="input-group" style="display: none; margin-left: 15px;">
+                        <label for="ai-preset-select" data-i18n="aiPreset.title">使用预设作为参照</label>
+                        <input type="text" id="ai-preset-search" class="input-field" placeholder="搜索预设..." style="margin-bottom: 5px;">
+                        <select id="ai-preset-select" class="input-field">
+                            <option value="" data-i18n="aiPreset.none">不使用参照</option>
+                            <!-- 预设选项将由 JS 动态填充 -->
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -277,7 +285,7 @@
                     <div id="ai-response-section" class="result-group" style="display: none; margin-top: 0px; border-top: 0px solid #eee; padding-top: 0px;">
                         <div class="result-label ai-response-label"></div>
                         <div id="ai-response-content" class="result-value" style="white-space: pre-wrap; /* Preserve line breaks */"></div>
-                        <div id="ai-response-loading" style="display: none; margin-top: 10px;">North思考中😺</div>
+                        <div id="ai-response-loading" style="display: none; margin-top: 10px;">North思考中...</div>
                     </div>
                 </div>
             </div>
@@ -381,6 +389,6 @@
     <!-- 脚本加载顺序：语言文件 -> V5 算法 -> 主脚本 -->
     <script src="lang.js"></script>
     <script src="UmaSCE_V5.js"></script>  
-    <script src="script_org.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

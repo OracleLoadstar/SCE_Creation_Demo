@@ -16,10 +16,14 @@ export default {
       try {
         // Forward request to Dify API
         const difyUrl = 'https://api.dify.ai/v1/completion-messages';
-        const apiKey = 'app-hlgPlVFq8vsGw2A0DPUOyIHJ';
-        
+        const apiKey = 'app-YIGATmbsExzhAEf4hSBYMFhV';
+
         const requestData = await request.json();
-        
+
+        // 提取 defcard 和 lang
+        const defcard = requestData.defcard; // 可能为 null
+        const lang = requestData.lang;
+
         // 将支援卡数据转换为JSON字符串作为input
         const inputText = JSON.stringify({
           card_name: requestData.card_name,
@@ -58,7 +62,9 @@ export default {
           },
           body: JSON.stringify({
             inputs: {
-              input: inputText
+              input: inputText,
+              defcard: defcard, // 添加 defcard 参数
+              lang: lang      // 添加 lang 参数
             },
             response_mode: "blocking",
             user: "support_card_evaluator"
@@ -66,7 +72,7 @@ export default {
         });
 
         const result = await response.json();
-        
+
         return new Response(JSON.stringify(result), {
           headers: {
             'Content-Type': 'application/json',
