@@ -213,21 +213,27 @@
                     <button id="calculate-v4" class="button primary">Calculate V4</button> -->
                     <!-- <button id="calculate-v5" class="button primary">Calculate V5</button> -->
                     <button id="calculate-all" class="button accent">Calculate All</button>
-                    <div class="switch-container">
+                    <div class="switch-container" id="ai-preset-container" style="margin-right: 10px;">
+                        <label class="switch">
+                            <input type="checkbox" id="enable_ai_preset">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="switch-label" data-i18n="aiPresetSwitchLabel">AI评价参照</span>
+                    </div>
+                    <div id="ai-preset-select-container" style="display: none; margin-left: 10px; flex-grow: 1;">
+                         <label for="ai_preset_select" data-i18n="aiPresetSelectLabel">使用预设作为参照</label>
+                         <input type="text" id="ai-preset-search" class="input-field" placeholder="搜索预设..." style="margin-bottom: 5px; width: calc(100% - 22px);">
+                         <select id="ai_preset_select" class="input-field" style="width: calc(100% - 22px);">
+                             <!-- Options will be populated dynamically -->
+                         </select>
+                    </div>
+                    <!-- <div class="switch-container">
                         <label class="switch">
                             <input type="checkbox" id="enable_ai">
                             <span class="slider round"></span>
                         </label>
                         <span class="switch-label">AI评价</span>
-                    </div>
-                    <div id="ai-preset-container" class="input-group" style="display: none; margin-left: 15px;">
-                        <label for="ai-preset-select" data-i18n="aiPreset.title">使用预设作为参照</label>
-                        <input type="text" id="ai-preset-search" class="input-field" placeholder="搜索预设..." style="margin-bottom: 5px;">
-                        <select id="ai-preset-select" class="input-field">
-                            <option value="" data-i18n="aiPreset.none">不使用参照</option>
-                            <!-- 预设选项将由 JS 动态填充 -->
-                        </select>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -285,7 +291,7 @@
                     <div id="ai-response-section" class="result-group" style="display: none; margin-top: 0px; border-top: 0px solid #eee; padding-top: 0px;">
                         <div class="result-label ai-response-label"></div>
                         <div id="ai-response-content" class="result-value" style="white-space: pre-wrap; /* Preserve line breaks */"></div>
-                        <div id="ai-response-loading" style="display: none; margin-top: 10px;">North思考中...</div>
+                        <div id="ai-response-loading" style="display: none; margin-top: 10px;">North思考中😺</div>
                     </div>
                 </div>
             </div>
@@ -389,6 +395,6 @@
     <!-- 脚本加载顺序：语言文件 -> V5 算法 -> 主脚本 -->
     <script src="lang.js"></script>
     <script src="UmaSCE_V5.js"></script>  
-    <script src="script.js"></script>
+    <script src="script_org.js"></script>
 </body>
 </html>

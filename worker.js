@@ -15,44 +15,22 @@ export default {
     if (request.method === 'POST') {
       try {
         // Forward request to Dify API
-        const difyUrl = 'https://api.dify.ai/v1/completion-messages';
+        const difyUrl = 'https://api.dify.ai/v1/chat-messages';
         const apiKey = 'app-YIGATmbsExzhAEf4hSBYMFhV';
-
+        
         const requestData = await request.json();
-
-        // 提取 defcard 和 lang
-        const defcard = requestData.defcard; // 可能为 null
-        const lang = requestData.lang;
-
-        // 将支援卡数据转换为JSON字符串作为input
-        const inputText = JSON.stringify({
-          card_name: requestData.card_name,
-          type: requestData.type_static,
-          friendship_award: requestData.friendship_award,
-          enthusiasm_award: requestData.enthusiasm_award,
-          training_award: requestData.training_award,
-          strike_point: requestData.strike_point,
-          friendship_point: requestData.friendship_point,
-          speed_bonus: requestData.speed_bonus,
-          stamina_bonus: requestData.stamina_bonus,
-          power_bonus: requestData.power_bonus,
-          willpower_bonus: requestData.willpower_bonus,
-          wit_bonus: requestData.wit_bonus,
-          sp_bonus: requestData.sp_bonus,
-          enum_values: requestData.enable_enum ? {
-            enum_friendship_award: requestData.enum_friendship_award,
-            enum_enthusiasm_award: requestData.enum_enthusiasm_award,
-            enum_training_award: requestData.enum_training_award,
-            enum_friendship_point: requestData.enum_friendship_point,
-            enum_strike_point: requestData.enum_strike_point,
-            enum_speed_bonus: requestData.enum_speed_bonus,
-            enum_stamina_bonus: requestData.enum_stamina_bonus,
-            enum_power_bonus: requestData.enum_power_bonus,
-            enum_willpower_bonus: requestData.enum_willpower_bonus,
-            enum_wit_bonus: requestData.enum_wit_bonus,
-            enum_sp_bonus: requestData.enum_sp_bonus
-          } : null
-        }, null, 2);
+        
+        // 准备Dify API请求参数
+        const difyParams = {
+          query: `请评价这张支援卡: ${requestData.card_name}`,
+          inputs: {
+            ...requestData,
+            defcard: requestData.defcard || null,
+            lang: requestData.lang || 'zh'
+          },
+          response_mode: "streaming",
+          user: "SCE_User_" + Date.now()
+        };
 
         const response = await fetch(difyUrl, {
           method: 'POST',
@@ -60,19 +38,52 @@ export default {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${apiKey}`
           },
-          body: JSON.stringify({
-            inputs: {
-              input: inputText,
-              defcard: defcard, // 添加 defcard 参数
-              lang: lang      // 添加 lang 参数
-            },
-            response_mode: "blocking",
-            user: "support_card_evaluator"
-          })
+          body: JSON.stringify(difyParams)
         });
 
-        const result = await response.json();
+        // 处理流式响应
+        const { readable, writable } = new TransformStream();
+        const writer = writable.getWriter();
+        
+        const reader = response.body.getReader();
+        const encoder = new TextEncoder();
+        
+        // 异步处理流
+        (async () => {
+          try {
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              
+              // 解析SSE事件
+              const text = new TextDecoder().decode(value);
+              const events = text.split('\n\n').filter(Boolean);
+              
+              for (const event of events) {
+                if (event.startsWith('data:')) {
+                  const data = JSON.parse(event.substring(5).trim());
+                  if (data.event === 'message') {
+                    await writer.write(encoder.encode(data.answer));
+                  }
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Stream error:', error);
+          } finally {
+            await writer.close();
+          }
+        })();
 
+        return new Response(readable, {
+          headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
+        
         return new Response(JSON.stringify(result), {
           headers: {
             'Content-Type': 'application/json',
