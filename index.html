@@ -73,7 +73,7 @@
                                         <input type="checkbox" id="enable_enum">
                                         <span class="slider round"></span>
                                     </label>
-                                    <span class="switch-label">固有加成</span>
+                                    <span class="switch-label">启用枚举拓展</span>
                                 </div>
                             </div>
                         </div>
@@ -207,33 +207,12 @@
                     </div>
                 </div>
                 <div class="card-actions">
-                    <!-- <button id="calculate-v1" class="button primary">Calculate V1</button>
+                    <button id="calculate-v1" class="button primary">Calculate V1</button>
                     <button id="calculate-v2" class="button primary">Calculate V2</button>
                     <button id="calculate-v3" class="button primary">Calculate V3</button>
-                    <button id="calculate-v4" class="button primary">Calculate V4</button> -->
+                    <button id="calculate-v4" class="button primary">Calculate V4</button>
                     <!-- <button id="calculate-v5" class="button primary">Calculate V5</button> -->
                     <button id="calculate-all" class="button accent">Calculate All</button>
-                    <div class="switch-container" id="ai-preset-container" style="margin-right: 10px;">
-                        <label class="switch">
-                            <input type="checkbox" id="enable_ai_preset">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="switch-label" data-i18n="aiPresetSwitchLabel">AI评价参照</span>
-                    </div>
-                    <div id="ai-preset-select-container" style="display: none; margin-left: 10px; flex-grow: 1;">
-                         <label for="ai_preset_select" data-i18n="aiPresetSelectLabel">使用预设作为参照</label>
-                         <input type="text" id="ai-preset-search" class="input-field" placeholder="搜索预设..." style="margin-bottom: 5px; width: calc(100% - 22px);">
-                         <select id="ai_preset_select" class="input-field" style="width: calc(100% - 22px);">
-                             <!-- Options will be populated dynamically -->
-                         </select>
-                    </div>
-                    <!-- <div class="switch-container">
-                        <label class="switch">
-                            <input type="checkbox" id="enable_ai">
-                            <span class="slider round"></span>
-                        </label>
-                        <span class="switch-label">AI评价</span>
-                    </div> -->
                 </div>
             </div>
 
@@ -284,14 +263,14 @@
             </div>
             <div class="card">
                 <div class="card-header">
-                    <h2 class="UmaSCE_North">North</h2>
+                    <h2 class="UmaSCE_Cat">As Cat Saying</h2>
                 </div>
                 <div class="card-content">
                     <!-- AI Response Section -->
-                    <div id="ai-response-section" class="result-group" style="display: none; margin-top: 0px; border-top: 0px solid #eee; padding-top: 0px;">
-                        <div class="result-label ai-response-label"></div>
+                    <div id="ai-response-section" class="result-group" style="display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                        <div class="result-label ai-response-label">Cat有言</div>
                         <div id="ai-response-content" class="result-value" style="white-space: pre-wrap; /* Preserve line breaks */"></div>
-                        <div id="ai-response-loading" style="display: none; margin-top: 10px;">North思考中😺</div>
+                        <div id="ai-response-loading" style="display: none; margin-top: 10px;">绞尽脑汁思考中...</div>
                     </div>
                 </div>
             </div>

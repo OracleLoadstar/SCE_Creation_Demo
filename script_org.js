@@ -361,71 +361,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // 初始化AI评价参照滑块和选择框
-    const aiPresetToggle = document.getElementById('enable_ai_preset');
-    const aiPresetSelectContainer = document.getElementById('ai-preset-select-container');
-    const aiPresetSelect = document.getElementById('ai_preset_select');
-    const aiPresetSearch = document.getElementById('ai-preset-search');
-    
-    if (aiPresetToggle) {
-        aiPresetToggle.addEventListener('change', function() {
-            aiPresetSelectContainer.style.display = this.checked ? 'block' : 'none';
-        });
-    }
-
-    // 初始化预设选择框
-    if (aiPresetSelect) {
-        // 从"使用预设"功能获取预设数据
-        const presetButton = document.getElementById('usingnowcard');
-        if (presetButton) {
-            presetButton.addEventListener('click', function() {
-                const presetOptions = Array.from(document.querySelectorAll('.preset-option'));
-                aiPresetSelect.innerHTML = '';
-                presetOptions.forEach(option => {
-                    const newOption = document.createElement('option');
-                    newOption.value = option.dataset.cardName;
-                    newOption.textContent = option.textContent;
-                    aiPresetSelect.appendChild(newOption);
-                });
-            });
-        }
-    }
-
-    // 搜索框功能
-    if (aiPresetSearch && aiPresetSelect) {
-        aiPresetSearch.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const options = aiPresetSelect.options;
-            
-            for (let i = 0; i < options.length; i++) {
-                const option = options[i];
-                option.style.display = option.text.toLowerCase().includes(searchTerm) ? '' : 'none';
-            }
-        });
-    }
-
     // 初始化语言
     currentLanguage = getSystemLanguage();
     i18n = languages[currentLanguage];
-    
-    // 初始化AI相关元素
-    const aiToggle = document.getElementById('enable_ai');
-    const aiResponseSection = document.getElementById('ai-response-section');
-    const calculateAllBtn = document.getElementById('calculate-all');
-    
-    // 设置AI响应区域初始状态
-    if (aiResponseSection) {
-        aiResponseSection.style.display = 'none';
-    }
-    
-    // 设置AI开关事件
-    if (aiToggle && aiResponseSection) {
-        aiToggle.addEventListener('change', function() {
-            aiResponseSection.style.display = this.checked ? 'block' : 'none';
-        });
-    }
 
     // 绑定Calculate All按钮事件
+    const calculateAllBtn = document.getElementById('calculate-all');
     if (calculateAllBtn) {
         calculateAllBtn.addEventListener('click', async () => {
             try {
@@ -438,30 +379,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 aiResponseContent.textContent = '';
                 aiResponseLoading.style.display = 'block';
 
-                // 如果AI未开启或元素不存在则不发送请求
-                if (!aiToggle || !aiToggle.checked) {
-                    return;
-                }
-
                 // 获取表单数据
                 const formData = {
-                    input: {
-                        card_name: document.getElementById('card_name').value,
-                        type_static: document.getElementById('type_static').value,
-                        friendship_award: document.getElementById('friendship_award').value,
-                        enthusiasm_award: document.getElementById('enthusiasm_award').value,
-                        training_award: document.getElementById('training_award').value,
-                        strike_point: document.getElementById('strike_point').value,
-                        friendship_point: document.getElementById('friendship_point').value,
-                        speed_bonus: document.getElementById('speed_bonus').value,
-                        stamina_bonus: document.getElementById('stamina_bonus').value,
-                        power_bonus: document.getElementById('power_bonus').value,
-                        willpower_bonus: document.getElementById('willpower_bonus').value,
-                        wit_bonus: document.getElementById('wit_bonus').value,
-                        sp_bonus: document.getElementById('sp_bonus').value
-                    },
-                    defcard: document.getElementById('ai_preset_select')?.value || null,
-                    lang: currentLanguage
+                    card_name: document.getElementById('card_name').value,
+                    type_static: document.getElementById('type_static').value,
+                    friendship_award: document.getElementById('friendship_award').value,
+                    enthusiasm_award: document.getElementById('enthusiasm_award').value,
+                    training_award: document.getElementById('training_award').value,
+                    strike_point: document.getElementById('strike_point').value,
+                    friendship_point: document.getElementById('friendship_point').value,
+                    speed_bonus: document.getElementById('speed_bonus').value,
+                    stamina_bonus: document.getElementById('stamina_bonus').value,
+                    power_bonus: document.getElementById('power_bonus').value,
+                    willpower_bonus: document.getElementById('willpower_bonus').value,
+                    wit_bonus: document.getElementById('wit_bonus').value,
+                    sp_bonus: document.getElementById('sp_bonus').value
                 };
 
                 // 如果启用了枚举拓展，添加枚举值
@@ -479,31 +411,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     formData.enum_sp_bonus = document.getElementById('enum_sp_bonus').value;
                 }
 
-                // 准备Dify API请求参数
-                const difyParams = {
-                    query: `请评价这张支援卡: ${formData.card_name}`,
-                    inputs: {
-                        ...formData,
-                        defcard: aiPresetSelect ? aiPresetSelect.value : null,
-                        lang: currentLanguage
-                    },
-                    response_mode: "streaming",
-                    user: "SCE_User_" + Date.now()
-                };
-
-                // 调用Dify API
-                const response = await fetch('https://api.dify.ai/v1/chat-messages', {
+                // 调用Cloudflare Worker
+                const response = await fetch('https://sce_cat.apicloud.ip-ddns.com', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer app-YIGATmbsExzhAEf4hSBYMFhV'
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(difyParams)
+                    body: JSON.stringify(formData)
                 });
 
                 if (!response.ok) {
-                    showNotification("完辣，North出错了！","error");
-                    aiResponseContent.textContent = `非常抱歉喵，下班了喵。～(∠・ω< )⌒★`;                    
                     throw new Error(`Worker request failed: ${response.status}`);
                 }
 
@@ -514,11 +431,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 aiResponseLoading.style.display = 'none';
 
             } catch (error) {
-                showNotification("网络错误，请检查连接后重试！","error");
                 console.error('Error during AI evaluation:', error);
                 const aiResponseContent = document.getElementById('ai-response-content');
-                aiResponseContent.textContent = `非常抱歉喵，无法接收您的请求喵。(ಡ‸ಡ)
-North捕捉到的错误:"${error.message}"`;
+                aiResponseContent.textContent = `获取AI评价失败: ${error.message}`;
                 const aiResponseLoading = document.getElementById('ai-response-loading');
                 aiResponseLoading.style.display = 'none';
             }
