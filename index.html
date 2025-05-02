@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oload - 赛马娘支援卡资源站</title>
+    <title id="title_a">Oload - 赛马娘支援卡资源站</title>
     <!-- 引入样式表 -->
     <link rel="stylesheet" href="style.css">
     <!-- 设置网站图标 -->
@@ -15,8 +15,8 @@
         <nav>
             <ul>
                 <!-- 导航链接 -->
-                <li><a href="#">首页</a></li>
-                <li><a href="#">支援卡一览</a></li>
+                <li><a href="#" id="home">首页</a></li>
+                <li><a href="#" id="cardlist">支援卡一览</a></li>
             </ul>
         </nav>
     </header>
@@ -24,14 +24,14 @@
     <main>
         <!-- 页面标题和描述 -->
         <section>
-            <h1>Oload - 赛马娘支援卡资源站</h1>
-            <p>目前只支持日服</p>
-            <p>觉得好用的话记得向朋友推荐一下呀~</p>
+            <h1 id="title_a">Oload - 赛马娘支援卡资源站</h1>
+            <p id="infocontent">目前只支持日服
+            <br>觉得好用的话记得向朋友推荐一下呀~</p>
         </section>
         <!-- 数据状态区域 -->
         <!-- 设置区域 -->
         <section>
-            <h2>设置</h2>
+            <h2 id="setting">设置</h2>
             <!-- 语言选择 -->
             <div>
                 <label for="language">Language:</label>
@@ -50,10 +50,10 @@
             </div>
             <!-- 外观主题选择 -->
             <div>
-                <label>外观:</label>
-                <input type="radio" name="theme" value="light"> 浅色
-                <input type="radio" name="theme" value="dark"> 深色
-                <input type="radio" name="theme" value="system" checked> 跟随系统
+                <label id="theme">外观:</label>
+                <input type="radio" name="theme" value="light" id="light"> 浅色
+                <input type="radio" name="theme" value="dark" id="dark"> 深色
+                <input type="radio" name="theme" value="system" id="themefsystem" checked> 跟随系统
             </div>
             <!-- 记住选项卡复选框 -->
         </section>

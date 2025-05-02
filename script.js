@@ -1,7 +1,8 @@
 // 变量定义
-const serverselector = document.getElementById('server_name');
+const serverselector = document.getElementById('server');
+const servervaule = document.getElementById('server').textContent;
 const rememberTabCheckbox = document.getElementById('remember-tab');
-
+var jpserver=true;
 // 页面加载时检查本地存储
 window.addEventListener('load', () => {
     const rememberTab = localStorage.getItem('rememberTab');
@@ -19,3 +20,14 @@ rememberTabCheckbox.addEventListener('change', () => {
         localStorage.removeItem('rememberTab');
     }
 });
+
+// 监听服务器变化
+serverselector.addEventListener('change', () =>{
+    if (servervaule == "JP"){
+        jpserver=true;
+    }
+});
+
+function update_text(){
+    if
+};
