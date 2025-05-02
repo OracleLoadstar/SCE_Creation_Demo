@@ -738,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
             v5SpResult.textContent = v5.v5sp_ept;
             */
         } catch (error) {
-            showNotification('计算出错: ' + error.message, 'error');
+            //showNotification('计算出错: ' + error.message, 'error');
         }
     });
     
