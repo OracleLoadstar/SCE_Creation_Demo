@@ -3,7 +3,8 @@
   font-style: normal;
   font-weight: 400;
   src: url(https://sce.off.sd/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('truetype'),
-       url(https://sce.oload.dpdns.org/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('truetype');
+       url(https://sce.oload.dpdns.org/fonts/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2) format('truetype'),
+       url(./flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2);
 }
 
 .material-icons {

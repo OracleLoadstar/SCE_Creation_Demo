@@ -5,6 +5,10 @@ body {
     background-color: #1e1e1e; /* 深色背景 */
     color: #cccccc; /* 浅灰色文字 */
     line-height: 1.6;
+    display: flex; /* 使用 Flexbox 布局 */
+    flex-direction: column; /* 垂直排列子元素 */
+    min-height: 100vh; /* 最小高度为视口高度 */
+    padding-top: 60px; /* 为固定头部留出空间，根据头部实际高度调整 */
 }
 
 /* 页面头部样式 */
@@ -12,8 +16,20 @@ header {
     background-color: #252526; /* 导航栏背景色 */
     padding: 10px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    position: fixed; /* 固定在屏幕顶部 */
+    width: 100%; /* 宽度占满 */
+    top: 0; /* 距离顶部为 0 */
+    left: 0; /* 距离左侧为 0 */
+    z-index: 1000; /* 确保在其他内容之上 */
 }
-
+/* 网站图标 */
+.web_icon {
+    /* border: 2px solid #fff; */
+    border-radius: 8px;     /* 可选：圆角 */
+    background-color: #383842; /* 可选：半透明背景 */
+    width: 30px; /* 缩小图标 */
+    height: auto; /* 保持宽高比 */
+}
 /* 导航列表样式 */
 nav ul {
     list-style: none;
@@ -40,11 +56,13 @@ nav a:hover {
 /* 主要内容区域样式 */
 main {
     padding: 20px;
-    max-width: 900px;
-    margin: 20px auto;
+    width: 80%; /* 设置宽度为 80% */
+    max-width: 900px; /* 保持最大宽度不变 */
+    margin: 20px auto; /* 顶部和底部边距 20px，左右自动边距实现居中 */
     background-color: #2d2d30; /* 主要内容区域背景色 */
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    flex-grow: 1; /* 占用剩余空间 */
 }
 
 /* 各个 section 区域样式 */
@@ -52,6 +70,28 @@ section {
     margin-bottom: 30px;
     padding-bottom: 20px;
     border-bottom: 1px solid #3c3c3c; /* 分隔线 */
+    #CardSelectTr th:nth-child(8), /* 草地 */
+    #CardSelectTr td:nth-child(8),
+    #CardSelectTr th:nth-child(9), /* 泥地 */
+    #CardSelectTr td:nth-child(9),
+    #CardSelectTr th:nth-child(10), /* 短距 */
+    #CardSelectTr td:nth-child(10),
+    #CardSelectTr th:nth-child(11), /* 英里 */
+    #CardSelectTr td:nth-child(11),
+    #CardSelectTr th:nth-child(12), /* 中距 */
+    #CardSelectTr td:nth-child(12),
+    #CardSelectTr th:nth-child(13), /* 长距 */
+    #CardSelectTr td:nth-child(13),
+    #CardSelectTr th:nth-child(14), /* 逃 */
+    #CardSelectTr td:nth-child(14),
+    #CardSelectTr th:nth-child(15), /* 先行 */
+    #CardSelectTr td:nth-child(15),
+    #CardSelectTr th:nth-child(16), /* 差行 */
+    #CardSelectTr td:nth-child(16),
+    #CardSelectTr th:nth-child(17), /* 追 */
+    #CardSelectTr td:nth-child(17) {
+        display: none;
+    }
 }
 
 /* 最后一个 section 区域无底边框 */
@@ -140,4 +180,301 @@ input[type="checkbox"] {
 label[for="remember-tab"] {
     margin-left: 5px;
     min-width: auto;
+}
+/* 通知系统样式 */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.notification {
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 300px;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+    pointer-events: auto;
+}
+
+/* 移动通知框的类 */
+.notification.move-down {
+    transform: translateY(calc(100% + 10px));  /* 向下移动一个通知框的高度加间距 */
+}
+
+.notification-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.notification-content {
+    flex-grow: 1;
+    color: #333;
+}
+
+/* 通知类型样式 */
+.notification.info {
+    border-left: 4px solid #6F93E7;
+}
+
+.notification.info .notification-icon {
+    color: #6F93E7;
+}
+
+.notification.warning {
+    border-left: 4px solid #FFA726;
+}
+
+.notification.warning .notification-icon {
+    color: #FFA726;
+}
+
+.notification.error {
+    border-left: 4px solid #EF5350;
+}
+
+.notification.error .notification-icon {
+    color: #EF5350;
+}
+
+.notification-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background-color: currentColor;
+    opacity: 0.5;
+    width: 100%;
+    transition: width linear;
+}
+
+.notification.info .notification-progress {
+    background-color: #6F93E7;
+}
+
+.notification.warning .notification-progress {
+    background-color: #FFA726;
+}
+
+.notification.error .notification-progress {
+    background-color: #EF5350;
+}
+
+.notification-progress.running {
+    animation: progress 3s linear forwards;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes progress {
+    from {
+        width: 100%;
+    }
+    to {
+        width: 0%;
+    }
+}
+
+
+/* Footer 样式 */
+footer {
+    margin-top: 30px;
+    text-align: center;
+    color: #cccccc; /* 暗色模式下的文字颜色 */
+    padding: 20px;
+    background-color: #252526; /* 暗色模式下的背景色 */
+    border-top: 1px solid #3c3c3c; /* 分隔线 */
+    /* Footer 将自动位于 Flex 容器的末尾 */
+}
+
+/* 表格和 Footer 中的链接样式 */
+table a, footer a {
+    color: #6F93E7; /* 链接颜色 */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+table a:hover, footer a:hover {
+    color: #ffffff; /* 链接悬停颜色 */
+    text-decoration: underline;
+}
+
+/* 亮色模式样式 */
+body.light-mode {
+    background-color: #C7BEF6; /* 亮色背景 */
+    color: #333333; /* 深色文字 */
+}
+
+body.light-mode header {
+    background-color: #6F93E7; /* 导航栏背景色 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode nav a {
+    color: #333333;
+}
+
+body.light-mode nav a:hover {
+    color: #000000;
+}
+
+body.light-mode main {
+    background-color: #ffffff; /* 主要内容区域背景色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode section {
+    border-bottom-color: #3C3C3C; /* 分隔线 */
+}
+
+body.light-mode h1, body.light-mode h2 {
+    color: #333333; /* 标题颜色 */
+    border-bottom-color: #3C3C3C;
+}
+
+body.light-mode select, body.light-mode input[type="text"], body.light-mode input[type="number"] {
+    border-color: #3C3C3C;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+body.light-mode button {
+    background-color: #6F93E7; /* 按钮背景色 */
+}
+
+body.light-mode button:hover {
+    background-color: #0056b3; /* 按钮悬停颜色可以根据需要调整 */
+}
+
+body.light-mode table a, body.light-mode footer a {
+    color: #6F93E7; /* 亮色模式下的链接颜色 */
+}
+
+body.light-mode table a:hover, body.light-mode footer a:hover {
+    color: #0056b3; /* 亮色模式下链接悬停颜色 */
+}
+
+body.light-mode footer {
+    color: #333333; /* 亮色模式下的文字颜色 */
+    background-color: #6F93E7; /* 亮色模式下的背景色 */
+    border-top-color: #3C3C3C; /* 分隔线 */
+}
+
+/* 媒体查询：屏幕宽度小于 768px 时 */
+@media (max-width: 768px) {
+    /* 隐藏表格的列 */
+    #CardSelectTr th:nth-child(3), /* 中文名 */
+    #CardSelectTr td:nth-child(3),
+    #CardSelectTr th:nth-child(5), /* 稀有度 */
+    #CardSelectTr td:nth-child(5),
+    #CardSelectTr th:nth-child(6), /* 类型 */
+    #CardSelectTr td:nth-child(6),
+    #CardSelectTr th:nth-child(7), /* 获取方式 */
+    #CardSelectTr td:nth-child(7),
+    #CardSelectTr th:nth-child(8), /* 草地 */
+    #CardSelectTr td:nth-child(8),
+    #CardSelectTr th:nth-child(9), /* 泥地 */
+    #CardSelectTr td:nth-child(9),
+    #CardSelectTr th:nth-child(10), /* 短距 */
+    #CardSelectTr td:nth-child(10),
+    #CardSelectTr th:nth-child(11), /* 英里 */
+    #CardSelectTr td:nth-child(11),
+    #CardSelectTr th:nth-child(12), /* 中距 */
+    #CardSelectTr td:nth-child(12),
+    #CardSelectTr th:nth-child(13), /* 长距 */
+    #CardSelectTr td:nth-child(13),
+    #CardSelectTr th:nth-child(14), /* 逃 */
+    #CardSelectTr td:nth-child(14),
+    #CardSelectTr th:nth-child(15), /* 先行 */
+    #CardSelectTr td:nth-child(15),
+    #CardSelectTr th:nth-child(16), /* 差行 */
+    #CardSelectTr td:nth-child(16),
+    #CardSelectTr th:nth-child(17), /* 追 */
+    #CardSelectTr td:nth-child(17) {
+        display: none;
+    }
+}
+
+/* 拉宽表格的“类型”列 */
+#CardSelectTr th:nth-child(6),
+#CardSelectTr td:nth-child(6) {
+    min-width: 80px; /* 设置最小宽度，根据需要调整 */
+}
+
+/* 亮色模式下通知系统样式 */
+body.light-mode .notification {
+    background: #ffffff; /* 亮色模式下的通知背景 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+body.light-mode .notification-content {
+    color: #333333; /* 亮色模式下的通知文字颜色 */
+}
+
+body.light-mode .notification.info {
+    border-left-color: #6F93E7; /* 亮色模式下的 info 通知边框颜色 */
+}
+
+body.light-mode .notification.info .notification-icon {
+    color: #6F93E7; /* 亮色模式下的 info 通知图标颜色 */
+}
+
+body.light-mode .notification.info .notification-progress {
+    background-color: #6F93E7; /* 亮色模式下的 info 通知进度条颜色 */
+}
+
+body.light-mode .notification.warning {
+    border-left-color: #FFA726; /* 亮色模式下的 warning 通知边框颜色 */
+}
+
+body.light-mode .notification.warning .notification-icon {
+    color: #FFA726; /* 亮色模式下的 warning 通知图标颜色 */
+}
+
+body.light-mode .notification.warning .notification-progress {
+    background-color: #FFA726; /* 亮色模式下的 warning 通知进度条颜色 */
+}
+
+body.light-mode .notification.error {
+    border-left-color: #EF5350; /* 亮色模式下的 error 通知边框颜色 */
+}
+
+body.light-mode .notification.error .notification-icon {
+    color: #EF5350; /* 亮色模式下的 error 通知图标颜色 */
+}
+
+body.light-mode .notification.error .notification-progress {
+    background-color: #EF5350; /* 亮色模式下的 error 通知进度条颜色 */
 }
