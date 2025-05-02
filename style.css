@@ -1,0 +1,143 @@
+/* 全局样式 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    margin: 0;
+    background-color: #1e1e1e; /* 深色背景 */
+    color: #cccccc; /* 浅灰色文字 */
+    line-height: 1.6;
+}
+
+/* 页面头部样式 */
+header {
+    background-color: #252526; /* 导航栏背景色 */
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* 导航列表样式 */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px; /* 导航项之间的间距 */
+}
+
+/* 导航链接样式 */
+nav a {
+    color: #cccccc;
+    text-decoration: none;
+    font-size: 1em;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+/* 导航链接悬停效果 */
+nav a:hover {
+    color: #ffffff;
+}
+
+/* 主要内容区域样式 */
+main {
+    padding: 20px;
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: #2d2d30; /* 主要内容区域背景色 */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* 各个 section 区域样式 */
+section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #3c3c3c; /* 分隔线 */
+}
+
+/* 最后一个 section 区域无底边框 */
+section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* 标题样式 */
+h1, h2 {
+    color: #ffffff; /* 标题颜色 */
+    border-bottom: 1px solid #3c3c3c;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+/* 段落样式 */
+p {
+    margin-bottom: 10px;
+}
+
+/* 加粗文本样式 */
+span {
+    font-weight: bold;
+}
+
+/* 设置区域内部 div 样式 */
+section > div {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+/* 设置区域标签样式 */
+section > div label {
+    margin-right: 10px;
+    min-width: 80px; /* 对齐标签 */
+}
+
+/* 选择框和输入框样式 */
+select, input[type="text"], input[type="number"] {
+    padding: 8px;
+    border: 1px solid #3c3c3c;
+    background-color: #3c3c3c;
+    color: #cccccc;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+/* 按钮样式 */
+button {
+    background-color: #0e639c; /* 按钮背景色 */
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 按钮悬停效果 */
+button:hover {
+    background-color: #1177bb;
+}
+
+/* 单选按钮样式 */
+input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* 复选框样式 */
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* 记住选项卡标签样式 */
+label[for="remember-tab"] {
+    margin-left: 5px;
+    min-width: auto;
+}

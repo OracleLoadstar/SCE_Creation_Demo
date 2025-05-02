@@ -1,367 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
-    <!-- 字符集和视口设置 -->
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- PWA 相关标签 -->
-    <!-- <link rel="manifest" href="manifest.json"> --> <!-- 移除 PWA manifest 链接 -->
-    <meta name="theme-color" content="#6F93E7">
-    <link rel="apple-touch-icon" href="image/SCE_ICON_Static.png">
-    <!-- 网站图标设置 -->
-    <link rel="icon" type="image/png" href="image/SCE_ICON_Static.png">
-    <title>SCE-CREATION</title>
-    <!-- 样式表加载 -->
-    <link rel="stylesheet" href="styles.css">
-    <!-- Google 字体加载 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Material 图标加载 -->
-    <link href="fonts/font.css" rel="stylesheet">
+    <title>Oload - 赛马娘支援卡资源站</title>
+    <!-- 引入样式表 -->
+    <link rel="stylesheet" href="style.css">
+    <!-- 设置网站图标 -->
+    <link rel="shortcut icon" href="./image/SCE_ICON_Static.png" type="image/x-icon">
 </head>
 <body>
-    <!-- 加载动画 -->
-    <div id="loading-screen">
-        <div class="loading-container">
-            <img src="image/SCE_Loading2.gif" alt="Loading...">
-            <div class="loading-info">
-                <span id="loading-text">正在加载...</span>
-                <button id="skip-loading" class="skip-button" style="display: none;">跳过</button>
-            </div>
-        </div>
-    </div>
+    <!-- 页面头部，包含导航栏 -->
+    <header>
+        <nav>
+            <ul>
+                <!-- 导航链接 -->
+                <li><a href="#">首页</a></li>
+                <li><a href="#">支援卡一览</a></li>
+            </ul>
+        </nav>
+    </header>
     <!-- 主要内容区域 -->
-    <div class="app-container">
-        <header class="app-header">
-            <div class="header-content">
-                <div class="header-left">
-                    <div class="logo-container">
-                        <img src="image/SCE_ICON_Dynamic.gif" alt="Logo" class="header-logo">
-                    </div>
-                    <h1>SCE-CREATION</h1>
-                </div>
-                <button id="language-toggle" class="icon-button">
-                    <span class="material-icons">translate</span>
-                </button>
+    <main>
+        <!-- 页面标题和描述 -->
+        <section>
+            <h1>Oload - 赛马娘支援卡资源站</h1>
+            <p>目前只支持日服</p>
+            <p>觉得好用的话记得向朋友推荐一下呀~</p>
+        </section>
+        <!-- 数据状态区域 -->
+        <!-- 设置区域 -->
+        <section>
+            <h2>设置</h2>
+            <!-- 语言选择 -->
+            <div>
+                <label for="language">Language:</label>
+                <select id="language">
+                    <option value="zh-CN">简体中文</option>
+                    <option value="ja-JP">日本語</option>
+                    <option value="en-US">English</option>
+                </select>
             </div>
-            <div class="header-backdrop"></div>
-        </header>
-
-        <div class="content">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Parameter Settings</h2>
-                </div>
-                <div class="card-content">
-                    <div class="input-group">
-                        <label for="card_name">支援卡名称 (card_name)</label>
-                        <input type="text" id="card_name" class="input-field" placeholder="请输入支援卡名称" required>
-                    </div>
-
-                    <div class="input-group">
-                        <div class="type-container">
-                            <label for="type_static">Type (type_static)</label>
-                            <div class="type-controls">
-                                <select id="type_static" class="input-field short-select">
-                                    <option value="0">Speed (0)</option>
-                                    <option value="1">Stamina (1)</option>
-                                    <option value="2">Power (2)</option>
-                                    <option value="3">Willpower (3)</option>
-                                    <option value="4">Wit (4)</option>
-                                </select>
-                                <div class="switch-container">
-                                    <label class="switch">
-                                        <input type="checkbox" id="enable_enum">
-                                        <span class="slider round"></span>
-                                    </label>
-                                    <span class="switch-label">启用枚举拓展</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="enum_card" class="card" style="display: none;">
-                        <div class="card-header">
-                            <h2>Enum Values</h2>
-                        </div>
-                        <div class="card-content">
-                            <div class="input-row">
-                                <div class="input-group half">
-                                    <label for="enum_friendship_award" data-i18n="enumLabels.friendshipAward">Fixed Friendship Award</label>
-                                    <input type="number" id="enum_friendship_award" class="input-field" value="0">
-                                </div>
-                                <div class="input-group half">
-                                    <label for="enum_enthusiasm_award" data-i18n="enumLabels.enthusiasmAward">Fixed Enthusiasm Award</label>
-                                    <input type="number" id="enum_enthusiasm_award" class="input-field" value="0">
-                                </div>
-                            </div>
-                            <div class="input-row">
-                                <div class="input-group half">
-                                    <label for="enum_training_award" data-i18n="enumLabels.trainingAward">Fixed Training Award</label>
-                                    <input type="number" id="enum_training_award" class="input-field" value="0">
-                                </div>
-                                <div class="input-group half">
-                                    <label for="enum_friendship_point" data-i18n="enumLabels.friendshipPoint">Fixed Friendship Point</label>
-                                    <input type="number" id="enum_friendship_point" class="input-field" value="0">
-                                </div>
-                            </div>
-                            <div class="input-row">
-                                <div class="input-group half">
-                                    <label for="enum_strike_point" data-i18n="enumLabels.strikePoint">Fixed Strike Point</label>
-                                    <input type="number" id="enum_strike_point" class="input-field" value="0">
-                                </div>
-                                <div class="input-group half">
-                                    <label for="enum_speed_bonus" data-i18n="enumLabels.speedBonus">Fixed Speed Bonus</label>
-                                    <input type="number" id="enum_speed_bonus" class="input-field" value="0">
-                                </div>
-                            </div>
-                            <div class="input-row">
-                                <div class="input-group half">
-                                    <label for="enum_stamina_bonus" data-i18n="enumLabels.staminaBonus">Fixed Stamina Bonus</label>
-                                    <input type="number" id="enum_stamina_bonus" class="input-field" value="0">
-                                </div>
-                                <div class="input-group half">
-                                    <label for="enum_power_bonus" data-i18n="enumLabels.powerBonus">Fixed Power Bonus</label>
-                                    <input type="number" id="enum_power_bonus" class="input-field" value="0">
-                                </div>
-                            </div>
-                            <div class="input-row">
-                                <div class="input-group half">
-                                    <label for="enum_willpower_bonus" data-i18n="enumLabels.willpowerBonus">Fixed Willpower Bonus</label>
-                                    <input type="number" id="enum_willpower_bonus" class="input-field" value="0">
-                                </div>
-                                <div class="input-group half">
-                                    <label for="enum_wit_bonus" data-i18n="enumLabels.witBonus">Fixed Wit Bonus</label>
-                                    <input type="number" id="enum_wit_bonus" class="input-field" value="0">
-                                </div>
-                            </div>
-                            <div class="input-row">
-                                <div class="input-group half">
-                                    <label for="enum_sp_bonus" data-i18n="enumLabels.spBonus">Fixed SP Bonus</label>
-                                    <input type="number" id="enum_sp_bonus" class="input-field" value="0">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- <div class="input-group">
-                        <label for="friendship_static">Friendship Static (friendship_static)</label>
-                        <input type="number" id="friendship_static" class="input-field" value="0" min="0">
-                    </div> -->
-
-                    <div class="input-group">
-                        <label for="friendship_award">Friendship Award (friendship_award)</label>
-                        <input type="number" id="friendship_award" class="input-field" value="0" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="enthusiasm_award">Enthusiasm Award (enthusiasm_award)</label>
-                        <input type="number" id="enthusiasm_award" class="input-field" value="0" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="training_award">Training Award (training_award)</label>
-                        <input type="number" id="training_award" class="input-field" value="0" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="strike_point">Strike Point (strike_point)</label>
-                        <input type="number" id="strike_point" class="input-field" value="0" min="0">
-                    </div>
-
-                    <div class="input-group">
-                        <label for="friendship_point">Friendship Point (friendship_point)</label>
-                        <input type="number" id="friendship_point" class="input-field" value="0" min="0">
-                    </div>
- 
-                    <div class="input-row">
-                        <div class="input-group half">
-                            <label for="speed_bonus">Speed Bonus (speed_bonus)</label>
-                            <input type="number" id="speed_bonus" class="input-field" value="0" min="0">
-                        </div>
-                        <div class="input-group half">
-                            <label for="stamina_bonus">Stamina Bonus (stamina_bonus)</label>
-                            <input type="number" id="stamina_bonus" class="input-field" value="0" min="0">
-                        </div>
-                    </div>
-
-                    <div class="input-row">
-                        <div class="input-group half">
-                            <label for="power_bonus">Power Bonus (power_bonus)</label>
-                            <input type="number" id="power_bonus" class="input-field" value="0" min="0">
-                        </div>
-                        <div class="input-group half">
-                            <label for="willpower_bonus">Willpower Bonus (willpower_bonus)</label>
-                            <input type="number" id="willpower_bonus" class="input-field" value="0" min="0">
-                        </div>
-                    </div>
-
-                    <div class="input-row">
-                        <div class="input-group half">
-                            <label for="wit_bonus">Wit Bonus (wit_bonus)</label>
-                            <input type="number" id="wit_bonus" class="input-field" value="0" min="0">
-                        </div>
-                        <div class="input-group half">
-                            <label for="sp_bonus">SP Bonus (sp_bonus)</label>
-                            <input type="number" id="sp_bonus" class="input-field" value="0" min="0">
-                        </div>
-                    </div>
-                </div>
-                <div class="card-actions">
-                    <button id="calculate-v1" class="button primary">Calculate V1</button>
-                    <button id="calculate-v2" class="button primary">Calculate V2</button>
-                    <button id="calculate-v3" class="button primary">Calculate V3</button>
-                    <button id="calculate-v4" class="button primary">Calculate V4</button>
-                    <!-- <button id="calculate-v5" class="button primary">Calculate V5</button> -->
-                    <button id="calculate-all" class="button accent">Calculate All</button>
-                </div>
+            <!-- 服务器选择 -->
+            <div>
+                <label for="server">Server:</label>
+                <select id="server">
+                    <option value="JP" id="server_name">JP</option>
+                </select>
             </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="calculation-results-title">Calculation Results</h2>
-                </div>
-                <div class="card-content">
-                    <div class="result-group">
-                        <div class="result-label v1-label">V1 Value (v1_ept):</div>
-                        <div id="v1-result" class="result-value">-</div>
-                    </div>
-                    <div class="result-group">
-                        <div class="result-label v2-label">V2 Value (v2_ept):</div>
-                        <div id="v2-result" class="result-value">-</div>
-                    </div>
-                    <div class="result-group">
-                        <div class="result-label v3-label">V3 Value (v3_ept):</div>
-                        <div id="v3-result" class="result-value">-</div>
-                    </div>
-                    <div class="result-group">
-                        <div class="result-label v4main-label">V4 Main Value (v4main_ept):</div>
-                        <div id="v4main-result" class="result-value">-</div>
-                    </div>
-                    <div class="result-group">
-                        <div class="result-label v4fold-label">V4 Fold Value (v4fold_ept):</div>
-                        <div id="v4fold-result" class="result-value">-</div>
-                    </div>
-                    <div class="result-group">
-                        <div class="result-label v4sp-label">V4 SP Value (v4sp_ept):</div>
-                        <div id="v4sp-result" class="result-value">-</div>
-                    </div>
-                    <!--     V5  ؽ  
-                    <div class="result-group">
-                        <div class="result-label">V5 Main Value (v5main_ept):</div>
-                        <div id="v5main-result" class="result-value">-</div> 
-                    </div>
-                    <div class="result-group">
-                        <div class="result-label">V5 Fold Value (v5fold_ept):</div>
-                        <div id="v5fold-result" class="result-value">-</div> 
-                    </div>
-                    <div class="result-group">
-                        <div class="result-label">V5 SP Value (v5sp_ept):</div>
-                        <div id="v5sp-result" class="result-value">-</div> 
-                    </div>
-                    -->
-                </div>
+            <!-- 外观主题选择 -->
+            <div>
+                <label>外观:</label>
+                <input type="radio" name="theme" value="light"> 浅色
+                <input type="radio" name="theme" value="dark"> 深色
+                <input type="radio" name="theme" value="system" checked> 跟随系统
             </div>
-            
+            <!-- 记住选项卡复选框 -->
+        </section>
+        <!-- 添加到主屏幕区域 -->
+    </main>
 
-            <!-- 应用管理卡片 -->
-            <!-- <div class="card app-management-card">
-                <div class="card-header">
-                    <h2 class="app-management-title">应用管理</h2>
-                </div>
-                <div class="card-content">
-                    <div class="app-management-buttons">
-                        <button id="installApp" class="button primary">
-                            <span class="material-icons">get_app</span>
-                            <span class="button-text">安装为应用</span>
-                        </button>
-                        <button id="updateApp" class="button primary">
-                            <span class="material-icons">system_update</span>
-                            <span class="button-text">更新应用</span>
-                        </button>
-                        <button id="clearCache" class="button primary">
-                            <span class="material-icons">cleaning_services</span>
-                            <span class="button-text">清理缓存</span>
-                        </button>
-                    </div>
-                </div>
-            </div> -->
-
-            <!-- 贡献者卡片 -->
-            <div class="card contributors-card">
-                <div class="card-header">
-                    <h2 class="contributors-title">Contributors</h2>
-                </div>
-                <div class="card-content">
-                    <div class="contributors-list">
-                        <a href="https://github.com/LaT-SKY" target="_blank" class="contributor-item">
-                            <img src="https://github.com/LaT-SKY.png" alt="LaT-SKY" class="contributor-avatar">
-                            <span class="contributor-name">LaT-SKY</span>
-                        </a>
-                        <a href="https://github.com/xingguangcuican6666" target="_blank" class="contributor-item">
-                            <img src="https://github.com/xingguangcuican6666.png" alt="xingguangcuican6666" class="contributor-avatar">
-                            <span class="contributor-name">xingguangcuican6666</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-links">
-                    <a href="https://github.com/OracleLoadstar/SCE_Creation_Demo" target="_blank">Demo Repository</a>
-                    <span class="footer-separator">|</span>
-                    <a href="https://github.com/OracleLoadstar/SupportCard_Evaluator_Track_Release" target="_blank">SCE Repository</a>
-                </div>
-                <div class="footer-powered-by">Powered by OracleLoadstar</div>
-                <div class="footer-copyright">&copy; 2025 OracleLoadstar. All rights reserved.</div>
-            </div>
-        </footer>
-
-        <!-- 背景遮罩 -->
-        <div class="overlay"></div>
-        
-        <!-- 悬浮工具窗口 -->
-        <div class="floating-buttons">
-            <div class="dropdown">
-                <button id="moreButton" class="button more-button">
-                    <span class="material-icons">more_vert</span>
-                </button>
-                <div id="moreMenu" class="dropdown-content">
-                    <button id="usingnowcard" class="dropdown-item">
-                        <span class="material-icons">settings</span>
-                        <span class="button-text">使用预设</span>
-                    </button>
-                    <button id="saveCard" class="dropdown-item">
-                        <span class="material-icons">save</span>
-                        <span class="button-text">保存支援卡</span>
-                    </button>
-                    <button id="uploadCard" class="dropdown-item">
-                        <span class="material-icons">upload</span>
-                        <span class="button-text">上传支援卡</span>
-                    </button>
-                    <button id="clearCache" class="dropdown-item">
-                        <span class="material-icons">cleaning_services</span>
-                        <span class="button-text">清理缓存</span>
-                    </button>
-
-                </div>
-            </div>
-            <button id="shareCard" class="button share-button">
-                <span class="material-icons">share</span>
-            </button>
-            <button id="backToTop" class="button back-to-top">
-                <span class="material-icons">arrow_upward</span>
-            </button>
-        </div>
-
-        <!-- 通知容器 -->
-        <div id="notification-container"></div>
-
-    </div>
-
-    <!-- 脚本加载顺序：语言文件 -> V5 算法 -> 主脚本 -->
-    <script src="lang.js"></script>
-    <script src="UmaSCE_V5.js"></script>  
-    <script src="script.js"></script>
 </body>
 </html>
