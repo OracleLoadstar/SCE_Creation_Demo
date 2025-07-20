@@ -1055,7 +1055,7 @@ document.getElementById('clearCache').addEventListener('click', clearCache);
         
         try {
             // await navigator.clipboard.writeText(shareText);
-            await generateQRCode(shareUrl);
+            await convertUrlToQrAndShowShare(shareUrl);
             showNotification(i18n.notifications.shareLinkCopied, 'info');
         } catch (err) {
             console.error(i18n.notifications.copyError, err);
